@@ -54,7 +54,7 @@ local MoneyManager = {}
 
 local function getDefaultBuildingState(buildingId: number): BuildingState
     return {
-        OwnedCount = (buildingId == 1) and 1 or 0,
+        OwnedCount = 0,
         FloorUpgrades = {},
         HasManager = false,
     }
@@ -174,7 +174,7 @@ local function loadPlayerData(player: Player)
                 local numId = tonumber(id) or id
                 if type(bState) == "table" then
                     finalData.Buildings[numId] = {
-                        OwnedCount = tonumber(bState.OwnedCount) or ((numId == 1) and 1 or 0),
+                        OwnedCount = tonumber(bState.OwnedCount) or 0,
                         FloorUpgrades = (type(bState.FloorUpgrades) == "table") and bState.FloorUpgrades or {},
                         HasManager = (bState.HasManager == true)
                     }

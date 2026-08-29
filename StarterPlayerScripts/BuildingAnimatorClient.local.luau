@@ -1,5 +1,6 @@
+--!strict
 -- BuildingAnimatorClient.luau
--- Handles dynamic slide-in pop animations using PivotTo for models
+-- Handles dynamic slide-in pop animations using PivotTo for newly spawned models and props.
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -8,9 +9,9 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local localPlayer = Players.LocalPlayer
 
 local RemoteEvents = ReplicatedStorage:WaitForChild("RemoteEvents")
-local UnlockStageEvent = RemoteEvents:WaitForChild("UnlockStage")
+local UnlockStageEvent = RemoteEvents:WaitForChild("UnlockStage") :: RemoteEvent
 
-local function animateModelSlideIn(instanceObj)
+local function animateModelSlideIn(instanceObj: Instance?)
     if not instanceObj then return end
 
     if instanceObj:IsA("Model") then
@@ -22,7 +23,9 @@ local function animateModelSlideIn(instanceObj)
         local cfVal = Instance.new("CFrameValue")
         cfVal.Value = startCFrame
         cfVal.Changed:Connect(function(newCF)
-            instanceObj:PivotTo(newCF)
+            if instanceObj and instanceObj:IsA("Model") then
+                instanceObj:PivotTo(newCF)
+            end
         end)
 
         local tweenInfo = TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
@@ -48,7 +51,7 @@ local function animateModelSlideIn(instanceObj)
     end
 end
 
-UnlockStageEvent.OnClientEvent:Connect(function(unlockName)
+UnlockStageEvent.OnClientEvent:Connect(function(unlockName: string)
     local cultTycoon = workspace:FindFirstChild("CultTycoon", true)
     if not cultTycoon then
         cultTycoon = workspace:WaitForChild("CultTycoon", 3)
@@ -83,7 +86,16 @@ UnlockStageEvent.OnClientEvent:Connect(function(unlockName)
                 end
             end
         end
+    elseif unlockName == "ManagerStage" then
+        local managerFolder = preacherFolder:FindFirstChild("Manager") or preacherFolder:WaitForChild("Manager", 2)
+        if managerFolder then
+            for _, child in ipairs(managerFolder:GetChildren()) do
+                if child.Name ~= "ManagerButton" and (child:IsA("Model") or child:IsA("BasePart")) then
+                    animateModelSlideIn(child)
+                end
+            end
+        end
     end
 end)
 
-print("[BuildingAnimatorClient] Updated PivotTo model animation.")
+print("[BuildingAnimatorClient] Manager pop-in animation handler wired.")

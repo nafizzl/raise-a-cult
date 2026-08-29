@@ -5,32 +5,13 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
-local EconomyConfig = require(ReplicatedStorage.Economy.EconomyConfig)
-local EconomyMath = require(ReplicatedStorage.Economy.EconomyMath)
-local MoneyManager = require(ServerScriptService.MoneyManager)
+local EconomyConfig = require(ReplicatedStorage:WaitForChild("Economy"):WaitForChild("EconomyConfig") :: any)
+local EconomyMath = require(ReplicatedStorage:WaitForChild("Economy"):WaitForChild("EconomyMath") :: any)
+local MoneyManager = require(ServerScriptService:WaitForChild("MoneyManager") :: any)
 
-local RemoteEvents = ReplicatedStorage:FindFirstChild("RemoteEvents")
-if not RemoteEvents then
-    RemoteEvents = Instance.new("Folder")
-    RemoteEvents.Name = "RemoteEvents"
-    RemoteEvents.Parent = ReplicatedStorage
-end
-
-local CollectEventObj = RemoteEvents:FindFirstChild("CollectEvent")
-if not CollectEventObj then
-    CollectEventObj = Instance.new("RemoteEvent")
-    CollectEventObj.Name = "CollectEvent"
-    CollectEventObj.Parent = RemoteEvents
-end
-local CollectEvent = CollectEventObj :: RemoteEvent
-
-local UpgradeEventObj = RemoteEvents:FindFirstChild("UpgradeEvent")
-if not UpgradeEventObj then
-    UpgradeEventObj = Instance.new("RemoteEvent")
-    UpgradeEventObj.Name = "UpgradeEvent"
-    UpgradeEventObj.Parent = RemoteEvents
-end
-local UpgradeEvent = UpgradeEventObj :: RemoteEvent
+local RemoteEvents = ReplicatedStorage:WaitForChild("RemoteEvents")
+local CollectEvent = RemoteEvents:WaitForChild("CollectEvent") :: RemoteEvent
+local UpgradeEvent = RemoteEvents:WaitForChild("UpgradeEvent") :: RemoteEvent
 
 type ActiveCycleState = {
     IsCycling: boolean,
@@ -159,26 +140,41 @@ task.spawn(function()
                         local cycle = getCycleState(player, buildingId)
 
                         if effectiveCycle <= 0.1 then
-                            -- Fast-bar streaming: stream smooth income per second
-                            local dt = (cycle.LastFastPayout == 0) and 0.05 or (now - cycle.LastFastPayout)
-                            if dt >= 0.1 then
+                            -- Fast-bar streaming: stream smooth income per second continuously
+                            if cycle.LastFastPayout == 0 then
                                 cycle.LastFastPayout = now
-                                local streamIncome = (incomePerCycle / effectiveCycle) * dt
-                                if streamIncome > 0 then
-                                    MoneyManager.AddMoney(player, math.floor(streamIncome))
+                            else
+                                local dt = now - cycle.LastFastPayout
+                                if dt >= 0.05 then
+                                    cycle.LastFastPayout = now
+                                    local streamIncome = (incomePerCycle / effectiveCycle) * dt
+                                    if streamIncome >= 1 then
+                                        MoneyManager.AddMoney(player, math.floor(streamIncome))
+                                    end
                                 end
                             end
+                            if player:IsDescendantOf(Players) then
+                                CollectEvent:FireClient(player, "FastBarActive", buildingId, effectiveCycle)
+                            end
                         else
-                            -- Standard cycle loop
+                            -- Standard cycle loop with continuous manager countdown
+                            cycle.LastFastPayout = 0
                             if not cycle.IsCycling then
                                 cycle.IsCycling = true
                                 cycle.CycleStartTime = now
                                 cycle.CurrentCycleTime = effectiveCycle
 
+                                if player:IsDescendantOf(Players) then
+                                    CollectEvent:FireClient(player, "StartCycle", buildingId, effectiveCycle, true)
+                                end
+
                                 task.spawn(function()
                                     task.wait(effectiveCycle)
                                     cycle.IsCycling = false
-                                    MoneyManager.AddMoney(player, incomePerCycle)
+                                    if player:IsDescendantOf(Players) then
+                                        MoneyManager.AddMoney(player, incomePerCycle)
+                                        CollectEvent:FireClient(player, "CycleComplete", buildingId, true)
+                                    end
                                 end)
                             end
                         end

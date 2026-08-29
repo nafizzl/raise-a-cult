@@ -41,22 +41,22 @@ Given a current balance of Followers $C$, the maximum number of units $m$ purcha
 
 $$m \= \\left\\lfloor \\frac{\\ln\\left(1 \+ \\frac{C \\times (r \- 1)}{\\text{BaseCost} \\times r^n}\\right)}{\\ln(r)} \\right\\rfloor$$
 
-## **2\. The 10-Tier "Sell Lemons" Economy Table**
+## **2\. The 10-Tier Elevated "Sell Lemons" Economy Table**
 
-To ensure progress requires multiple prestiges and prevents reaching endgame buildings on early runs, cost scaling between tiers jumps by up to $10,000\\times$, while base cycle times increase to create heavy, high-reward payouts.
+To ensure progress requires multiple prestiges and prevents reaching endgame buildings on early runs, cost scaling between tiers jumps by up to $10,000\times$ to $10^7\times$, while base cycle times increase to create heavy, high-reward payouts:
 
-| \# | Building Name | Base Cost (B) MD | Growth Rate (r) MD | Base Prod / Cycle MD | Base Cycle Time MD | Base Income / sec MD | Manager Cost MD | Progression Barrier |
-| :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
-| 1 | Street Corner Preacher | $4$  | 1.07 | $1$  | 1.0s | $1.00$  | $100$  | 0–1 min (Active tapping) |
-| 2 | Storage Unit Temple | $60$  | 1.08 | $12$ | 3.0s | $4.00$ | $1,500$ | 1–3 min |
-| 3 | Suburban Compound | $1,800$ | 1.09 | $80$ | 6.0s | $13.33$ | $45,000$ | 5–10 min |
-| 4 | Community Hall | $90,000$ | 1.10 | $720$ | 12.0s | $60.00$ | $2.5\\text{M}$ | 15–25 min |
-| 5 | Wellness Retreat Ranch | $9\\text{M}$ ($9 \\times 10^6$) | 1.11 | $12,000$ | 24.0s | $500.00$ | $300\\text{M}$ | \~45 min (**Run 1 Soft Wall**) |
-| 6 | Merch & Media Wing | $2.5\\text{B}$ ($2.5 \\times 10^9$) | 1.12 | $350,000$ | 45.0s | $7,777.78$ | $100\\text{B}$ | Requires Schism 1 |
-| 7 | Pirate Radio/TV Broadcast | $1.5\\text{T}$ ($1.5 \\times 10^{12}$) | 1.13 | $12\\text{M}$ | 90.0s | $133,333.33$ | $75\\text{T}$ | Requires Schism 2 |
-| 8 | Underground Bunker Complex | $2\\text{Qa}$ ($2 \\times 10^{15}$) | 1.14 | $600\\text{M}$ | 180.0s | $3.33\\text{M}$ | $120\\text{Qa}$ | Requires Schism 3–4 |
-| 9 | Shell Corporation Network | $5\\text{Qi}$ ($5 \\times 10^{18}$) | 1.15 | $40\\text{B}$ | 360.0s | $111.11\\text{M}$ | $350\\text{Qi}$ | Requires Ascension Layer |
-| 10 | Global Mega-Temple HQ | $25\\text{Sx}$ ($2.5 \\times 10^{22}$) | 1.16 | $3.5\\text{T}$ | 720.0s | $4.86\\text{B}$ | $2\\text{Sp}$ ($2 \\times 10^{24}$) | Endgame Pantheon Meta |
+| \# | Building Name | Base Cost ($B_k$) | Growth Rate ($r$) | Base Prod / Cycle | Base Cycle Time | Manager Cost | Progression Barrier |
+| :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
+| **1** | **Street Corner Preacher** | **$0** (Unit 1: **$15**) | **1.12** | **$1** | $1.0\text{s}$ | **$250** | 0–3 min (Active tapping) |
+| **2** | **Storage Unit Temple** | **$35,000** | **1.13** | **$500** | $3.0\text{s}$ | **$2.5\text{M}$** | 3–8 min |
+| **3** | **Suburban Compound** | **$50\text{M}$** ($5 \times 10^7$) | **1.14** | **$250,000** | $6.0\text{s}$ | **$5\text{B}$** | 10–25 min |
+| **4** | **Community Hall** | **$50\text{B}$** ($5 \times 10^{10}$) | **1.15** | **$200\text{M}$** | $12.0\text{s}$ | **$50\text{T}$** | 30–60 min (**Pre-Schism Wall**) |
+| **5** | **Wellness Retreat Ranch** | **$100\text{T}$** ($10^{14}$) | **1.16** | **$350\text{B}$** | $24.0\text{s}$ | **$250\text{Qa}$** | Requires **Schism 1** (Zealots) |
+| **6** | **Merch & Media Wing** | **$500\text{Qi}$** ($5 \times 10^{20}$) | **1.17** | **$2\text{Qa}$** | $45.0\text{s}$ | **$1\text{Sx}$** | Requires **Schism 2–3** |
+| **7** | **Pirate Radio/TV Broadcast** | **$50\text{Sp}$** ($5 \times 10^{25}$) | **1.18** | **$150\text{Qi}$** | $90.0\text{s}$ | **$250\text{Oc}$** | Requires **Reformation 1** (Souls) |
+| **8** | **Underground Bunker Complex** | **$250\text{Td}$** ($2.5 \times 10^{44}$) | **1.19** | **$10\text{Sp}$** | $180.0\text{s}$ | **$50\text{Qd}$** | High Reformation Tier |
+| **9** | **Shell Corporation Network** | **$500\text{Vg}$** ($5 \times 10^{65}$) | **1.20** | **$50\text{Td}$** | $360.0\text{s}$ | **$100\text{Tg}$** | Requires **Ascension Layer** |
+| **10**| **Global Mega-Temple HQ** | **$500\text{Sg}$** ($5 \times 10^{185}$) | **1.21** | **$5\text{Vg}$** | $720.0\text{s}$ | **$50\text{Ns}$** ($5 \times 10^{211}$) | Endgame Pantheon Meta |
 
 ## **3\. Upgrades Architecture & Pricing**
 
@@ -65,47 +65,56 @@ To ensure progress requires multiple prestiges and prevents reaching endgame bui
 ├───────────────────┬───────────────────────────┬────────────────────────┤  
 │ Category          │ Trigger / Mechanism       │ Impact                 │  
 ├───────────────────┼───────────────────────────┼────────────────────────┤  
-│ Unit Milestones   │ Unit count thresholds     │ 2x/4x/8x Output & Speed│  
-│ Cash Multipliers  │ Purchased with Followers  │ 3x / 5x / 10x Output   │  
-│ Speed Halvers     │ Purchased with Followers  │ 2x Faster Cycle Time   │  
+│ Unit Milestones   │ Unit count thresholds     │ 2x/4x/8x Output Only   │  
+│ Floor Upgrades    │ Purchased Floor Buttons   │ 2x Faster Cycle Time   │  
 │ Global Speed I-V  │ Purchased with Followers  │ 10% Cycle Reduction    │  
 └───────────────────┴───────────────────────────┴────────────────────────┘
 
-### **3.1 Unit Milestones (Automatic Unlocks)**
+### **3.1 Unit Milestones (Automatic Unlocks - Output Multipliers Only)**
 
-Milestones reward horizontal expansion and make older tiers competitive again at high unit counts:
+Milestones reward horizontal level expansion with geometric output multipliers ($2\times, 4\times, 8\times \dots$). Under the **Combined Economy Model**, milestones strictly boost **Dollar Yield per Cycle** (`OutputMult`), leaving cycle acceleration exclusively to physical floor upgrade buttons to eliminate premature speed collapse:
 
-| Units Owned | Output Multiplier (Mk​) MD | Speed Divisor (Smilestone,k​) | Total Cumulative Boost |
-| :---- | :---- | :---- | :---- |
-| **10**  | $\\times 2$  | $1.0\\times$ | $2\\times$ Income |
-| **25**  | $\\times 2$  | $1.0\\times$ | $4\\times$ Income |
-| **50**  | $\\times 2$  | $2.0\\times$ (Speed doubles) | $16\\times$ Income |
-| **100**  | $\\times 2$  | $2.0\\times$ (Speed doubles) | $64\\times$ Income |
-| **200**  | $\\times 4$  | $1.0\\times$ | $256\\times$ Income |
-| **500**  | $\\times 8$  | $1.0\\times$ | $2,048\\times$ Income |
-| **1,000** | $\\times 16$ | $2.0\\times$ (Speed doubles) | $65,536\\times$ Income |
-| **2,000** | $\\times 32$ | $2.0\\times$ (Speed doubles) | $4,194,304\\times$ Income |
+| Units Owned | Output Multiplier ($M_k$) | Speed Divisor ($S_{\text{milestone},k}$) | Cumulative Output Boost |
+| :--- | :--- | :--- | :--- |
+| **10** | $\times 2$ | $1.0\times$ | **$2\times$ Income / Cycle** |
+| **25** | $\times 2$ | $1.0\times$ | **$4\times$ Income / Cycle** |
+| **50** | $\times 2$ | $1.0\times$ | **$8\times$ Income / Cycle** |
+| **100** | $\times 2$ | $1.0\times$ | **$16\times$ Income / Cycle** |
+| **200** | $\times 4$ | $1.0\times$ | **$64\times$ Income / Cycle** |
+| **500** | $\times 8$ | $1.0\times$ | **$512\times$ Income / Cycle** |
+| **1,000** | $\times 16$ | $1.0\times$ | **$8,192\times$ Income / Cycle** |
+| **2,000** | $\times 32$ | $1.0\times$ | **$262,144\times$ Income / Cycle** |
+| **5,000** | $\times 64$ | $1.0\times$ | **$16.7\text{M}\times$ Income / Cycle** |
+| **10,000+** | $\dots$ algorithmic scaling | $1.0\times$ | Scaling up to Centillion |
 
-### **3.2 Purchased Building Upgrades (Followers / Floor Buttons)**
+### **3.2 Purchased Building Upgrades (Followers / Floor Buttons - Speed Multipliers Only)**
 
 Inspired by the cross-tier progression curve in *Sell Lemons*, floor upgrades **scale exponentially across subsequent building tiers**. This allows players to unlock new buildings before finishing earlier building upgrades, creating a satisfying loop where players return to max out older buildings using high-tier income.
 
-Each building has **8 physical floor upgrades** applied **strictly to cycle speed** ($2\times$ faster for Tiers 1–7, $3\times$ faster for Tier 8):
+Each building has **8 physical floor upgrades** applied **strictly to cycle speed** ($2\times$ faster for Tiers 1–7, $3\times$ faster for Tier 8 $\implies \mathbf{384\times}$ total speed divisor):
 
-| Tier | Pricing Multiple ($B_k$) | Building 1 Cost ($B_1 = \$4$) | Effect on Cycle Time | Cumulative Speed Divisor | Target Unlock Phase |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Upgrade 1** | $3.5 \times B_k$ | **$14** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $2\times$ | Early Building 1 |
-| **Upgrade 2** | $25 \times B_k$ | **$100** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $4\times$ | Unlocking Building 2 ($60) |
-| **Upgrade 3** | $200 \times B_k$ | **$800** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $8\times$ | Mid Building 2 |
-| **Upgrade 4** | $3,000 \times B_k$ | **$12,000** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $16\times$ | Unlocking Building 3 ($1,800) |
-| **Upgrade 5** | $85,000 \times B_k$ | **$340,000** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $32\times$ | Unlocking Building 4 ($90,000) |
-| **Upgrade 6** | $4.5\text{M} \times B_k$ | **$18\text{M}$** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $64\times$ | Unlocking Building 5 ($9\text{M}) |
-| **Upgrade 7** | $350\text{M} \times B_k$ | **$1.4\text{B}$** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $128\times$ | Unlocking Building 6 ($2.5\text{B}) |
-| **Upgrade 8 (Final)**| $60\text{B} \times B_k$ | **$240\text{B}$** | $\mathbf{3\times\text{ Speed}}$ (Time / 3) | **$384\times$** | Late-Game Overdrive |
+| Tier | Pricing Multiple ($B_k$) | Building 1 Cost ($B_1 = \$15$) | Building 2 Cost ($B_2 = \$35\text{K}$) | Effect on Cycle Time | Cumulative Speed Divisor | Target Unlock Phase |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Upgrade 1** | $2.0 \times B_k$ | **$30** | **$70,000** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $2\times$ ($0.5\text{s}$) | Early Building 1 |
+| **Upgrade 2** | $25 \times B_k$ | **$375** | **$875,000** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $4\times$ ($0.25\text{s}$) | Pre-Building 2 Unlock |
+| **Upgrade 3** | $300 \times B_k$ | **$4,500** | **$10.5\text{M}$** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $8\times$ ($0.125\text{s}$) | Approaching Building 2 |
+| **Upgrade 4** | $35,000 \times B_k$ | **$525,000** | **$1.225\text{B}$** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $16\times$ ($0.0625\text{s}$) | Mid Building 2 |
+| **Upgrade 5** | $400,000 \times B_k$ | **$6.0\text{M}$** | **$14.0\text{B}$** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $32\times$ ($0.03125\text{s}$) | Approaching Building 3 ($50\text{M}) |
+| **Upgrade 6** | $25\text{M} \times B_k$ | **$375\text{M}$** | **$875\text{B}$** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $64\times$ ($0.0156\text{s}$) | Mid Building 3 |
+| **Upgrade 7** | $7.5\text{B} \times B_k$ | **$112.5\text{B}$** | **$262.5\text{T}$** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $128\times$ ($0.0078\text{s}$) | Approaching Building 4 ($50\text{B}) |
+| **Upgrade 8 (Final)**| **$150\text{T} \times B_k$** | **$2.25\text{Qa}$** | **$5.25\text{Sx}$** | $\mathbf{3\times\text{ Speed}}$ (Time / 3) | **$384\times$** ($0.0026\text{s}$) | Late-Game Overdrive ($50\text{Ns}$ on B10) |
 
 *Total combined speed boost from all 8 purchased floor upgrades: $2^7 \times 3 = \mathbf{384\times \text{ Speed Divisor}}$ (Base Cycle Time divided by 384).*
 
-### **3.3 Global Speed Upgrades (Followers)**
+### **3.3 Cross-Tier Progression Synergy (Building 1 vs Buildings 2 & 3)**
+
+| Progression Milestone | Building 1 (Street Preachers) | Building 2 (Storage Unit Temple) | Building 3 (Suburban Compound) | Synergistic Optimal Decision |
+| :--- | :--- | :--- | :--- | :--- |
+| **Early Game ($0–$1,000)** | Level 1–10 ($1 $\to$ $20/cycle) | Locked | Locked | Buy **Flyers ($30)**, Manager ($250), Preachers ($375) |
+| **Early-Mid ($1,000–$50,000)** | Level 25 ($100/cycle @ 0.25s) | Locked | Locked | Buy **Megaphones ($4,500)**, unlock **Building 2 ($35,000)** |
+| **Mid Game ($50K–$100M)** | Level 50 ($400/cycle @ 0.125s) | Level 25 ($2,000/cycle @ 1.5s) | Locked | Level Building 2, unlock **Suburban Compound ($50\text{M})** |
+
+### **3.4 Global Speed Upgrades (Followers)**
 
 Global upgrades reduce cycle duration across all 10 buildings multiplicatively:
 

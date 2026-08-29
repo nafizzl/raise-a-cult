@@ -60,10 +60,26 @@
   * Added pulsing green fast-bar visual animation with `"FAST"` text indicator when cycle time $\le 0.1\text{s}$.
   * Connected HUD and 3D Billboard labels to `EconomyMath.FormatCurrency` for synchronized, clean short-scale numbers.
 
-* **Codebase Stability & Safeguards Audit:**
-  * **Luau Static Require Modernization:** Resolved IDE/LSP static analysis errors (`TypeError: Unknown require: unsupported path`) across all server and client scripts by switching to static path indexing.
-  * **Automated RemoteEvent Bootstrapping:** Configured `MoneyManager`, `ProductionEngine`, and `BuildingProgressionServer` to automatically initialize `ReplicatedStorage.RemoteEvents` (`MoneyUpdated`, `CollectEvent`, `UpgradeEvent`, `UnlockStage`) if missing, preventing infinite yield boot hangs.
-  * **Disconnect Safety Guarding:** Added `player:IsDescendantOf(Players)` validation before all asynchronous `FireClient` calls to eliminate server errors when players disconnect mid-cycle.
-  * **Respawn-Resilient HUD Sync:** Modernized `HUDController.local.luau` with dynamic `PlayerGui.HUD` lookup and `CharacterAdded` listeners to retain live balance synchronization across character respawns (`ResetOnSpawn = true`).
-  * **Client Replication Race Handling:** Added timeout-based model resolution (`WaitForChild(..., 2)`) in `BuildingAnimatorClient.local.luau` to ensure slide-in pop animations never miss newly parented models during stage unlocks.
+* **Elevated Sell Lemons Economy Scale Implementation:**
+  * **Dual-Milestone Compensated Unlock Gaps:** Calibrated all 10 building base costs ($B_1 = \$15, B_2 = \$35\text{K}, B_3 = \$50\text{M}, B_4 = \$50\text{B}, B_5 = \$100\text{T}, B_6 = \$500\text{Qi}, B_7 = \$50\text{Sp}, B_8 = \$250\text{Td}, B_9 = \$500\text{Vg}, B_{10} = \$500\text{Sg}$) to prevent rapid tier burning caused by combined milestone output doublings.
+  * **Exponential Floor Speed Multipliers:** Applied $[2.0, 25, 300, 35000, 400000, 25\text{M}, 7.5\text{B}, 150\text{T}]$ curve, scaling Building 1 floor upgrades from **$30** up to **$2.25Qa** and Building 10 Tier 8 to **$50 Novemsexagintillion ($10^{211}$)**.
+  * **Building 1 Pricing Realignment:** Updated Building 1 starting upgrades: Unit 1 Base ($15), Worship Flyers ($30), Building 1 Manager ($250), More Preachers ($375), and Megaphones ($4,500).
+
+* **3-Tier Button Billboard UI & Starting Level Cost Alignment:**
+  * **3-Tier Layout Standard:** Standardized vertical layout across all button `PricingTag` billboards (`BenefitLabel` in White FredokaOne Bold, item `Title` in colored FredokaOne Bold, and `Pricing` in colored FredokaOne Bold).
+  * **Next-Level Cost Initialization:** Fixed `PriceText` to compute the next upgrade cost ($16 for starting Level `x1`) using `EconomyMath.GetSingleCost(bDef.BaseCost, bDef.GrowthRate, 2)` instead of unowned base cost.
+  * **Catalog Specification:** Published [`building_upgrades_catalog.md`](file:///c:/Users/Nafiz%20Labib/raise-a-cult/building_upgrades_catalog.md) detailing 8 functional speed upgrades and intermediary cosmetic builds for all 10 tycoon buildings.
+
+* **Manager Hierarchy Reorganization & Dynamic Prop Hiding:**
+  * **Dynamic Manager Stashing:** Updated `BuildingProgressionServer.legacy.luau` to dynamically move all manager props (`Table`, `Cult Member`, `MoneyonTable`) into `ReplicatedStorage.BuildingTemplates.Building1.Manager` on server start, preventing premature rendering.
+  * **Pop-In Slide Animation:** Extended `BuildingAnimatorClient.local.luau` to play `PivotTo()` slide-up spring animation on all manager props upon purchase ($250).
+  * **NPC Animation Wired:** Added `PlayAnimation.server.luau` to the Manager's `Cult Member` model to loop `Getting Money Animation` upon spawn.
+
+* **Authoritative Developer Console & Chat Command System:**
+  * **Server-Side Whitelist Gatekeeper (`AdminServer.legacy.luau`):** Authoritative validation checking `player.UserId == game.CreatorId` (`51437187`), `ALLOWED_USER_IDS` whitelist, or `RunService:IsStudio()`.
+  * **Command Suite & Suffix Parsing:** Supports `:give <amount>`, `:set <amount>`, `:reset`, `:unlockall`, `:unlockmanager <id>`, `:help` with short-scale suffix parsing (`10k`, `5M`, `1B`, `500T`, `100Qi`).
+  * **Client Console UI (`AdminClient.local.luau`):** Added floating `⚙ DEV` top-right toggle button with `F4`, `;` (Semicolon), and `]` hotkeys.
+
+
+
 

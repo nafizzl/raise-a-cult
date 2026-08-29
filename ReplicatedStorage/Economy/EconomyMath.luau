@@ -89,7 +89,6 @@ function EconomyMath.GetMilestoneMultipliers(ownedCount: number): (number, numbe
         local extraMillionSteps = math.floor((ownedCount - 1000000) / 1000000)
         if extraMillionSteps > 0 then
             outputMult = outputMult * (2 ^ (extraMillionSteps * 2))
-            speedDivisor = speedDivisor * (2 ^ extraMillionSteps)
         end
     end
 
@@ -159,6 +158,39 @@ function EconomyMath.FormatCurrency(amount: number): string
         local exp = math.floor(log10Val)
         local mantissa = amount / (10 ^ exp)
         return string.format("$%.2fe%d", mantissa, exp)
+    end
+end
+
+-- Format cycle times into readable strings (e.g. every 1.5s, every 0.05s, every 1.25ms, every 500μs)
+function EconomyMath.FormatTime(seconds: number): string
+    if seconds == nil or seconds <= 0 then
+        return "instant"
+    end
+
+    if seconds >= 60 then
+        local mins = math.floor(seconds / 60)
+        local secs = seconds % 60
+        return string.format("every %dm %ds", mins, math.floor(secs))
+    elseif seconds >= 1 then
+        if seconds == math.floor(seconds) then
+            return string.format("every %ds", math.floor(seconds))
+        else
+            return string.format("every %.1fs", seconds)
+        end
+    elseif seconds >= 0.01 then
+        return string.format("every %.2fs", seconds)
+    elseif seconds >= 0.001 then
+        return string.format("every %.3fs", seconds)
+    elseif seconds >= 1e-6 then
+        local ms = seconds * 1000
+        if ms >= 10 then
+            return string.format("every %.1fms", ms)
+        else
+            return string.format("every %.2fms", ms)
+        end
+    else
+        local us = seconds * 1e6
+        return string.format("every %.1fμs", us)
     end
 end
 
