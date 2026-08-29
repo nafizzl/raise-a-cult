@@ -1,132 +1,203 @@
 -- ProductionEngine.luau
--- Manages Building 1 production loop, yield calculations, milestone multipliers, and payout
+-- Universal production loop, cycle management, batch upgrades, and manager automation.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
-local MoneyManager = require(ServerScriptService:WaitForChild("MoneyManager"))
+local EconomyConfig = require(ReplicatedStorage.Economy.EconomyConfig)
+local EconomyMath = require(ReplicatedStorage.Economy.EconomyMath)
+local MoneyManager = require(ServerScriptService.MoneyManager)
 
-local RemoteEvents = ReplicatedStorage:WaitForChild("RemoteEvents")
-local CollectEvent = RemoteEvents:WaitForChild("CollectEvent")
-local UpgradeEvent = RemoteEvents:WaitForChild("UpgradeEvent")
-local BuyManagerEvent = RemoteEvents:WaitForChild("BuyManagerEvent")
-local MoneyUpdatedEvent = RemoteEvents:WaitForChild("MoneyUpdated")
+local RemoteEvents = ReplicatedStorage:FindFirstChild("RemoteEvents")
+if not RemoteEvents then
+    RemoteEvents = Instance.new("Folder")
+    RemoteEvents.Name = "RemoteEvents"
+    RemoteEvents.Parent = ReplicatedStorage
+end
 
-local buildingData = {}
+local CollectEventObj = RemoteEvents:FindFirstChild("CollectEvent")
+if not CollectEventObj then
+    CollectEventObj = Instance.new("RemoteEvent")
+    CollectEventObj.Name = "CollectEvent"
+    CollectEventObj.Parent = RemoteEvents
+end
+local CollectEvent = CollectEventObj :: RemoteEvent
 
-local BASE_COST = 10
-local GROWTH_RATE = 1.07
-local BASE_YIELD = 1
-local BASE_CYCLE_TIME = 1.0
+local UpgradeEventObj = RemoteEvents:FindFirstChild("UpgradeEvent")
+if not UpgradeEventObj then
+    UpgradeEventObj = Instance.new("RemoteEvent")
+    UpgradeEventObj.Name = "UpgradeEvent"
+    UpgradeEventObj.Parent = RemoteEvents
+end
+local UpgradeEvent = UpgradeEventObj :: RemoteEvent
 
-local function getPlayerData(player)
-    if not buildingData[player] then
-        buildingData[player] = {
-            Level = 1,
-            OwnedCount = 1,
-            FlyersUnlocked = false,
-            MorePreachersUnlocked = false,
-            HasManager = false,
+type ActiveCycleState = {
+    IsCycling: boolean,
+    CycleStartTime: number,
+    CurrentCycleTime: number,
+    LastFastPayout: number,
+}
+
+local playerCycles: { [Player]: { [number]: ActiveCycleState } } = {}
+
+local function getCycleState(player: Player, buildingId: number): ActiveCycleState
+    if not playerCycles[player] then
+        playerCycles[player] = {}
+    end
+    if not playerCycles[player][buildingId] then
+        playerCycles[player][buildingId] = {
             IsCycling = false,
-            LastCycleStart = 0
+            CycleStartTime = 0,
+            CurrentCycleTime = 1.0,
+            LastFastPayout = 0,
         }
     end
-    return buildingData[player]
+    return playerCycles[player][buildingId]
 end
 
-local function calculateCycleTime(data)
-    local speedMult = 1
+local function getBuildingStats(player: Player, buildingId: number)
+    local bDef = EconomyConfig.Buildings[buildingId]
+    if not bDef then return nil end
 
-    if data.FlyersUnlocked then speedMult = speedMult * 2 end
-    if data.MorePreachersUnlocked then speedMult = speedMult * 2 end
+    local bState = MoneyManager.GetBuildingState(player, buildingId)
+    local owned = bState.OwnedCount or 0
+    local mOutput, mSpeed = EconomyMath.GetMilestoneMultipliers(owned)
+    local floorSpeed = EconomyMath.GetFloorSpeedMultiplier(buildingId, bState.FloorUpgrades)
+    local effectiveCycleTime = EconomyMath.CalculateEffectiveCycleTime(bDef.BaseCycleTime, floorSpeed, mSpeed)
+    local incomePerCycle = EconomyMath.CalculateIncomePerCycle(owned, bDef.BaseProd, mOutput)
+    local nextCost = EconomyMath.GetSingleCost(bDef.BaseCost, bDef.GrowthRate, owned + 1)
 
-    local level = data.Level
-    if level >= 25 then speedMult = speedMult * 2 end
-    if level >= 50 then speedMult = speedMult * 2 end
-    if level >= 100 then speedMult = speedMult * 2 end
-    if level >= 200 then speedMult = speedMult * 2 end
-    if level >= 500 then speedMult = speedMult * 2 end
-
-    return math.max(0.05, BASE_CYCLE_TIME / speedMult)
+    return {
+        Def = bDef,
+        State = bState,
+        Owned = owned,
+        EffectiveCycleTime = effectiveCycleTime,
+        IncomePerCycle = incomePerCycle,
+        NextCost = nextCost,
+    }
 end
 
-local function calculateYield(data)
-    local level = data.Level
-    local yieldMult = 1
+-- Handle Manual Player Tap/Collect Event
+CollectEvent.OnServerEvent:Connect(function(player: Player, buildingIdArg: any)
+    local buildingId = tonumber(buildingIdArg) or 1
+    local stats = getBuildingStats(player, buildingId)
+    if not stats or stats.Owned <= 0 then return end
 
-    if level >= 1000 then yieldMult = yieldMult * 2 end
-    if level >= 2000 then yieldMult = yieldMult * 2 end
-    if level >= 3000 then yieldMult = yieldMult * 2 end
-    if level >= 5000 then yieldMult = yieldMult * 4 end
-    if level >= 7500 then yieldMult = yieldMult * 4 end
-    if level >= 10000 then yieldMult = yieldMult * 10 end
+    local cycle = getCycleState(player, buildingId)
+    if stats.State.HasManager or cycle.IsCycling then return end
 
-    return level * BASE_YIELD * yieldMult
-end
+    cycle.IsCycling = true
+    cycle.CycleStartTime = os.clock()
+    cycle.CurrentCycleTime = stats.EffectiveCycleTime
 
-local function calculateNextCost(level)
-    return math.floor(BASE_COST * (GROWTH_RATE ^ (level - 1)))
-end
+    if player:IsDescendantOf(Players) then
+        CollectEvent:FireClient(player, "StartCycle", buildingId, stats.EffectiveCycleTime)
+    end
 
-CollectEvent.OnServerEvent:Connect(function(player)
-    local data = getPlayerData(player)
-    if data.HasManager or data.IsCycling then return end
-
-    local cycleTime = calculateCycleTime(data)
-    data.IsCycling = true
-    data.LastCycleStart = os.clock()
-
-    CollectEvent:FireClient(player, "StartCycle", cycleTime)
-
-    task.delay(cycleTime, function()
-        data.IsCycling = false
-        local yieldAmount = calculateYield(data)
-        MoneyManager.AddMoney(player, yieldAmount)
-        CollectEvent:FireClient(player, "CycleComplete")
+    task.delay(stats.EffectiveCycleTime, function()
+        cycle.IsCycling = false
+        if player:IsDescendantOf(Players) then
+            local updatedStats = getBuildingStats(player, buildingId)
+            if updatedStats and updatedStats.Owned > 0 then
+                MoneyManager.AddMoney(player, updatedStats.IncomePerCycle)
+                CollectEvent:FireClient(player, "CycleComplete", buildingId)
+            end
+        end
     end)
 end)
 
-UpgradeEvent.OnServerEvent:Connect(function(player)
-    local data = getPlayerData(player)
-    local cost = calculateNextCost(data.Level)
+-- Handle Player Upgrade Purchase Event (Buy 1 or Batch)
+UpgradeEvent.OnServerEvent:Connect(function(player: Player, buildingIdArg: any, amountArg: any)
+    local buildingId = tonumber(buildingIdArg) or 1
+    local amount = tonumber(amountArg) or 1
+    if amount <= 0 then amount = 1 end
 
-    if MoneyManager.DeductMoney(player, cost) then
-        data.Level = data.Level + 1
-        data.OwnedCount = data.Level
+    local stats = getBuildingStats(player, buildingId)
+    if not stats then return end
 
-        local nextCost = calculateNextCost(data.Level)
-        local yield = calculateYield(data)
-        local cycleTime = calculateCycleTime(data)
+    local bDef = stats.Def
+    local currentLevel = stats.Owned
+    local batchCost = EconomyMath.GetBatchCost(bDef.BaseCost, bDef.GrowthRate, currentLevel + 1, amount)
 
-        UpgradeEvent:FireClient(player, "UpgradeSuccess", data.Level, nextCost, yield, cycleTime)
-        print("[ProductionEngine] " .. player.Name .. " upgraded Building 1 to Level " .. tostring(data.Level))
+    if MoneyManager.DeductMoney(player, batchCost) then
+        stats.State.OwnedCount = currentLevel + amount
+
+        local updatedStats = getBuildingStats(player, buildingId)
+        if updatedStats and player:IsDescendantOf(Players) then
+            UpgradeEvent:FireClient(
+                player,
+                "UpgradeSuccess",
+                buildingId,
+                updatedStats.Owned,
+                updatedStats.NextCost,
+                updatedStats.IncomePerCycle,
+                updatedStats.EffectiveCycleTime
+            )
+            print(string.format("[ProductionEngine] %s upgraded Building %d to Level %d (Cost: %s)",
+                player.Name, buildingId, updatedStats.Owned, EconomyMath.FormatCurrency(batchCost)))
+        end
     end
 end)
 
+-- Server loop handling manager automation & fast-bar payouts
 task.spawn(function()
     while true do
-        task.wait(0.1)
-        for _, player in ipairs(Players:GetPlayers()) do
-            local data = getPlayerData(player)
-            if data.HasManager and not data.IsCycling then
-                data.IsCycling = true
-                local cycleTime = calculateCycleTime(data)
+        task.wait(0.05) -- 20 Hz tick
+        local now = os.clock()
 
-                task.spawn(function()
-                    task.wait(cycleTime)
-                    data.IsCycling = false
-                    local yieldAmount = calculateYield(data)
-                    MoneyManager.AddMoney(player, yieldAmount)
-                end)
+        for _, player in ipairs(Players:GetPlayers()) do
+            local pData = MoneyManager.GetPlayerData(player)
+            if pData and pData.Buildings then
+                for buildingId, bDef in pairs(EconomyConfig.Buildings) do
+                    local bState = pData.Buildings[buildingId]
+                    if bState and bState.HasManager and bState.OwnedCount > 0 then
+                        local mOutput, mSpeed = EconomyMath.GetMilestoneMultipliers(bState.OwnedCount)
+                        local floorSpeed = EconomyMath.GetFloorSpeedMultiplier(buildingId, bState.FloorUpgrades)
+                        local effectiveCycle = EconomyMath.CalculateEffectiveCycleTime(bDef.BaseCycleTime, floorSpeed, mSpeed)
+                        local incomePerCycle = EconomyMath.CalculateIncomePerCycle(bState.OwnedCount, bDef.BaseProd, mOutput)
+                        local cycle = getCycleState(player, buildingId)
+
+                        if effectiveCycle <= 0.1 then
+                            -- Fast-bar streaming: stream smooth income per second
+                            local dt = (cycle.LastFastPayout == 0) and 0.05 or (now - cycle.LastFastPayout)
+                            if dt >= 0.1 then
+                                cycle.LastFastPayout = now
+                                local streamIncome = (incomePerCycle / effectiveCycle) * dt
+                                if streamIncome > 0 then
+                                    MoneyManager.AddMoney(player, math.floor(streamIncome))
+                                end
+                            end
+                        else
+                            -- Standard cycle loop
+                            if not cycle.IsCycling then
+                                cycle.IsCycling = true
+                                cycle.CycleStartTime = now
+                                cycle.CurrentCycleTime = effectiveCycle
+
+                                task.spawn(function()
+                                    task.wait(effectiveCycle)
+                                    cycle.IsCycling = false
+                                    MoneyManager.AddMoney(player, incomePerCycle)
+                                end)
+                            end
+                        end
+                    end
+                end
             end
         end
     end
 end)
 
-_G.ProductionEngine = {
-    GetPlayerData = getPlayerData,
-    CalculateCycleTime = calculateCycleTime,
-    CalculateYield = calculateYield,
-    CalculateNextCost = calculateNextCost
+Players.PlayerRemoving:Connect(function(player)
+    playerCycles[player] = nil
+end)
+
+local engineExport = {
+    GetBuildingStats = getBuildingStats,
+    GetCycleState = getCycleState,
 }
+
+rawset(_G, "ProductionEngine", engineExport)
+
+return engineExport

@@ -1,95 +1,214 @@
+--!strict
 -- MoneyManager.luau (ModuleScript)
--- Persistent $ Money balance, DataStore save/load with Studio API fallback
+-- Persistent player Cash and Tycoon progression DataStore saving with Studio fallback & offline earnings.
 
 local DataStoreService = game:GetService("DataStoreService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local MoneyDataStore = nil
+local EconomyFolder = ReplicatedStorage:WaitForChild("Economy")
+local EconomyConfig = require(ReplicatedStorage.Economy.EconomyConfig)
+local EconomyMath = require(ReplicatedStorage.Economy.EconomyMath)
+
+local MoneyDataStore: any = nil
 pcall(function()
-    MoneyDataStore = DataStoreService:GetDataStore("CultMoneyStore_v1")
+    MoneyDataStore = DataStoreService:GetDataStore("CultTycoonStore_v2")
 end)
 
-local RemoteEvents = ReplicatedStorage:WaitForChild("RemoteEvents")
-local MoneyUpdatedEvent = RemoteEvents:WaitForChild("MoneyUpdated")
+local RemoteEvents = ReplicatedStorage:FindFirstChild("RemoteEvents")
+if not RemoteEvents then
+    RemoteEvents = Instance.new("Folder")
+    RemoteEvents.Name = "RemoteEvents"
+    RemoteEvents.Parent = ReplicatedStorage
+end
 
-local playerMoney = {}
-local playerLastSavedTime = {}
+local MoneyUpdatedEvent = RemoteEvents:FindFirstChild("MoneyUpdated")
+if not MoneyUpdatedEvent then
+    MoneyUpdatedEvent = Instance.new("RemoteEvent")
+    MoneyUpdatedEvent.Name = "MoneyUpdated"
+    MoneyUpdatedEvent.Parent = RemoteEvents
+end
+local moneyUpdatedRemote = MoneyUpdatedEvent :: RemoteEvent
+
+local function fireMoneyUpdated(player: Player, amount: number)
+    if player and player:IsDescendantOf(Players) then
+        moneyUpdatedRemote:FireClient(player, amount)
+    end
+end
+
+export type BuildingState = {
+    OwnedCount: number,
+    FloorUpgrades: { [number]: boolean },
+    HasManager: boolean,
+}
+
+export type PlayerTycoonData = {
+    Cash: number,
+    LastSavedTimestamp: number,
+    Buildings: { [number]: BuildingState }
+}
+
+local playerData: { [Player]: PlayerTycoonData } = {}
 
 local MoneyManager = {}
 
-function MoneyManager.GetMoney(player)
-    return playerMoney[player] or 0
+local function getDefaultBuildingState(buildingId: number): BuildingState
+    return {
+        OwnedCount = (buildingId == 1) and 1 or 0,
+        FloorUpgrades = {},
+        HasManager = false,
+    }
 end
 
-function MoneyManager.SetMoney(player, amount)
-    playerMoney[player] = math.max(0, amount)
-    MoneyUpdatedEvent:FireClient(player, playerMoney[player])
+local function getDefaultPlayerData(): PlayerTycoonData
+    local buildings: { [number]: BuildingState } = {}
+    for id = 1, 10 do
+        buildings[id] = getDefaultBuildingState(id)
+    end
+    return {
+        Cash = 0,
+        LastSavedTimestamp = os.time(),
+        Buildings = buildings
+    }
 end
 
-function MoneyManager.AddMoney(player, amount)
+function MoneyManager.GetPlayerData(player: Player): PlayerTycoonData
+    if not playerData[player] then
+        playerData[player] = getDefaultPlayerData()
+    end
+    return playerData[player]
+end
+
+function MoneyManager.GetMoney(player: Player): number
+    local data = MoneyManager.GetPlayerData(player)
+    return data.Cash or 0
+end
+
+function MoneyManager.SetMoney(player: Player, amount: number)
+    local data = MoneyManager.GetPlayerData(player)
+    data.Cash = math.max(0, amount)
+    fireMoneyUpdated(player, data.Cash)
+end
+
+function MoneyManager.AddMoney(player: Player, amount: number)
     if amount <= 0 then return end
-    playerMoney[player] = (playerMoney[player] or 0) + amount
-    MoneyUpdatedEvent:FireClient(player, playerMoney[player])
+    local data = MoneyManager.GetPlayerData(player)
+    data.Cash = (data.Cash or 0) + amount
+    fireMoneyUpdated(player, data.Cash)
 end
 
-function MoneyManager.DeductMoney(player, amount)
+function MoneyManager.DeductMoney(player: Player, amount: number): boolean
     if amount <= 0 then return true end
-    local current = playerMoney[player] or 0
+    local data = MoneyManager.GetPlayerData(player)
+    local current = data.Cash or 0
     if current >= amount then
-        playerMoney[player] = current - amount
-        MoneyUpdatedEvent:FireClient(player, playerMoney[player])
+        data.Cash = current - amount
+        fireMoneyUpdated(player, data.Cash)
         return true
     end
     return false
 end
 
-local function savePlayerData(player)
-    if not playerMoney[player] or not MoneyDataStore then return end
-    local dataToSave = {
-        Money = playerMoney[player],
-        LastSavedTimestamp = os.time()
-    }
+function MoneyManager.GetBuildingState(player: Player, buildingId: number): BuildingState
+    local pData = MoneyManager.GetPlayerData(player)
+    if not pData.Buildings[buildingId] then
+        pData.Buildings[buildingId] = getDefaultBuildingState(buildingId)
+    end
+    return pData.Buildings[buildingId]
+end
+
+function MoneyManager.UnlockFloorUpgrade(player: Player, buildingId: number, tier: number)
+    local bState = MoneyManager.GetBuildingState(player, buildingId)
+    bState.FloorUpgrades[tier] = true
+end
+
+function MoneyManager.SetManagerOwned(player: Player, buildingId: number, owned: boolean)
+    local bState = MoneyManager.GetBuildingState(player, buildingId)
+    bState.HasManager = owned
+end
+
+local function calculateAutomatedIncomePerSecond(pData: PlayerTycoonData): number
+    local totalIncomePerSec = 0
+    local buildings = EconomyConfig.Buildings or {}
+    for id, bDef in pairs(buildings) do
+        local bState = pData.Buildings[id]
+        if bState and bState.HasManager and bState.OwnedCount > 0 then
+            local mOutput, mSpeed = EconomyMath.GetMilestoneMultipliers(bState.OwnedCount)
+            local floorSpeed = EconomyMath.GetFloorSpeedMultiplier(id, bState.FloorUpgrades)
+            local effectiveCycle = EconomyMath.CalculateEffectiveCycleTime(bDef.BaseCycleTime, floorSpeed, mSpeed)
+            local incomePerCycle = EconomyMath.CalculateIncomePerCycle(bState.OwnedCount, bDef.BaseProd, mOutput)
+            totalIncomePerSec = totalIncomePerSec + (incomePerCycle / effectiveCycle)
+        end
+    end
+    return totalIncomePerSec
+end
+
+local function savePlayerData(player: Player)
+    local data = playerData[player]
+    if not data or not MoneyDataStore then return end
+
+    data.LastSavedTimestamp = os.time()
     pcall(function()
-        MoneyDataStore:SetAsync("Player_" .. player.UserId, dataToSave)
+        MoneyDataStore:SetAsync("Player_" .. player.UserId, data)
     end)
 end
 
-local function loadPlayerData(player)
-    local startingMoney = 0
-    local offlineEarnings = 0
+local function loadPlayerData(player: Player)
+    local loadedData: any = nil
 
     if MoneyDataStore then
-        local success, data = pcall(function()
+        local success, raw = pcall(function()
             return MoneyDataStore:GetAsync("Player_" .. player.UserId)
         end)
+        if success and raw and type(raw) == "table" then
+            loadedData = raw
+        end
+    end
 
-        if success and data and type(data) == "table" then
-            startingMoney = data.Money or 0
-            local lastSaved = data.LastSavedTimestamp or os.time()
-            local timeElapsed = math.max(0, os.time() - lastSaved)
-
-            if timeElapsed > 5 then
-                offlineEarnings = math.floor(timeElapsed * 0.25 * 1.0)
+    local finalData = getDefaultPlayerData()
+    if loadedData then
+        finalData.Cash = tonumber(loadedData.Cash) or 0
+        finalData.LastSavedTimestamp = tonumber(loadedData.LastSavedTimestamp) or os.time()
+        if loadedData.Buildings and type(loadedData.Buildings) == "table" then
+            for id, bState in pairs(loadedData.Buildings) do
+                local numId = tonumber(id) or id
+                if type(bState) == "table" then
+                    finalData.Buildings[numId] = {
+                        OwnedCount = tonumber(bState.OwnedCount) or ((numId == 1) and 1 or 0),
+                        FloorUpgrades = (type(bState.FloorUpgrades) == "table") and bState.FloorUpgrades or {},
+                        HasManager = (bState.HasManager == true)
+                    }
+                end
             end
         end
     end
 
-    playerMoney[player] = startingMoney + offlineEarnings
-    playerLastSavedTime[player] = os.time()
+    -- Calculate offline earnings (0.25x rate from automated managers)
+    local timeElapsed = math.max(0, os.time() - (finalData.LastSavedTimestamp or os.time()))
+    local offlineEarnings = 0
+    if timeElapsed > 5 then
+        local incomePerSec = calculateAutomatedIncomePerSecond(finalData)
+        if incomePerSec > 0 then
+            offlineEarnings = math.floor(timeElapsed * 0.25 * incomePerSec)
+            finalData.Cash = finalData.Cash + offlineEarnings
+        end
+    end
 
-    MoneyUpdatedEvent:FireClient(player, playerMoney[player])
+    finalData.LastSavedTimestamp = os.time()
+    playerData[player] = finalData
+
+    fireMoneyUpdated(player, finalData.Cash)
 
     if offlineEarnings > 0 then
-        print("[MoneyManager] Welcome back " .. player.Name .. "! You earned $" .. tostring(offlineEarnings) .. " while offline (0.25x rate).")
+        print(string.format("[MoneyManager] Welcome back %s! You earned %s while offline (0.25x rate over %ds).",
+            player.Name, EconomyMath.FormatCurrency(offlineEarnings), timeElapsed))
     end
 end
 
 Players.PlayerAdded:Connect(loadPlayerData)
-Players.PlayerRemoving:Connect(function(player)
+Players.PlayerRemoving:Connect(function(player: Player)
     savePlayerData(player)
-    playerMoney[player] = nil
-    playerLastSavedTime[player] = nil
+    playerData[player] = nil
 end)
 
 game:BindToClose(function()
@@ -98,6 +217,7 @@ game:BindToClose(function()
     end
 end)
 
+-- Autosave loop every 60s
 task.spawn(function()
     while true do
         task.wait(60)

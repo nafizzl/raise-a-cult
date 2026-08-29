@@ -32,3 +32,38 @@
   * Restored `UIScale` spring pop-in (`Back.Out`, 0.25s) and pop-out (`Back.In`, 0.18s) proximity animations.
   * Mounted floor button **`PricingTag`** billboards into `PlayerGui` for seamless proximity visibility.
   * Saved all changes permanently in Roblox Studio Edit mode and workspace files.
+
+## August 29, 2026
+
+* **Centralized Economy Engine (`EconomyConfig.luau` & `EconomyMath.luau`):**
+  * Built `ReplicatedStorage.Economy` containing `EconomyConfig` and `EconomyMath`.
+  * Configured canonical 10-building parameters (Building 1 Base Cost $4, Growth Rate 1.07, Base Yield $1, Cycle Time 1.0s, Manager Cost $100).
+  * Designed the **8-Tier Exponential Floor Speed Upgrade curve** inspired by *Sell Lemons* ($3.5\times, 25\times, 200\times, 3,000\times, 85,000\times, 4.5\text{M}\times, 350\text{M}\times, 60\text{B}\times B_k$) applying strictly to cycle speed ($384\times$ total speed divisor).
+  * Implemented pure geometric batch cost formulas, Buy Max calculations, and extended milestone output multipliers past 1,000,000.
+  * Built **Option A 100-Tier Continuous Short-Scale Formatter** spanning from `K` up through `Ce` (Centillion $10^{303}$) and transitioning to scientific notation beyond.
+
+* **Full Tycoon Data Persistence (`MoneyManager.luau`):**
+  * Expanded DataStore schema to persist full player tycoon state (Cash, LastSavedTimestamp, building levels, unlocked floor upgrades, and manager ownership).
+  * Implemented automatic **0.25x offline earnings** calculation on rejoin based on automated managers' effective rate.
+
+* **Universal Production Loop & Fast-Bar Streaming (`ProductionEngine.luau`):**
+  * Connected server production engine to `EconomyConfig` and `EconomyMath` with multi-building indexing.
+  * Added smooth income batch streaming when cycle times drop below $\le 0.1\text{s}$ (10 Hz/1 Hz stream) to eliminate network lag.
+
+* **Floor Button Touch Fixes & Progression Pricing (`BuildingProgressionServer.luau`):**
+  * Fixed button touch failures caused by accessory parts by switching detection to `hit:FindFirstAncestorWhichIsA("Model")`.
+  * Implemented per-player debounce table to prevent cross-player interaction locking.
+  * Updated Building 1 progression costs to match economy spec: `NewBuildingButton` ($0) $\rightarrow$ `Flyers` ($14, $2\times$ speed) $\rightarrow$ `MorePreachers` ($100, $2\times$ speed) $\rightarrow$ `Manager` ($100).
+
+* **Proximity Hysteresis & Fast-Bar Visuals (`CollectUpgradeClient.local.luau` & `HUDController.local.luau`):**
+  * Solved `CollectUpgradeGui` collapsing/flickering bug by implementing **Distance Hysteresis** ($\le 14$ studs pop-in, $\ge 18$ studs pop-out) and clamping `UIScale.Scale \ge 0`.
+  * Added pulsing green fast-bar visual animation with `"FAST"` text indicator when cycle time $\le 0.1\text{s}$.
+  * Connected HUD and 3D Billboard labels to `EconomyMath.FormatCurrency` for synchronized, clean short-scale numbers.
+
+* **Codebase Stability & Safeguards Audit:**
+  * **Luau Static Require Modernization:** Resolved IDE/LSP static analysis errors (`TypeError: Unknown require: unsupported path`) across all server and client scripts by switching to static path indexing.
+  * **Automated RemoteEvent Bootstrapping:** Configured `MoneyManager`, `ProductionEngine`, and `BuildingProgressionServer` to automatically initialize `ReplicatedStorage.RemoteEvents` (`MoneyUpdated`, `CollectEvent`, `UpgradeEvent`, `UnlockStage`) if missing, preventing infinite yield boot hangs.
+  * **Disconnect Safety Guarding:** Added `player:IsDescendantOf(Players)` validation before all asynchronous `FireClient` calls to eliminate server errors when players disconnect mid-cycle.
+  * **Respawn-Resilient HUD Sync:** Modernized `HUDController.local.luau` with dynamic `PlayerGui.HUD` lookup and `CharacterAdded` listeners to retain live balance synchronization across character respawns (`ResetOnSpawn = true`).
+  * **Client Replication Race Handling:** Added timeout-based model resolution (`WaitForChild(..., 2)`) in `BuildingAnimatorClient.local.luau` to ensure slide-in pop animations never miss newly parented models during stage unlocks.
+
