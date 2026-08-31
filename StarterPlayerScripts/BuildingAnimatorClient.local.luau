@@ -11,6 +11,20 @@ local localPlayer = Players.LocalPlayer
 local RemoteEvents = ReplicatedStorage:WaitForChild("RemoteEvents")
 local UnlockStageEvent = RemoteEvents:WaitForChild("UnlockStage") :: RemoteEvent
 
+local STAGE_FOLDER_MAP: { [string]: string } = {
+    ["FloorChalkStage"]    = "FloorChalk",
+    ["FlyersStage"]        = "Flyers",
+    ["MorePreachersStage"] = "MorePreachers",
+    ["CanopyTentsStage"]   = "CanopyTents",
+    ["MegaphonesStage"]    = "Megaphones",
+    ["OutreachBoothStage"] = "OutreachBooth",
+    ["BookletsStage"]      = "Booklets",
+    ["SpeakersStage"]      = "Speakers",
+    ["StreetSignStage"]    = "StreetSign",
+    ["PlayerPodiumStage"]  = "PlayerPodium",
+    ["ManagerStage"]       = "Manager",
+}
+
 local function animateModelSlideIn(instanceObj: Instance?)
     if not instanceObj then return end
 
@@ -68,34 +82,19 @@ UnlockStageEvent.OnClientEvent:Connect(function(unlockName: string)
         animateModelSlideIn(preacherFolder:FindFirstChild("Table") or preacherFolder:WaitForChild("Table", 2))
         animateModelSlideIn(preacherFolder:FindFirstChild("Cult Member") or preacherFolder:WaitForChild("Cult Member", 2))
         animateModelSlideIn(preacherFolder:FindFirstChild("CollectUpgradeGui") or preacherFolder:WaitForChild("CollectUpgradeGui", 2))
-    elseif unlockName == "FlyersStage" then
-        local flyersFolder = preacherFolder:FindFirstChild("Flyers") or preacherFolder:WaitForChild("Flyers", 2)
-        if flyersFolder then
-            for _, child in ipairs(flyersFolder:GetChildren()) do
-                if child.Name == "WorshipFlyers" then
-                    animateModelSlideIn(child)
-                end
-            end
-        end
-    elseif unlockName == "MorePreachersStage" then
-        local preachersFolder = preacherFolder:FindFirstChild("MorePreachers") or preacherFolder:WaitForChild("MorePreachers", 2)
-        if preachersFolder then
-            for _, child in ipairs(preachersFolder:GetChildren()) do
-                if child:IsA("Model") and child.Name ~= "UpgradeButton" then
-                    animateModelSlideIn(child)
-                end
-            end
-        end
-    elseif unlockName == "ManagerStage" then
-        local managerFolder = preacherFolder:FindFirstChild("Manager") or preacherFolder:WaitForChild("Manager", 2)
-        if managerFolder then
-            for _, child in ipairs(managerFolder:GetChildren()) do
-                if child.Name ~= "ManagerButton" and (child:IsA("Model") or child:IsA("BasePart")) then
-                    animateModelSlideIn(child)
+    else
+        local targetFolderName = STAGE_FOLDER_MAP[unlockName]
+        if targetFolderName then
+            local stageFolder = preacherFolder:FindFirstChild(targetFolderName) or preacherFolder:WaitForChild(targetFolderName, 2)
+            if stageFolder then
+                for _, child in ipairs(stageFolder:GetChildren()) do
+                    if child.Name ~= "UpgradeButton" and child.Name ~= "CosmeticButton" and child.Name ~= "ManagerButton" then
+                        animateModelSlideIn(child)
+                    end
                 end
             end
         end
     end
 end)
 
-print("[BuildingAnimatorClient] Manager pop-in animation handler wired.")
+print("[BuildingAnimatorClient] Universal slide-in pop animation initialized.")

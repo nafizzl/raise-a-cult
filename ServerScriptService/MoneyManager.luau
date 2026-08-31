@@ -39,6 +39,7 @@ end
 export type BuildingState = {
     OwnedCount: number,
     FloorUpgrades: { [number]: boolean },
+    PurchasedUpgrades: { [string]: boolean },
     HasManager: boolean,
 }
 
@@ -56,6 +57,7 @@ local function getDefaultBuildingState(buildingId: number): BuildingState
     return {
         OwnedCount = 0,
         FloorUpgrades = {},
+        PurchasedUpgrades = {},
         HasManager = false,
     }
 end
@@ -122,6 +124,16 @@ function MoneyManager.UnlockFloorUpgrade(player: Player, buildingId: number, tie
     bState.FloorUpgrades[tier] = true
 end
 
+function MoneyManager.SetUpgradePurchased(player: Player, buildingId: number, upgradeName: string, purchased: boolean)
+    local bState = MoneyManager.GetBuildingState(player, buildingId)
+    bState.PurchasedUpgrades[upgradeName] = (purchased ~= false)
+end
+
+function MoneyManager.IsUpgradePurchased(player: Player, buildingId: number, upgradeName: string): boolean
+    local bState = MoneyManager.GetBuildingState(player, buildingId)
+    return bState.PurchasedUpgrades[upgradeName] == true
+end
+
 function MoneyManager.SetManagerOwned(player: Player, buildingId: number, owned: boolean)
     local bState = MoneyManager.GetBuildingState(player, buildingId)
     bState.HasManager = owned
@@ -176,6 +188,7 @@ local function loadPlayerData(player: Player)
                     finalData.Buildings[numId] = {
                         OwnedCount = tonumber(bState.OwnedCount) or 0,
                         FloorUpgrades = (type(bState.FloorUpgrades) == "table") and bState.FloorUpgrades or {},
+                        PurchasedUpgrades = (type(bState.PurchasedUpgrades) == "table") and bState.PurchasedUpgrades or {},
                         HasManager = (bState.HasManager == true)
                     }
                 end

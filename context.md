@@ -52,14 +52,22 @@
 * **Location:** `ServerScriptService.BuildingProgressionServer.legacy.luau` (Script)
 * **Functionality:**
   * Robust accessory touch detection via `hit:FindFirstAncestorWhichIsA("Model")`.
-  * Per-player debounce table to eliminate cross-player interaction blocking.
-  * Dynamically queries `EconomyConfig` to price floor buttons.
-  * **Dynamic Manager Prop Stashing:** Dynamically moves all manager props (`Table`, `Cult Member`, `MoneyonTable`) into `ReplicatedStorage.BuildingTemplates.Building1.Manager` on server start, preventing premature rendering.
-  * Building 1 unlock sequence:
-    1. **`NewBuildingButton` ($0):** Unparents and de-renders itself upon touch; spawns Table, Cult Member, `CollectUpgradeGui`, `Flyers` button, and `ManagerButton`.
-    2. **`Worship Flyers` ($30, $2\times$ Speed):** Spawns paper flyers on table; unlocks `More Preachers` button.
-    3. **`More Preachers` ($375, $2\times$ Speed):** Spawns chanting cultists.
-    4. **`ManagerButton` ($250):** Spawns immediately at Stage 0; upon purchase, restores all manager props and triggers the slide-up animation.
+  * Per-player debounce table to eliminate cross-player interaction locking.
+  * Dynamically queries `EconomyConfig` and `EconomyMath` to execute authoritative purchases.
+  * **Dynamic Multi-Folder Stashing:** Dynamically moves all unpurchased models and buttons into `ReplicatedStorage.BuildingTemplates.Building1` on server start, preventing premature rendering.
+  * **Full Building 1 Sequential Unlock Chain:**
+    0. **`NewBuildingButton` ($0):** Unparents itself; spawns Table, Cult Member, `CollectUpgradeGui`, `ManagerButton` ($250), and `Flyers` button ($30).
+    1. **`Worship Flyers` ($30, $2\times$ Speed):** Spawns table flyers $\rightarrow$ unlocks `More Preachers` button.
+    2. **`More Preachers` ($375, $2\times$ Speed):** Spawns 2 chanting cultists $\rightarrow$ unlocks `Canopy Tents` button.
+    3. **`Canopy Tents` (Cosmetic, $1,500):** Spawns 3 popup shelter tents $\rightarrow$ unlocks `Megaphones` button.
+    4. **`Street Megaphones` ($4,500, $2\times$ Speed):** Spawns megaphones & preacher $\rightarrow$ unlocks `FloorChalk` button.
+    5. **`FloorChalk` (Cosmetic, $10,000):** Spawns chalk circle & chalk cartons $\rightarrow$ unlocks `Outreach Booth` button.
+    6. **`Outreach Booth` ($525K, $2\times$ Speed):** Spawns booth, pamphlets & phone $\rightarrow$ unlocks `Booklets` button.
+    7. **`Printed Booklets` ($6.0M, $2\times$ Speed):** Spawns book stacks, boxes & member $\rightarrow$ unlocks `Speakers` button.
+    8. **`Speaker Towers` ($375M, $2\times$ Speed):** Spawns dual PA speaker towers $\rightarrow$ unlocks `Street Sign` button.
+    9. **`LED Street Signs` ($112.5B, $2\times$ Speed):** Spawns neon street sign $\rightarrow$ unlocks `Holy Podium` button.
+    10. **`Holy Podium` ($2.25Qa, $3\times$ Speed):** Spawns elevated podium & golden player statue *(Building 1 Capstone)*.
+    * **`ManagerButton` ($250):** Spawns at Stage 0; upon purchase, restores all manager props (`Table`, `Cult Member`, `MoneyonTable`) and triggers the slide-up animation and automated collection loop.
 
 ---
 
@@ -100,16 +108,30 @@
 ### 8. Authoritative Developer Console & Command System
 * **Server Script:** `ServerScriptService.AdminServer.legacy.luau`
   * Strict permission verification: `player.UserId == game.CreatorId` (`51437187`), `ALLOWED_USER_IDS` whitelist, or `RunService:IsStudio()`.
-  * Commands: `:give <amount>`, `:set <amount>`, `:reset`, `:unlockall`, `:unlockmanager <id>`, `:help` with short-scale suffix parsing (`10k`, `5M`, `1B`, `500T`, `100Qi`).
-  * Instant rejection and security alert logging on unauthorized invocation.
+  * Command syntax: `:give <amount>`, `:set <amount>`, `:reset`, `:unlockall`, `:unlockmanager <id>`, `:help`.
+  * Suffix parsing: handles `k`, `M`, `B`, `T`, `Qa`, `Qi`, `Sx`, `Sp`, `Oc`, `No`, `Dc`, `Ud`, `Dd`, `Td`, `Qad`, `Qid`, `Sxd`, `Spd`, `Ocd`, `Nod`, `Vg`, `Cen`.
 * **Client UI:** `StarterPlayer.StarterPlayerScripts.AdminClient.local.luau`
-  * Floating `⚙ DEV` top-right toggle button.
-  * Hotkeys: `F4`, `;` (Semicolon), and `]` (Right Bracket).
-  * Direct in-game chat listener for creator/admins.
+  * Floating `⚙ DEV` top-right button with `F4`, `;` (Semicolon), and `]` toggle hotkeys.
+  * Status feedback banner for valid and invalid commands.
 
 ---
 
-### 9. Related Project Documents
+### 9. Dynamic Visual & Time Formatting Systems
+* **Interactive READY Progress Bar (`CollectUpgradeClient.local.luau`):**
+  * When in manual mode and idle/ready, the progress bar remains 100% full bright red (`fill.Size = UDim2.new(1, 0, 1, 0)`) with `"READY"` displayed.
+  * Upon clicking, `ProgressFill` resets to `0%` revealing the dark red background and plays a linear fill sweep to `100%`.
+* **Smart Dynamic Time Units (`EconomyMath.FormatTime`):**
+  * `≥ 0.10s`: Displayed in seconds (`"every 1.5s"`, `"every 0.25s"`).
+  * `< 0.10s`: Automatically switches to milliseconds (`"every 63ms"`, `"every 3ms"`).
+  * `< 1ms`: Automatically switches to microseconds (`"every 500μs"`, `"every 10μs"`).
+  * `< 1μs`: Automatically switches to nanoseconds (`"every 250ns"`).
+* **Holy Podium Dynamic Avatar Loading (`AvatarScript.luau`):**
+  * Remains `Transparency = 1` during load to eliminate T-pose flickers.
+  * Applies `2.0x` scaling across all dimensions, purges pre-existing cultist hood/mask props, anchors all parts, and rotates 180° forward onto the podium stand.
+
+---
+
+### 10. Related Project Documents
 * **[`economy.md`](file:///c:/Users/Nafiz%20Labib/raise-a-cult/economy.md):** Full mathematical PRD specification, multi-tier tables, and prestige mechanics.
 * **[`building_upgrades_catalog.md`](file:///c:/Users/Nafiz%20Labib/raise-a-cult/building_upgrades_catalog.md):** Thematic 3D visual guide for all 8 speed upgrades and cosmetic construction steps across all 10 buildings.
 * **[`timeline.md`](file:///c:/Users/Nafiz%20Labib/raise-a-cult/timeline.md):** Complete chronological engineering and commit log.

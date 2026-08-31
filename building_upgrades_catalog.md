@@ -33,19 +33,17 @@ graph LR
 | Step | Type | Name | Cost | 3D Visual Asset (Easy Build) | Gameplay Effect |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **0** | **Base** | Folding Table & Member | $0 | Brown plastic folding table, 1 Cultist NPC | Active Click / Collect Gui |
-| **1** | **Cosmetic** | Sidewalk Chalk Circle | $15 | Thin cylinder on floor with red chalk circle | Visual plot boundary |
-| **2** | **Speed 1** | Worship Flyers | $30 | 3 white paper flyers on table with leader face | **$2\times$ Speed** ($0.5\text{s}$) |
-| **3** | **Manager** | Corner Manager (Follower) | $250 | 1 Cultist NPC standing behind collection stand | Automated Collection |
-| **4** | **Speed 2** | More Preachers | $375 | 2 additional chanting NPCs beside the table | **$2\times$ Speed** ($0.25\text{s}$) |
-| **5** | **Cosmetic** | Pop-Up Canopy Tent | $1,500 | 4 thin metallic poles with a pyramid canopy roof | Shelter structure |
-| **6** | **Speed 3** | Street Megaphones | $4,500 | 2 grey megaphone horns mounted on canopy poles | **$2\times$ Speed** ($0.125\text{s}$) |
-| **7** | **Cosmetic** | Wooden Collection Box | $10,000 | Polished wooden chest with a glowing coin slot | Visual cash chest |
-| **8** | **Gate** | *Unlocks Building 2 Button ($35,000)* | — | Floor button leading to Storage Temple plot | Progression Unlocked |
-| **9** | **Speed 4** | Outreach Info Booth | $525,000 | Second wooden booth with pamphlet racks | **$2\times$ Speed** ($0.0625\text{s}$) |
-| **10**| **Speed 5** | Printed Booklets | $6.0\text{M}$ | Wooden book stand with glossy red scripture books | **$2\times$ Speed** ($0.03125\text{s}$) |
-| **11**| **Speed 6** | PA Speaker Towers | $375\text{M}$ | 2 tall black truss towers with audio speakers | **$2\times$ Speed** ($0.0156\text{s}$) |
-| **12**| **Speed 7** | LED Street Signs | $112.5\text{B}$ | Neon glowing billboard sign above canopy | **$2\times$ Speed** ($0.0078\text{s}$) |
-| **13**| **Speed 8** | Holy Relic Podium | $2.25\text{Qa}$ | Golden pedestal with a spinning glowing neon orb | **$3\times$ Speed** ($0.0026\text{s}$) |
+| **—** | **Manager**| Corner Manager (Follower) | $250 | 1 Cultist NPC standing behind collection stand | Automated Collection |
+| **1** | **Speed 1**| Worship Flyers | $30 | 3 white paper flyers on table with leader face | **$2\times$ Speed** ($0.5\text{s}$) |
+| **2** | **Speed 2**| More Preachers | $375 | 2 additional chanting NPCs beside the table | **$2\times$ Speed** ($0.25\text{s}$) |
+| **3** | **Cosmetic**| Pop-Up Canopy Tents | $1,500 | 3 thin metallic poles with pyramid canopy roofs | Shelter structure |
+| **4** | **Speed 3**| Street Megaphones | $4,500 | 2 grey megaphone horns mounted on poles | **$2\times$ Speed** ($0.125\text{s}$) |
+| **5** | **Cosmetic**| Sidewalk Chalk Circle | $10,000 | Chalk circle drawing on floor + chalk cartons | Sacred ground boundary |
+| **6** | **Speed 4**| Outreach Info Booth | $525,000 | Second wooden booth with pamphlet racks & phone| **$2\times$ Speed** ($0.0625\text{s}$) |
+| **7** | **Speed 5**| Printed Booklets | $6.0\text{M}$ | Book stacks, open boxes & distributor member | **$2\times$ Speed** ($0.03125\text{s}$) |
+| **8** | **Speed 6**| PA Speaker Towers | $375\text{M}$ | 2 tall black truss towers with audio speakers | **$2\times$ Speed** ($0.0156\text{s}$) |
+| **9** | **Speed 7**| LED Street Signs | $112.5\text{B}$ | Neon glowing billboard sign | **$2\times$ Speed** ($0.0078\text{s}$) |
+| **10**| **Speed 8**| Holy Podium Statue | $2.25\text{Qa}$ | Elevated marble podium with giant player statue | **$3\times$ Speed** ($0.0026\text{s}$) |
 
 ---
 

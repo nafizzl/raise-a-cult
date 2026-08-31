@@ -80,6 +80,21 @@
   * **Command Suite & Suffix Parsing:** Supports `:give <amount>`, `:set <amount>`, `:reset`, `:unlockall`, `:unlockmanager <id>`, `:help` with short-scale suffix parsing (`10k`, `5M`, `1B`, `500T`, `100Qi`).
   * **Client Console UI (`AdminClient.local.luau`):** Added floating `⚙ DEV` top-right toggle button with `F4`, `;` (Semicolon), and `]` hotkeys.
 
+* **Full 11-Step Building 1 Sequential Upgrade & Model Spawning Chain:**
+  * **11-Step Pipeline:** Configured and chained all sequential upgrades: `Buy Building ($0)` $\rightarrow$ `Manager ($250, Auto Collect)` immediately available alongside `Worship Flyers ($30)` $\rightarrow$ `More Preachers ($375)` $\rightarrow$ `Canopy Tents ($1,500)` $\rightarrow$ `Street Megaphones ($4,500)` $\rightarrow$ `FloorChalk ($10,000)` $\rightarrow$ `Outreach Booth ($525K)` $\rightarrow$ `Printed Booklets ($6.0M)` $\rightarrow$ `Speaker Towers ($375M)` $\rightarrow$ `LED Street Signs ($112.5B)` $\rightarrow$ `Holy Podium ($2.25Qa)`.
+  * **Studio Billboard Styling:** Configured 3-tier billboards on all 11 buttons with FredokaOne Bold, custom Cyan/Lime/Magenta tints, benefit subtitles, and catalog pricing.
+  * **Universal Slide-Up Pop-In Animation:** Extended `BuildingAnimatorClient.local.luau` with a universal stage-to-folder mapping to trigger `PivotTo()` spring pop-ins on all models across every upgrade.
+  * **DataStore Persistence:** Updated `MoneyManager.luau` to serialize `PurchasedUpgrades` map, ensuring all 11 upgrades restore accurately upon rejoin.
+
+* **Building 1 Asset Polish & Visual Refinements:**
+  * **Holy Podium Statue (`AvatarScript.luau`):** Starts at `Transparency = 1` until avatar assets are fetched, then applies `2.0x` scaling on all body dimensions, cleans out residual cultist hood/mask props, anchors all parts, and rotates 180° forward onto the podium stand.
+  * **Chalk Drawing Transparency & Alignment:** Set `FloorChalkDrawing.Transparency = 1` and rotated the chalk surface GUI by 90° so only the red chalk boundary and portrait render directly on the floor. Anchored all chalk cartons and sticks.
+  * **Single-Faced Street Sign:** Attached `SurfaceGui` strictly to the front-facing `Right` face of `StreetSign` with unshaded lighting and portrait headshot.
+  * **Interactive READY Progress Bar:** Configured manual progress bar to display 100% full bright red (`fill.Size = UDim2.new(1, 0, 1, 0)`) when idle/ready, and instantly sweep from 0% to 100% over the dark red track background when clicked.
+  * **Smart Dynamic Time Units (`EconomyMath.FormatTime`):** Automatically switches from seconds (`every 0.25s`) to milliseconds (`every 63ms`, `every 3ms`, `every 2.6ms`), microseconds (`every 500μs`), and nanoseconds (`every 250ns`) when durations fall below $0.10\text{s}$.
+
+
+
 
 
 

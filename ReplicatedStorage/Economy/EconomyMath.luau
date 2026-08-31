@@ -161,7 +161,7 @@ function EconomyMath.FormatCurrency(amount: number): string
     end
 end
 
--- Format cycle times into readable strings (e.g. every 1.5s, every 0.05s, every 1.25ms, every 500μs)
+-- Format cycle times into readable strings (e.g. every 1.5s, every 0.25s, every 3ms, every 500μs, every 250ns)
 function EconomyMath.FormatTime(seconds: number): string
     if seconds == nil or seconds <= 0 then
         return "instant"
@@ -177,20 +177,28 @@ function EconomyMath.FormatTime(seconds: number): string
         else
             return string.format("every %.1fs", seconds)
         end
-    elseif seconds >= 0.01 then
+    elseif seconds >= 0.1 then
         return string.format("every %.2fs", seconds)
     elseif seconds >= 0.001 then
-        return string.format("every %.3fs", seconds)
-    elseif seconds >= 1e-6 then
+        -- Milliseconds (1ms .. 99ms)
         local ms = seconds * 1000
-        if ms >= 10 then
-            return string.format("every %.1fms", ms)
+        if ms >= 10 or ms == math.floor(ms) then
+            return string.format("every %dms", math.floor(ms + 0.5))
         else
-            return string.format("every %.2fms", ms)
+            return string.format("every %.1fms", ms)
+        end
+    elseif seconds >= 1e-6 then
+        -- Microseconds (1μs .. 999μs)
+        local us = seconds * 1e6
+        if us >= 10 or us == math.floor(us) then
+            return string.format("every %dμs", math.floor(us + 0.5))
+        else
+            return string.format("every %.1fμs", us)
         end
     else
-        local us = seconds * 1e6
-        return string.format("every %.1fμs", us)
+        -- Nanoseconds (ns)
+        local ns = seconds * 1e9
+        return string.format("every %dns", math.floor(ns + 0.5))
     end
 end
 

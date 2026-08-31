@@ -224,7 +224,7 @@ local function setupPlayerGuiForPart(workspacePart: BasePart): BillboardGui?
             local bDef = EconomyConfig.Buildings[bId] or EconomyConfig.Buildings[1]
             local nextUpgradeCost = EconomyMath.GetSingleCost(bDef.BaseCost, bDef.GrowthRate, 2)
             if timerLabel then timerLabel.Text = "READY" end
-            if fill then fill.Size = UDim2.new(0, 0, 1, 0) end
+            if fill then fill.Size = UDim2.new(1, 0, 1, 0) end
             if moneyLabel then moneyLabel.Text = EconomyMath.FormatCurrency(bDef.BaseProd) end
             if priceLabel then priceLabel.Text = EconomyMath.FormatCurrency(nextUpgradeCost) end
             if levelLabel then levelLabel.Text = "x1" end
@@ -356,7 +356,7 @@ RunService.RenderStepped:Connect(function(stepDt: number)
             if animState.IsFastBar then
                 if fill then
                     fill.Size = UDim2.new(1, 0, 1, 0)
-                    fill.BackgroundColor3 = Color3.fromRGB(math.floor(50 * pulse), math.floor(245 * pulse), math.floor(90 * pulse))
+                    fill.BackgroundColor3 = Color3.fromRGB(math.floor(255 * pulse), math.floor(45 * pulse), math.floor(60 * pulse))
                 end
                 if timerLabel then
                     timerLabel.Text = EconomyMath.FormatTime(animState.Duration)
@@ -372,8 +372,8 @@ RunService.RenderStepped:Connect(function(stepDt: number)
                     if timerLabel and timerLabel.Text ~= "READY" then
                         timerLabel.Text = "READY"
                     end
-                    if fill and fill.Size.X.Scale > 0 then
-                        fill.Size = UDim2.new(0, 0, 1, 0)
+                    if fill and fill.Size.X.Scale < 1 then
+                        fill.Size = UDim2.new(1, 0, 1, 0)
                     end
                 end
             end
@@ -410,7 +410,7 @@ local function startBuildingCycle(buildingId: number, cycleDuration: number, isA
 
             if fill then
                 fill.Size = UDim2.new(0, 0, 1, 0)
-                fill.BackgroundColor3 = Color3.fromRGB(60, 220, 80)
+                fill.BackgroundColor3 = Color3.fromRGB(245, 45, 60)
                 local fillTween = TweenService:Create(fill, TweenInfo.new(cycleDuration, Enum.EasingStyle.Linear), {
                     Size = UDim2.new(1, 0, 1, 0)
                 })
@@ -441,7 +441,7 @@ local function completeBuildingCycle(buildingId: number, isAutoManager: boolean?
 
                 if not animState.IsAutoManager then
                     if timerLabel then timerLabel.Text = "READY" end
-                    if fill then fill.Size = UDim2.new(0, 0, 1, 0) end
+                    if fill then fill.Size = UDim2.new(1, 0, 1, 0) end
                 end
             end
         end
