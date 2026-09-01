@@ -56,12 +56,12 @@
   * Dynamically queries `EconomyConfig` and `EconomyMath` to execute authoritative purchases.
   * **Dynamic Multi-Folder Stashing:** Dynamically moves all unpurchased models and buttons into `ReplicatedStorage.BuildingTemplates.Building1` on server start, preventing premature rendering.
   * **Full Building 1 Sequential Unlock Chain:**
-    0. **`NewBuildingButton` ($0):** Unparents itself; spawns Table, Cult Member, `CollectUpgradeGui`, `ManagerButton` ($250), and `Flyers` button ($30).
-    1. **`Worship Flyers` ($30, $2\times$ Speed):** Spawns table flyers $\rightarrow$ unlocks `More Preachers` button.
-    2. **`More Preachers` ($375, $2\times$ Speed):** Spawns 2 chanting cultists $\rightarrow$ unlocks `Canopy Tents` button.
-    3. **`Canopy Tents` (Cosmetic, $1,500):** Spawns 3 popup shelter tents $\rightarrow$ unlocks `Megaphones` button.
-    4. **`Street Megaphones` ($4,500, $2\times$ Speed):** Spawns megaphones & preacher $\rightarrow$ unlocks `FloorChalk` button.
-    5. **`FloorChalk` (Cosmetic, $10,000):** Spawns chalk circle & chalk cartons $\rightarrow$ unlocks `Outreach Booth` button.
+    0. **`NewBuildingButton` ($0):** Unparents itself; spawns Table, Cult Member, `CollectUpgradeGui`, `ManagerButton` ($250), and `Flyers` button ($50).
+    1. **`Worship Flyers` ($50, $2\times$ Speed):** Spawns table flyers $\rightarrow$ unlocks `More Preachers` button.
+    2. **`More Preachers` ($600, $2\times$ Speed):** Spawns 2 chanting cultists $\rightarrow$ unlocks `Canopy Tents` button.
+    3. **`Canopy Tents` (Cosmetic, $2,500):** Spawns 3 popup shelter tents $\rightarrow$ unlocks `Megaphones` button.
+    4. **`Street Megaphones` ($10,000, $2\times$ Speed):** Spawns megaphones & preacher $\rightarrow$ unlocks `FloorChalk` button.
+    5. **`FloorChalk` (Cosmetic, $50,000):** Spawns chalk circle & chalk cartons $\rightarrow$ unlocks `Outreach Booth` button.
     6. **`Outreach Booth` ($525K, $2\times$ Speed):** Spawns booth, pamphlets & phone $\rightarrow$ unlocks `Booklets` button.
     7. **`Printed Booklets` ($6.0M, $2\times$ Speed):** Spawns book stacks, boxes & member $\rightarrow$ unlocks `Speakers` button.
     8. **`Speaker Towers` ($375M, $2\times$ Speed):** Spawns dual PA speaker towers $\rightarrow$ unlocks `Street Sign` button.

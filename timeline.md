@@ -93,6 +93,13 @@
   * **Interactive READY Progress Bar:** Configured manual progress bar to display 100% full bright red (`fill.Size = UDim2.new(1, 0, 1, 0)`) when idle/ready, and instantly sweep from 0% to 100% over the dark red track background when clicked.
   * **Smart Dynamic Time Units (`EconomyMath.FormatTime`):** Automatically switches from seconds (`every 0.25s`) to milliseconds (`every 63ms`, `every 3ms`, `every 2.6ms`), microseconds (`every 500μs`), and nanoseconds (`every 250ns`) when durations fall below $0.10\text{s}$.
 
+* **Early-Game Pricing Curve Alignment (Buildings 1–4):**
+  * **Smooth 15–45s Purchase Cadence:** Adjusted early-game speed upgrades and cosmetics for Buildings 1–4 to create a continuous progression flow, eliminating downtime on Run 1.
+  * **Building 1 Adjusted Costs:** Updated `B1_CHAIN` and Studio billboards: Worship Flyers ($50), More Preachers ($600), Canopy Tents ($2.5K), Megaphones ($10K), and Floor Chalk ($50K).
+  * **Base Unlock Realignment:** Updated `EconomyConfig.luau` with clean geometric tiers: Building 2 ($250K), Building 3 ($250M), and Building 4 ($500B), leading up to the Building 5 ($100T) First Rebirth Gate (Schism).
+  * **Catalog & PRD Synchronized:** Updated `building_upgrades_catalog.md` and `proposed_prestiges.md` with the progressive milestone scaling and 7-tier Sacred Dogma pipeline.
+
+
 
 
 

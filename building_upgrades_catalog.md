@@ -32,90 +32,91 @@ graph LR
 ### 1. Construction & Upgrade Sequence
 | Step | Type | Name | Cost | 3D Visual Asset (Easy Build) | Gameplay Effect |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **0** | **Base** | Folding Table & Member | $0 | Brown plastic folding table, 1 Cultist NPC | Active Click / Collect Gui |
-| **—** | **Manager**| Corner Manager (Follower) | $250 | 1 Cultist NPC standing behind collection stand | Automated Collection |
-| **1** | **Speed 1**| Worship Flyers | $30 | 3 white paper flyers on table with leader face | **$2\times$ Speed** ($0.5\text{s}$) |
-| **2** | **Speed 2**| More Preachers | $375 | 2 additional chanting NPCs beside the table | **$2\times$ Speed** ($0.25\text{s}$) |
-| **3** | **Cosmetic**| Pop-Up Canopy Tents | $1,500 | 3 thin metallic poles with pyramid canopy roofs | Shelter structure |
-| **4** | **Speed 3**| Street Megaphones | $4,500 | 2 grey megaphone horns mounted on poles | **$2\times$ Speed** ($0.125\text{s}$) |
-| **5** | **Cosmetic**| Sidewalk Chalk Circle | $10,000 | Chalk circle drawing on floor + chalk cartons | Sacred ground boundary |
-| **6** | **Speed 4**| Outreach Info Booth | $525,000 | Second wooden booth with pamphlet racks & phone| **$2\times$ Speed** ($0.0625\text{s}$) |
-| **7** | **Speed 5**| Printed Booklets | $6.0\text{M}$ | Book stacks, open boxes & distributor member | **$2\times$ Speed** ($0.03125\text{s}$) |
-| **8** | **Speed 6**| PA Speaker Towers | $375\text{M}$ | 2 tall black truss towers with audio speakers | **$2\times$ Speed** ($0.0156\text{s}$) |
-| **9** | **Speed 7**| LED Street Signs | $112.5\text{B}$ | Neon glowing billboard sign | **$2\times$ Speed** ($0.0078\text{s}$) |
-| **10**| **Speed 8**| Holy Podium Statue | $2.25\text{Qa}$ | Elevated marble podium with giant player statue | **$3\times$ Speed** ($0.0026\text{s}$) |
+| **0** | **Base** | Folding Table & Member | **$0** | Brown plastic folding table, 1 Cultist NPC | Active Click / Collect GUI |
+| **—** | **Manager**| Corner Manager | **$250** | 1 Cultist NPC standing behind collection stand | Automated Collection |
+| **1** | **Speed 1**| Worship Flyers | **$50** | 3 white paper flyers on table with leader face | **$2\times$ Speed** ($0.5\text{s}$) |
+| **2** | **Speed 2**| More Preachers | **$600** | 2 additional chanting NPCs beside the table | **$2\times$ Speed** ($0.25\text{s}$) |
+| **3** | **Cosmetic**| Pop-Up Canopy Tents | **$2,500** | 3 thin metallic poles with pyramid canopy roofs | Shelter structure visual |
+| **4** | **Speed 3**| Street Megaphones | **$10,000** | 2 grey megaphone horns mounted on poles | **$2\times$ Speed** ($0.125\text{s}$) |
+| **5** | **Cosmetic**| Sidewalk Chalk Circle | **$50,000** | Chalk circle drawing on floor + chalk cartons | Sacred boundary visual |
+| **6** | **Gate** | *Unlocks Building 2 Button ($250k)* | — | Floor button to Storage Unit plot | Progression Unlocked |
+| **7** | **Speed 4**| Outreach Info Booth | **$525,000** | Second wooden booth with pamphlet racks & phone| **$2\times$ Speed** ($0.0625\text{s}$) |
+| **8** | **Speed 5**| Printed Booklets | **$6.0\text{M}$** | Book stacks, open boxes & distributor member | **$2\times$ Speed** ($0.03125\text{s}$) |
+| **9** | **Speed 6**| PA Speaker Towers | **$375\text{M}$** | 2 tall black truss towers with audio speakers | **$2\times$ Speed** ($0.0156\text{s}$) |
+| **10**| **Speed 7**| LED Street Signs | **$112.5\text{B}$** | Neon glowing billboard sign | **$2\times$ Speed** ($0.0078\text{s}$) |
+| **11**| **Speed 8**| Holy Podium Statue | **$2.25\text{Qa}$** | Elevated marble podium with giant player statue | **$3\times$ Speed** ($0.0026\text{s}$) |
 
 ---
 
 ## 🏛️ Building 2: Storage Unit Temple
 * **Theme:** Converted underground self-storage unit turned makeshift congregation.
-* **Unlock Cost:** **$35,000** | **Base Prod:** **$500** | **Manager:** **$2.5M**
+* **Unlock Cost:** **$250,000** ($250K) | **Base Prod:** **$500** | **Manager:** **$2.5M**
 
 ### 1. Construction & Upgrade Sequence
 | Step | Type | Name | Cost | 3D Visual Asset (Easy Build) | Gameplay Effect |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **0** | **Base** | Roll-Up Metal Door Frame | $35,000 | Corrugated metal walls, open roll-up shutter door | Spawns Building 2 base |
-| **1** | **Cosmetic** | Concrete Flooring & Rug | $45,000 | Grey concrete floor with a long velvet red carpet | Plot flooring |
-| **2** | **Speed 1** | Folding Chairs (Pews) | $70,000 | 2 rows of metal folding chairs with seated cultists | **$2\times$ Speed** ($1.5\text{s}$) |
-| **3** | **Cosmetic** | Fluorescent Tube Lights | $250,000 | 4 overhead flickering tube lights on ceiling | Warm ambient lighting |
-| **4** | **Speed 2** | Audio Cassette Sermons | $875,000 | Vintage boombox on crate with cassette tapes | **$2\times$ Speed** ($0.75\text{s}$) |
-| **5** | **Manager** | Storage Unit Caretaker | $2.5\text{M}$ | NPC with clipboard and keys standing by entrance | Automated Collection |
-| **6** | **Cosmetic** | Cinderblock Altar | $5.0\text{M}$ | Stacked cinderblocks covered in black cloth & candles | Sacred focal point |
-| **7** | **Speed 3** | Vending Donation Machine | $10.5\text{M}$ | Retro soda vending machine retrofitted for tithing | **$2\times$ Speed** ($0.375\text{s}$) |
-| **8** | **Gate** | *Unlocks Building 3 Button ($50M)* | — | Floor button leading to Suburban Compound plot | Progression Unlocked |
-| **9** | **Speed 4** | Soundproofing Foam Walls | $1.225\text{B}$ | Dark acoustic egg-crate foam on all 4 walls | **$2\times$ Speed** ($0.187\text{s}$) |
-| **10**| **Speed 5** | Heavy Metal Rolling Shutter | $14.0\text{B}$ | Reinforced motorized garage door with keypad | **$2\times$ Speed** ($0.093\text{s}$) |
-| **11**| **Speed 6** | Industrial HVAC System | $875\text{B}$ | Silver ventilation ducting running along ceiling | **$2\times$ Speed** ($0.046\text{s}$) |
-| **12**| **Speed 7** | Closed-Circuit Security | $262.5\text{T}$ | 4 security cameras with blinking red LED dots | **$2\times$ Speed** ($0.023\text{s}$) |
-| **13**| **Speed 8** | Golden Storage Vault | $5.25\text{Sx}$ | Heavy bank vault door embedded into back wall | **$3\times$ Speed** ($0.0078\text{s}$) |
+| **0** | **Base** | Roll-Up Metal Door Frame | **$250,000** | Corrugated metal walls, open roll-up shutter door | Spawns Building 2 base |
+| **1** | **Cosmetic** | Concrete Flooring & Rug | **$350,000** | Grey concrete floor with a long velvet red carpet | Flooring visual |
+| **2** | **Speed 1** | Folding Chairs (Pews) | **$500,000** | 2 rows of metal folding chairs with seated cultists | **$2\times$ Speed** ($1.5\text{s}$) |
+| **3** | **Cosmetic** | Fluorescent Tube Lights | **$1.0\text{M}$** | 4 overhead flickering tube lights on ceiling | Ambient light visual |
+| **4** | **Speed 2** | Audio Cassette Sermons | **$1.75\text{M}$** | Vintage boombox on crate with cassette tapes | **$2\times$ Speed** ($0.75\text{s}$) |
+| **5** | **Manager** | Storage Unit Caretaker | **$2.5\text{M}$** | NPC with clipboard and keys standing by entrance | Automated Collection |
+| **6** | **Cosmetic** | Cinderblock Altar | **$5.0\text{M}$** | Stacked cinderblocks covered in black cloth & candles | Altar visual |
+| **7** | **Speed 3** | Vending Donation Machine | **$15.0\text{M}$** | Retro soda vending machine retrofitted for tithing | **$2\times$ Speed** ($0.375\text{s}$) |
+| **8** | **Gate** | *Unlocks Building 3 Button ($250M)* | — | Floor button to Suburban Compound | Progression Unlocked |
+| **9** | **Speed 4** | Soundproofing Foam Walls | **$1.225\text{B}$** | Dark acoustic egg-crate foam on all 4 walls | **$2\times$ Speed** ($0.187\text{s}$) |
+| **10**| **Speed 5** | Heavy Metal Rolling Shutter | **$14.0\text{B}$** | Reinforced motorized garage door with keypad | **$2\times$ Speed** ($0.093\text{s}$) |
+| **11**| **Speed 6** | Industrial HVAC System | **$875\text{B}$** | Silver ventilation ducting running along ceiling | **$2\times$ Speed** ($0.046\text{s}$) |
+| **12**| **Speed 7** | Closed-Circuit Security | **$262.5\text{T}$** | 4 security cameras with blinking red LED dots | **$2\times$ Speed** ($0.023\text{s}$) |
+| **13**| **Speed 8** | Golden Storage Vault | **$5.25\text{Sx}$** | Heavy bank vault door embedded into back wall | **$3\times$ Speed** ($0.0078\text{s}$) |
 
 ---
 
 ## 🏛️ Building 3: Suburban Compound
 * **Theme:** Gated two-story house with perimeter fence and underground bunker hatch.
-* **Unlock Cost:** **$50,000,000** ($50M) | **Base Prod:** **$250,000** | **Manager:** **$5B**
+* **Unlock Cost:** **$250,000,000** ($250M) | **Base Prod:** **$250,000** | **Manager:** **$5.0B**
 
 ### 1. Construction & Upgrade Sequence
 | Step | Type | Name | Cost | 3D Visual Asset (Easy Build) | Gameplay Effect |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **0** | **Base** | House Frame & Foundation | $50\text{M}$ | Wooden stud frame & concrete slab foundation | Spawns Building 3 base |
-| **1** | **Cosmetic** | Vinyl Siding & Windows | $75\text{M}$ | White/tan house exterior walls with glass windows | Outer enclosure |
-| **2** | **Speed 1** | Communal Kitchen | $100\text{M}$ | Stainless steel prep table with pots & soup bowls | **$2\times$ Speed** ($3.0\text{s}$) |
-| **3** | **Cosmetic** | Perimeter Chainlink Fence | $500\text{M}$ | Chainlink wire fence surrounding the yard | Privacy perimeter |
-| **4** | **Speed 2** | Bunk Bed Barracks | $1.25\text{B}$ | 2 wooden bunk beds with sleeping cult members | **$2\times$ Speed** ($1.5\text{s}$) |
-| **5** | **Manager** | Compound Overseer | $5.0\text{B}$ | Robed elder NPC holding a ledger book | Automated Collection |
-| **6** | **Cosmetic** | Guard Dog Kennel | $8.0\text{B}$ | Wooden dog house with an alert German Shepherd | Compound defense |
-| **7** | **Speed 3** | Ham Radio Antenna | $15.0\text{B}$ | Tall radio antenna tower on the roof with wire leads | **$2\times$ Speed** ($0.75\text{s}$) |
-| **8** | **Gate** | *Unlocks Building 4 Button ($50B)* | — | Floor button leading to Community Hall plot | Progression Unlocked |
-| **9** | **Speed 4** | Garden Crop Plots | $1.75\text{T}$ | 3 dirt farm beds with growing vegetables | **$2\times$ Speed** ($0.375\text{s}$) |
-| **10**| **Speed 5** | Solar Panel Array | $20.0\text{T}$ | 6 angled blue solar panels mounted on roof | **$2\times$ Speed** ($0.187\text{s}$) |
-| **11**| **Speed 6** | Watchtower Lookout | $1.25\text{Qa}$ | Elevated wooden guard tower with floodlight | **$2\times$ Speed** ($0.093\text{s}$) |
-| **12**| **Speed 7** | Secret Bunker Hatch | $375\text{Qi}$ | Heavy metal blast door flush with the backyard lawn | **$2\times$ Speed** ($0.046\text{s}$) |
-| **13**| **Speed 8** | Blessed Compound Gates | $7.5\text{Vg}$ | Tall wrought-iron gates with gilded cult insignia | **$3\times$ Speed** ($0.0156\text{s}$) |
+| **0** | **Base** | House Frame & Foundation | **$250\text{M}$** | Wooden stud frame & concrete slab foundation | Spawns Building 3 base |
+| **1** | **Cosmetic** | Vinyl Siding & Windows | **$350\text{M}$** | White/tan house exterior walls with glass windows | House exterior visual |
+| **2** | **Speed 1** | Communal Kitchen | **$500\text{M}$** | Stainless steel prep table with pots & soup bowls | **$2\times$ Speed** ($3.0\text{s}$) |
+| **3** | **Cosmetic** | Perimeter Chainlink Fence | **$1.0\text{B}$** | Chainlink wire fence surrounding the yard | Perimeter visual |
+| **4** | **Speed 2** | Bunk Bed Barracks | **$2.5\text{B}$** | 2 wooden bunk beds with sleeping cult members | **$2\times$ Speed** ($1.5\text{s}$) |
+| **5** | **Manager** | Compound Overseer | **$5.0\text{B}$** | Robed elder NPC holding a ledger book | Automated Collection |
+| **6** | **Cosmetic** | Guard Dog Kennel | **$8.0\text{B}$** | Wooden dog house with an alert German Shepherd | Dog kennel visual |
+| **7** | **Speed 3** | Ham Radio Antenna | **$20.0\text{B}$** | Tall radio antenna tower on the roof with wire leads | **$2\times$ Speed** ($0.75\text{s}$) |
+| **8** | **Gate** | *Unlocks Building 4 Button ($500B)* | — | Floor button to Community Hall | Progression Unlocked |
+| **9** | **Speed 4** | Garden Crop Plots | **$1.75\text{T}$** | 3 dirt farm beds with growing vegetables | **$2\times$ Speed** ($0.375\text{s}$) |
+| **10**| **Speed 5** | Solar Panel Array | **$20.0\text{T}$** | 6 angled blue solar panels mounted on roof | **$2\times$ Speed** ($0.187\text{s}$) |
+| **11**| **Speed 6** | Watchtower Lookout | **$1.25\text{Qa}$** | Elevated wooden guard tower with floodlight | **$2\times$ Speed** ($0.093\text{s}$) |
+| **12**| **Speed 7** | Secret Bunker Hatch | **$375\text{Qi}$** | Heavy metal blast door flush with the backyard lawn | **$2\times$ Speed** ($0.046\text{s}$) |
+| **13**| **Speed 8** | Blessed Compound Gates | **$7.5\text{Vg}$** | Tall wrought-iron gates with gilded cult insignia | **$3\times$ Speed** ($0.0156\text{s}$) |
 
 ---
 
 ## 🏛️ Building 4: Community Hall
 * **Theme:** Suburban civic center converted into a high-capacity indoctrination theatre.
-* **Unlock Cost:** **$50,000,000,000** ($50B) | **Base Prod:** **$200,000,000** ($200M) | **Manager:** **$50T**
+* **Unlock Cost:** **$500,000,000,000** ($500B) | **Base Prod:** **$200,000,000** ($200M) | **Manager:** **$50.0T**
 
 ### 1. Construction & Upgrade Sequence
 | Step | Type | Name | Cost | 3D Visual Asset (Easy Build) | Gameplay Effect |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **0** | **Base** | Auditorium Floor & Stage | $50\text{B}$ | Large wooden auditorium floor with elevated stage | Spawns Building 4 base |
-| **1** | **Cosmetic** | Red Velvet Curtains | $75\text{B}$ | Flowing red curtains framing the stage proscenium | Theatre aesthetics |
-| **2** | **Speed 1** | Rowed Pew Benches | $100\text{B}$ | 4 rows of polished mahogany church pews | **$2\times$ Speed** ($6.0\text{s}$) |
-| **3** | **Cosmetic** | Overhead Stage Spotlights | $500\text{B}$ | Metal lighting rig above stage with warm spotlight beams | Dynamic lighting |
-| **4** | **Speed 2** | Dual Video Projectors | $1.25\text{T}$ | 2 large projector screens displaying cult doctrines | **$2\times$ Speed** ($3.0\text{s}$) |
-| **5** | **Cosmetic** | Pipe Organ Pipes | $10.0\text{T}$ | Decorative vertical brass pipes on back wall | Grand music backdrop |
-| **6** | **Manager** | Grand Reverend Director | $50.0\text{T}$ | Formal suit NPC standing at podium | Automated Collection |
-| **7** | **Speed 3** | Gospel Choir Stand | $15.0\text{T}$ | Stepped wooden riser with 4 singing choir NPCs | **$2\times$ Speed** ($1.5\text{s}$) |
-| **8** | **Gate** | *Unlocks Building 5 Button ($100T)*| — | Gate leading to Wellness Ranch (Pre-Schism Wall)| Progression Unlocked |
-| **9** | **Speed 4** | Subwoofer Sound System | $1.75\text{Qa}$ | Heavy black subwoofer stacks at stage corners | **$2\times$ Speed** ($0.75\text{s}$) |
-| **10**| **Speed 5** | Stained Glass Windows | $20.0\text{Qa}$ | Colorful stained glass windows on sidewalls | Cathedral atmosphere |
-| **11**| **Speed 6** | Teleprompter Monitors | $1.25\text{Sx}$ | Glass speech teleprompters in front of the altar | **$2\times$ Speed** ($0.375\text{s}$) |
-| **12**| **Speed 7** | Hydraulic Altar Lift | $375\text{Sp}$ | Glowing circular platform that elevates the preacher | **$2\times$ Speed** ($0.187\text{s}$) |
-| **13**| **Speed 8** | Holy Chandelier of Truth| $7.5\text{Tg}$ | Massive crystal chandelier suspended from ceiling | **$3\times$ Speed** ($0.0625\text{s}$) |
+| **0** | **Base** | Auditorium Floor & Stage | **$500\text{B}$** | Large wooden auditorium floor with elevated stage | Spawns Building 4 base |
+| **1** | **Cosmetic** | Red Velvet Curtains | **$750\text{B}$** | Flowing red curtains framing the stage proscenium | Stage curtain visual |
+| **2** | **Speed 1** | Rowed Pew Benches | **$1.0\text{T}$** | 4 rows of polished mahogany church pews | **$2\times$ Speed** ($6.0\text{s}$) |
+| **3** | **Cosmetic** | Overhead Stage Spotlights | **$3.0\text{T}$** | Metal lighting rig above stage with warm spotlight beams | Spotlight visual |
+| **4** | **Speed 2** | Dual Video Projectors | **$8.0\text{T}$** | 2 large projector screens displaying cult doctrines | **$2\times$ Speed** ($3.0\text{s}$) |
+| **5** | **Cosmetic** | Pipe Organ Pipes | **$15.0\text{T}$** | Decorative vertical brass pipes on back wall | Organ pipe visual |
+| **6** | **Speed 3** | Gospel Choir Stand | **$25.0\text{T}$** | Stepped wooden riser with 4 singing choir NPCs | **$2\times$ Speed** ($1.5\text{s}$) |
+| **7** | **Manager** | Grand Reverend Director | **$50.0\text{T}$** | Formal suit NPC standing at podium | Automated Collection |
+| **8** | **Gate** | *Unlocks Building 5 Button ($100T)* | — | **First Rebirth Gate (Schism)** | Progression Unlocked |
+| **9** | **Speed 4** | Subwoofer Sound System | **$1.75\text{Qa}$** | Heavy black subwoofer stacks at stage corners | **$2\times$ Speed** ($0.75\text{s}$) |
+| **10**| **Speed 5** | Stained Glass Windows | **$20.0\text{Qa}$** | Colorful stained glass windows on sidewalls | Cathedral window visual |
+| **11**| **Speed 6** | Teleprompter Monitors | **$1.25\text{Sx}$** | Glass speech teleprompters in front of the altar | **$2\times$ Speed** ($0.375\text{s}$) |
+| **12**| **Speed 7** | Hydraulic Altar Lift | **$375\text{Sp}$** | Glowing circular platform that elevates the preacher | **$2\times$ Speed** ($0.187\text{s}$) |
+| **13**| **Speed 8** | Holy Chandelier of Truth | **$7.5\text{Tg}$** | Massive crystal chandelier suspended from ceiling | **$3\times$ Speed** ($0.0625\text{s}$) |
 
 ---
 

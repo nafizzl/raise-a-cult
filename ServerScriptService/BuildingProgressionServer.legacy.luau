@@ -49,11 +49,11 @@ type ChainStep = {
 }
 
 local B1_CHAIN: { ChainStep } = {
-    { Step = 1,  FolderName = "Flyers",        ButtonName = "UpgradeButton",  Cost = 30,                  SpeedTier = 1,   UnlockId = "FlyersStage" },
-    { Step = 2,  FolderName = "MorePreachers", ButtonName = "UpgradeButton",  Cost = 375,                 SpeedTier = 2,   UnlockId = "MorePreachersStage" },
-    { Step = 3,  FolderName = "CanopyTents",   ButtonName = "CosmeticButton", Cost = 1500,                SpeedTier = nil, UnlockId = "CanopyTentsStage" },
-    { Step = 4,  FolderName = "Megaphones",    ButtonName = "UpgradeButton",  Cost = 4500,                SpeedTier = 3,   UnlockId = "MegaphonesStage" },
-    { Step = 5,  FolderName = "FloorChalk",    ButtonName = "CosmeticButton", Cost = 10000,               SpeedTier = nil, UnlockId = "FloorChalkStage" },
+    { Step = 1,  FolderName = "Flyers",        ButtonName = "UpgradeButton",  Cost = 50,                  SpeedTier = 1,   UnlockId = "FlyersStage" },
+    { Step = 2,  FolderName = "MorePreachers", ButtonName = "UpgradeButton",  Cost = 600,                 SpeedTier = 2,   UnlockId = "MorePreachersStage" },
+    { Step = 3,  FolderName = "CanopyTents",   ButtonName = "CosmeticButton", Cost = 2500,                SpeedTier = nil, UnlockId = "CanopyTentsStage" },
+    { Step = 4,  FolderName = "Megaphones",    ButtonName = "UpgradeButton",  Cost = 10000,               SpeedTier = 3,   UnlockId = "MegaphonesStage" },
+    { Step = 5,  FolderName = "FloorChalk",    ButtonName = "CosmeticButton", Cost = 50000,               SpeedTier = nil, UnlockId = "FloorChalkStage" },
     { Step = 6,  FolderName = "OutreachBooth", ButtonName = "UpgradeButton",  Cost = 525000,              SpeedTier = 4,   UnlockId = "OutreachBoothStage" },
     { Step = 7,  FolderName = "Booklets",      ButtonName = "UpgradeButton",  Cost = 6000000,             SpeedTier = 5,   UnlockId = "BookletsStage" },
     { Step = 8,  FolderName = "Speakers",      ButtonName = "UpgradeButton",  Cost = 375000000,           SpeedTier = 6,   UnlockId = "SpeakersStage" },
