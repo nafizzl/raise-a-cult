@@ -278,9 +278,45 @@ local function setupPlayerGuiForPart(workspacePart: BasePart): BillboardGui?
         end
 
         activePlayerGuis[workspacePart] = clonedBb
+
+        -- Immediate Distance Evaluation to eliminate Faraway Flicker
+        local character = localPlayer.Character
+        local hrp = character and character:FindFirstChild("HumanoidRootPart") :: BasePart?
+        local isCollect = (workspacePart.Name == "CollectUpgradeGui")
+        local inDist = isCollect and COLLECT_IN_DIST or BUTTON_IN_DIST
+        if hrp and workspacePart:IsDescendantOf(workspace) then
+            local dist = (Vector3.new(hrp.Position.X, 0, hrp.Position.Z) - Vector3.new(workspacePart.Position.X, 0, workspacePart.Position.Z)).Magnitude
+            if dist <= inDist then
+                setGuiState(clonedBb, true)
+            else
+                clonedBb.Enabled = false
+                isGuiVisible[clonedBb] = false
+            end
+        else
+            clonedBb.Enabled = false
+            isGuiVisible[clonedBb] = false
+        end
     end
 
     return activePlayerGuis[workspacePart]
+end
+
+-- Instant Event-Driven Adornee Registration (Zero-Latency Discovery)
+local function registerAdorneePart(part: Instance)
+    if part:IsA("BasePart") and (part.Name == "CollectUpgradeGui" or part.Name == "PricingTag") then
+        local sourceBb = part:FindFirstChildWhichIsA("BillboardGui")
+        if sourceBb then
+            sourceBb.Enabled = false -- Instantly silence physical 3D billboard on client
+        end
+        setupPlayerGuiForPart(part)
+    end
+end
+
+workspace.DescendantAdded:Connect(registerAdorneePart)
+
+-- Initial scan on client startup
+for _, part in ipairs(workspace:GetDescendants()) do
+    registerAdorneePart(part)
 end
 
 -- Cached Proximity Scanning across workspace
@@ -301,13 +337,15 @@ RunService.Heartbeat:Connect(function(dt: number)
         end
     end
 
-    -- Discover new billboard adornee parts every 0.3s across workspace
+    -- Periodic discovery scan fallback every 0.5s
     scanCooldown = scanCooldown + dt
-    if scanCooldown >= 0.3 then
+    if scanCooldown >= 0.5 then
         scanCooldown = 0
         for _, part in ipairs(workspace:GetDescendants()) do
             if part:IsA("BasePart") and (part.Name == "CollectUpgradeGui" or part.Name == "PricingTag") then
-                setupPlayerGuiForPart(part)
+                if not activePlayerGuis[part] then
+                    registerAdorneePart(part)
+                end
             end
         end
     end

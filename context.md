@@ -68,6 +68,17 @@
     9. **`LED Street Signs` ($112.5B, $2\times$ Speed):** Spawns neon street sign $\rightarrow$ unlocks `Holy Podium` button.
     10. **`Holy Podium` ($2.25Qa, $3\times$ Speed):** Spawns elevated podium & golden player statue *(Building 1 Capstone)*.
     * **`ManagerButton` ($250):** Spawns at Stage 0; upon purchase, restores all manager props (`Table`, `Cult Member`, `MoneyonTable`) and triggers the slide-up animation and automated collection loop.
+  * **Building 2 (Storage Unit Temple) Pipeline:**
+    * **`NewBuildingButton` ($250,000):** Gated behind Building 1's `FloorChalk` (Sidewalk Chalk Circle, $50K). Stays hidden in templates until `FloorChalk` is purchased, which reveals both `OutreachBooth` in Building 1 and pops up this button in Building 2. Spawns the entire temple structure upon stepping on the floor button.
+    * **Multi-Directional Assembly Animation (`BuildingAnimatorClient.local.luau`):**
+      * `Ceiling`: pops down from $+Y$ ($+10\text{ studs}$).
+      * `Floor`: pops up from $-Y$ ($-6\text{ studs}$).
+      * `LeftWall`: pops rightwards from $-X$ ($-8\text{ studs}$).
+      * `RightWall`: pops leftwards from $+X$ ($+8\text{ studs}$).
+      * `FrontWall` & `BackWall`: pop in along $Z$ into place ($\pm 8\text{ studs}$).
+      * `Light`: drops from ceiling with a slight bounce.
+      * After a $0.35\text{s}$ delay, `Podium`, `Cult Member`, and `CollectUpgradeGui` pop up inside with standard upward easing.
+    * **Dynamic Stashing:** Moves unowned Building 2 base assets (`Storage Unit`, `Podium`, `Cult Member`, `CollectUpgradeGui`) into `ReplicatedStorage.BuildingTemplates.Building2` until unlocked.
 
 ---
 

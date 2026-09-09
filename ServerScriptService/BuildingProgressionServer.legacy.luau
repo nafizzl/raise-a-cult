@@ -28,10 +28,27 @@ if not b1Templates then
     b1Templates.Parent = templatesFolder
 end
 
+local b2Templates = templatesFolder:FindFirstChild("Building2")
+if not b2Templates then
+    b2Templates = Instance.new("Folder")
+    b2Templates.Name = "Building2"
+    b2Templates.Parent = templatesFolder
+end
+
 local cultTycoon = workspace:WaitForChild("CultTycoon", 10) or workspace
 local b1Folder = cultTycoon:FindFirstChild("Building1")
 local preacherFolder = b1Folder and b1Folder:FindFirstChild("StreetPreacherBuilding")
 local newBuildingBtnFolder = b1Folder and b1Folder:FindFirstChild("NewBuildingButton")
+
+-- Building 2 Instances
+local b2Folder = cultTycoon:FindFirstChild("Building2")
+local templeFolder = b2Folder and b2Folder:FindFirstChild("StorageUnitTempleBuilding")
+local b2NewBuildingBtn = b2Folder and b2Folder:FindFirstChild("NewBuildingButton")
+
+local b2StorageUnit = templeFolder and templeFolder:FindFirstChild("Storage Unit")
+local b2Podium = templeFolder and templeFolder:FindFirstChild("Podium")
+local b2Member = templeFolder and templeFolder:FindFirstChild("Cult Member")
+local b2CollectGui = templeFolder and templeFolder:FindFirstChild("CollectUpgradeGui")
 
 -- Starter Base Props
 local starterTable = preacherFolder and preacherFolder:FindFirstChild("Table")
@@ -65,6 +82,14 @@ local B1_CHAIN: { ChainStep } = {
 if starterTable and starterTable.Parent ~= b1Templates then starterTable.Parent = b1Templates end
 if starterMember and starterMember.Parent ~= b1Templates then starterMember.Parent = b1Templates end
 if collectGuiPart and collectGuiPart.Parent ~= b1Templates then collectGuiPart.Parent = b1Templates end
+
+-- Stash Building 2 base props on server start
+if b2StorageUnit and b2StorageUnit.Parent ~= b2Templates then b2StorageUnit.Parent = b2Templates end
+if b2Podium and b2Podium.Parent ~= b2Templates then b2Podium.Parent = b2Templates end
+if b2Member and b2Member.Parent ~= b2Templates then b2Member.Parent = b2Templates end
+if b2CollectGui and b2CollectGui.Parent ~= b2Templates then b2CollectGui.Parent = b2Templates end
+if b2NewBuildingBtn and b2NewBuildingBtn.Parent ~= b2Templates then b2NewBuildingBtn.Parent = b2Templates end
+
 
 -- Stash Manager Props
 local managerFolder = preacherFolder and preacherFolder:FindFirstChild("Manager")
@@ -138,13 +163,18 @@ local function setupTouchButton(buttonFolder: Instance?, cost: number, unlockNam
                 player.Name, unlockName, EconomyMath.FormatCurrency(cost)))
 
             -- De-render button by moving to templates
+            local targetTemplate = b1Templates
+            if buttonFolder and (buttonFolder == b2NewBuildingBtn or (buttonFolder.Parent and buttonFolder.Parent.Name == "Building2")) then
+                targetTemplate = b2Templates
+            end
+
             local parentFolder = buttonFolder.Parent
-            if parentFolder and parentFolder:IsDescendantOf(b1Templates) then
+            if parentFolder and parentFolder:IsDescendantOf(templatesFolder) then
                 -- Already in templates
-            elseif parentFolder and b1Templates:FindFirstChild(parentFolder.Name) then
-                buttonFolder.Parent = b1Templates:FindFirstChild(parentFolder.Name)
+            elseif parentFolder and targetTemplate:FindFirstChild(parentFolder.Name) then
+                buttonFolder.Parent = targetTemplate:FindFirstChild(parentFolder.Name)
             else
-                buttonFolder.Parent = b1Templates
+                buttonFolder.Parent = targetTemplate
             end
 
             if callback then
@@ -186,7 +216,7 @@ local function spawnModelsForStep(folderName: string)
     end
 end
 
-local function showButtonForStep(folderName: string)
+local function showButtonForStep(folderName: string, player: Player?)
     if not preacherFolder then return end
     local targetFolder = preacherFolder:FindFirstChild(folderName)
     if not targetFolder then
@@ -198,6 +228,9 @@ local function showButtonForStep(folderName: string)
     local btn = stepButtons[folderName] or (b1Templates:FindFirstChild(folderName) and (b1Templates[folderName]:FindFirstChild("UpgradeButton") or b1Templates[folderName]:FindFirstChild("CosmeticButton")))
     if btn then
         btn.Parent = targetFolder
+        if player and player:IsDescendantOf(Players) then
+            UnlockStageEvent:FireClient(player, "ButtonReveal_" .. folderName)
+        end
     end
 end
 
@@ -220,7 +253,7 @@ local function spawnManagerModels()
     end
 end
 
-local function showManagerButton()
+local function showManagerButton(player: Player?)
     if not preacherFolder then return end
     local mFolder = preacherFolder:FindFirstChild("Manager")
     if not mFolder then
@@ -232,6 +265,9 @@ local function showManagerButton()
     local mBtn = managerBtnFolder or (b1Templates:FindFirstChild("Manager") and b1Templates.Manager:FindFirstChild("ManagerButton"))
     if mBtn then
         mBtn.Parent = mFolder
+        if player and player:IsDescendantOf(Players) then
+            UnlockStageEvent:FireClient(player, "ButtonReveal_Manager")
+        end
     end
 end
 
@@ -256,7 +292,16 @@ for i, item in ipairs(B1_CHAIN) do
         -- Reveal next button in chain if available
         local nextItem = B1_CHAIN[i + 1]
         if nextItem then
-            showButtonForStep(nextItem.FolderName)
+            showButtonForStep(nextItem.FolderName, player)
+        end
+
+        -- Gate Check: Sidewalk Chalk Circle ($50K) unlocks Building 2's NewBuildingButton ($250K)
+        if item.UnlockId == "FloorChalkStage" then
+            local b2State = MoneyManager.GetBuildingState(player, 2)
+            if b2State.OwnedCount <= 0 and b2NewBuildingBtn and b2Folder then
+                b2NewBuildingBtn.Parent = b2Folder
+                UnlockStageEvent:FireClient(player, "Building2_ButtonReveal")
+            end
         end
     end)
 end
@@ -273,9 +318,25 @@ setupTouchButton(newBuildingBtnFolder, 0, "BaseStage", function(player: Player)
         if starterMember then starterMember.Parent = preacherFolder end
         if collectGuiPart then collectGuiPart.Parent = preacherFolder end
         if not bState.HasManager then
-            showManagerButton()
+            showManagerButton(player)
         end
-        showButtonForStep(B1_CHAIN[1].FolderName) -- Show FloorChalk ($15)
+        showButtonForStep(B1_CHAIN[1].FolderName, player)
+    end
+end)
+
+-- Building 2: Initial Building Spawn ($250,000)
+local B2_UNLOCK_COST = 250000
+setupTouchButton(b2NewBuildingBtn, B2_UNLOCK_COST, "Building2_BaseStage", function(player: Player)
+    local b2State = MoneyManager.GetBuildingState(player, 2)
+    if b2State.OwnedCount <= 0 then
+        b2State.OwnedCount = 1
+    end
+
+    if templeFolder then
+        if b2StorageUnit then b2StorageUnit.Parent = templeFolder end
+        if b2Podium then b2Podium.Parent = templeFolder end
+        if b2Member then b2Member.Parent = templeFolder end
+        if b2CollectGui then b2CollectGui.Parent = templeFolder end
     end
 end)
 
@@ -283,6 +344,7 @@ end)
 local function restorePlayerProgression(player: Player)
     local bState = MoneyManager.GetBuildingState(player, 1)
 
+    -- 1. Building 1 Progression Restoration
     if bState.OwnedCount <= 0 then
         -- Brand new player: Show only NewBuildingButton, hide everything else
         if newBuildingBtnFolder and b1Folder then newBuildingBtnFolder.Parent = b1Folder end
@@ -301,51 +363,75 @@ local function restorePlayerProgression(player: Player)
                 end
             end
         end
-        return
-    end
-
-    -- Returning player who owns Building 1:
-    if newBuildingBtnFolder then newBuildingBtnFolder.Parent = b1Templates end
-    if preacherFolder then
-        if starterTable then starterTable.Parent = preacherFolder end
-        if starterMember then starterMember.Parent = preacherFolder end
-        if collectGuiPart then collectGuiPart.Parent = preacherFolder end
-    end
-
-    -- Restore Manager State
-    if bState.HasManager then
-        if managerBtnFolder then managerBtnFolder.Parent = b1Templates.Manager end
-        spawnManagerModels()
     else
-        showManagerButton()
-    end
-
-    -- Restore Sequential Chain State
-    local nextButtonToShow: string? = nil
-    for _, item in ipairs(B1_CHAIN) do
-        local isPurchased = MoneyManager.IsUpgradePurchased(player, 1, item.UnlockId)
-        -- Backward compatibility check for floor speed tiers
-        if not isPurchased and item.SpeedTier and bState.FloorUpgrades[item.SpeedTier] then
-            isPurchased = true
-            MoneyManager.SetUpgradePurchased(player, 1, item.UnlockId, true)
+        -- Returning player who owns Building 1:
+        if newBuildingBtnFolder then newBuildingBtnFolder.Parent = b1Templates end
+        if preacherFolder then
+            if starterTable then starterTable.Parent = preacherFolder end
+            if starterMember then starterMember.Parent = preacherFolder end
+            if collectGuiPart then collectGuiPart.Parent = preacherFolder end
         end
 
-        if isPurchased then
-            spawnModelsForStep(item.FolderName)
-            local btn = stepButtons[item.FolderName]
-            if btn then btn.Parent = b1Templates[item.FolderName] end
+        -- Restore Manager State
+        if bState.HasManager then
+            if managerBtnFolder then managerBtnFolder.Parent = b1Templates.Manager end
+            spawnManagerModels()
         else
-            if not nextButtonToShow then
-                nextButtonToShow = item.FolderName
-            else
+            showManagerButton()
+        end
+
+        -- Restore Sequential Chain State
+        local nextButtonToShow: string? = nil
+        for _, item in ipairs(B1_CHAIN) do
+            local isPurchased = MoneyManager.IsUpgradePurchased(player, 1, item.UnlockId)
+            -- Backward compatibility check for floor speed tiers
+            if not isPurchased and item.SpeedTier and bState.FloorUpgrades[item.SpeedTier] then
+                isPurchased = true
+                MoneyManager.SetUpgradePurchased(player, 1, item.UnlockId, true)
+            end
+
+            if isPurchased then
+                spawnModelsForStep(item.FolderName)
                 local btn = stepButtons[item.FolderName]
                 if btn then btn.Parent = b1Templates[item.FolderName] end
+            else
+                if not nextButtonToShow then
+                    nextButtonToShow = item.FolderName
+                else
+                    local btn = stepButtons[item.FolderName]
+                    if btn then btn.Parent = b1Templates[item.FolderName] end
+                end
             end
+        end
+
+        if nextButtonToShow then
+            showButtonForStep(nextButtonToShow)
         end
     end
 
-    if nextButtonToShow then
-        showButtonForStep(nextButtonToShow)
+    -- 2. Building 2 Progression Restoration
+    local b2State = MoneyManager.GetBuildingState(player, 2)
+    if b2State.OwnedCount <= 0 then
+        -- Building 2 not purchased yet: only show NewBuildingButton if FloorChalk is owned!
+        local hasChalk = MoneyManager.IsUpgradePurchased(player, 1, "FloorChalkStage")
+        if hasChalk and b2NewBuildingBtn and b2Folder then
+            b2NewBuildingBtn.Parent = b2Folder
+        else
+            if b2NewBuildingBtn then b2NewBuildingBtn.Parent = b2Templates end
+        end
+        if b2StorageUnit then b2StorageUnit.Parent = b2Templates end
+        if b2Podium then b2Podium.Parent = b2Templates end
+        if b2Member then b2Member.Parent = b2Templates end
+        if b2CollectGui then b2CollectGui.Parent = b2Templates end
+    else
+        -- Building 2 owned: hide NewBuildingButton, restore base props
+        if b2NewBuildingBtn then b2NewBuildingBtn.Parent = b2Templates end
+        if templeFolder then
+            if b2StorageUnit then b2StorageUnit.Parent = templeFolder end
+            if b2Podium then b2Podium.Parent = templeFolder end
+            if b2Member then b2Member.Parent = templeFolder end
+            if b2CollectGui then b2CollectGui.Parent = templeFolder end
+        end
     end
 end
 
@@ -357,4 +443,4 @@ Players.PlayerAdded:Connect(function(player: Player)
     end)
 end)
 
-print("[BuildingProgressionServer] Full 11-step Building 1 upgrade chain & manager pipeline ready.")
+print("[BuildingProgressionServer] Full 11-step Building 1 & Building 2 pipeline ready.")

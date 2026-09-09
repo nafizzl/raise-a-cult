@@ -98,18 +98,32 @@
   * **Building 1 Adjusted Costs:** Updated `B1_CHAIN` and Studio billboards: Worship Flyers ($50), More Preachers ($600), Canopy Tents ($2.5K), Megaphones ($10K), and Floor Chalk ($50K).
   * **Base Unlock Realignment:** Updated `EconomyConfig.luau` with clean geometric tiers: Building 2 ($250K), Building 3 ($250M), and Building 4 ($500B), leading up to the Building 5 ($100T) First Rebirth Gate (Schism).
   * **Catalog & PRD Synchronized:** Updated `building_upgrades_catalog.md` and `proposed_prestiges.md` with the progressive milestone scaling and 7-tier Sacred Dogma pipeline.
-* **Multi-Plot & Multi-Player Tycoon Architectural Blueprint:**
-  * Created [`multi_plot_architecture.md`](file:///c:/Users/Nafiz%20Labib/raise-a-cult/multi_plot_architecture.md) detailing the transition plan from a single-plot developer environment to a scalable multi-player server setup.
-  * Preserved the single-plot developer workflow for immediate building/feature expansion while documenting:
-    * Edit-mode workspace model preservation so `workspace.CultTycoon` remains fully visible in Studio.
-    * Server-side `TycoonMasterTemplate` cloning into `ServerStorage`.
-    * Per-player plot assignment, stage restoration, and button ownership isolation.
-    * Client BillboardGUI adornee scoping and multi-plot animation triggering.
+* **Holy Podium PlayerModel Rig Assembly:**
+  * Diagnosed disjointed R15 statue parts where the `HumanoidRootPart` was positioned on the podium stand (`-1.23, 5.99, -40.71`) while the anatomical mesh parts (`Head`, `Torso`, `Limbs`) were stranded 90 studs away near the test area (`14.1, 8.29, 48.02`).
+  * Solved and aligned all 15 Motor6D joints to the `HumanoidRootPart` at the podium stand surface ($Y = 0.99\text{ studs}$), anchoring all limbs and restoring the complete avatar onto the podium.
 
+* **Building 2 (Storage Unit Temple) UI, Directional Animation & Pipeline:**
+  * **UI Configuration:** Configured `NewBuildingButton.PricingTag` (Benefit: `"New Building"`, Title: `"Storage Temple"`, Pricing: `"$250K"`) and `CollectUpgradeGui` (Title: `"STORAGE UNIT TEMPLE"`, Yield: `"$500"`, Timer: `"READY"`, Level: `"x1"`, Price: `"$282K"`). Removed obsolete `ClickDetector` and tagged `BuildingId = 2`.
+  * **Custom Directional Assembly Animation:** Implemented world-space directional pop-in in `BuildingAnimatorClient.local.luau`:
+    * `Ceiling` drops down from $+Y$ ($+10\text{ studs}$).
+    * `Floor` pops up from $-Y$ ($-6\text{ studs}$).
+    * `LeftWall` pops rightwards from $-X$ ($-8\text{ studs}$).
+    * `RightWall` pops leftwards from $+X$ ($+8\text{ studs}$).
+    * `FrontWall` & `BackWall` pop along $Z$ into place ($\pm 8\text{ studs}$).
+    * `Light` drops down with bounce easing.
+    * Staggered $0.35\text{s}$ interior pop-in for `Podium`, `Cult Member`, and `CollectUpgradeGui`.
+  * **Server Pipeline Integration:** Added Building 2 base asset stashing to `ReplicatedStorage.BuildingTemplates.Building2`, wired `NewBuildingButton` ($250,000) touch handler, and added persistence restoration on player join in `BuildingProgressionServer.legacy.luau`.
+  * **Building 2 Unlock Gate via FloorChalk ($50K):** Gated `NewBuildingButton` ($250,000) so it remains hidden in `ReplicatedStorage.BuildingTemplates.Building2` until `FloorChalk` (Sidewalk Chalk Circle) is purchased in Building 1. Purchasing `FloorChalk` simultaneously reveals the next Building 1 upgrade button (`OutreachBooth`, $525K) and triggers `Building2_ButtonReveal` to pop up Building 2's purchase button.
 
+* **Animation Pacing Calibration (2x Slower):**
+  * Doubled the slide-in pop animation duration for all Building 1 upgrades and base structures from $0.6\text{s} \to 1.2\text{s}$ using `EasingStyle.Back` in `BuildingAnimatorClient.local.luau`.
+  * Slowed down the Building 2 Storage Unit directional shell assembly from $0.55\text{s} \to 1.1\text{s}$ (ceiling light to $1.3\text{s}$), and doubled the interior props stagger delay from $0.35\text{s} \to 0.70\text{s}$ ($1.2\text{s}$ duration).
 
+* **Universal Button Pop-In Animations:**
+  * Added `animateButtonPopIn()` in `BuildingAnimatorClient.local.luau`, animating the button pad and 3D pricing tag smoothly upwards from $Y - 3\text{ studs}$ over $1.0\text{s}$ (`EasingStyle.Back`).
+  * Updated `showButtonForStep` and `showManagerButton` in `BuildingProgressionServer.legacy.luau` to broadcast `ButtonReveal_<FolderName>` to active purchasing players during gameplay, while keeping join restoration instant without redundant animations.
 
-
-
-
-
+* **Zero-Flicker GUI Registration (Studio Edit Mode Preserved):**
+  * Preserved full visibility and editing workflow by keeping all physical `BillboardGui`s permanently `Enabled = true` in Roblox Studio Edit Mode and on the server.
+  * Implemented instant event-driven client suppression in `CollectUpgradeClient.local.luau` using `workspace.DescendantAdded` to set physical `BillboardGui.Enabled = false` locally as soon as buttons replicate to the client.
+  * Cloned `PlayerGui` adornees are initialized with `Enabled = false` and `UIScale.Scale = 0`, immediately testing proximity against the player character to eliminate the split-second faraway GUI flash when new buttons are revealed.
