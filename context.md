@@ -134,4 +134,6 @@
 ### 10. Related Project Documents
 * **[`economy.md`](file:///c:/Users/Nafiz%20Labib/raise-a-cult/economy.md):** Full mathematical PRD specification, multi-tier tables, and prestige mechanics.
 * **[`building_upgrades_catalog.md`](file:///c:/Users/Nafiz%20Labib/raise-a-cult/building_upgrades_catalog.md):** Thematic 3D visual guide for all 8 speed upgrades and cosmetic construction steps across all 10 buildings.
+* **[`proposed_prestiges.md`](file:///c:/Users/Nafiz%20Labib/raise-a-cult/proposed_prestiges.md):** 3-tier prestige economy (Schisms, Reformations, Ascensions) and Sacred Dogma scaling.
+* **[`multi_plot_architecture.md`](file:///c:/Users/Nafiz%20Labib/raise-a-cult/multi_plot_architecture.md):** Architecture for multi-player tycoon plot cloning, owner isolation, and edit-time model preservation.
 * **[`timeline.md`](file:///c:/Users/Nafiz%20Labib/raise-a-cult/timeline.md):** Complete chronological engineering and commit log.

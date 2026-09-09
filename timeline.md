@@ -98,6 +98,14 @@
   * **Building 1 Adjusted Costs:** Updated `B1_CHAIN` and Studio billboards: Worship Flyers ($50), More Preachers ($600), Canopy Tents ($2.5K), Megaphones ($10K), and Floor Chalk ($50K).
   * **Base Unlock Realignment:** Updated `EconomyConfig.luau` with clean geometric tiers: Building 2 ($250K), Building 3 ($250M), and Building 4 ($500B), leading up to the Building 5 ($100T) First Rebirth Gate (Schism).
   * **Catalog & PRD Synchronized:** Updated `building_upgrades_catalog.md` and `proposed_prestiges.md` with the progressive milestone scaling and 7-tier Sacred Dogma pipeline.
+* **Multi-Plot & Multi-Player Tycoon Architectural Blueprint:**
+  * Created [`multi_plot_architecture.md`](file:///c:/Users/Nafiz%20Labib/raise-a-cult/multi_plot_architecture.md) detailing the transition plan from a single-plot developer environment to a scalable multi-player server setup.
+  * Preserved the single-plot developer workflow for immediate building/feature expansion while documenting:
+    * Edit-mode workspace model preservation so `workspace.CultTycoon` remains fully visible in Studio.
+    * Server-side `TycoonMasterTemplate` cloning into `ServerStorage`.
+    * Per-player plot assignment, stage restoration, and button ownership isolation.
+    * Client BillboardGUI adornee scoping and multi-plot animation triggering.
+
 
 
 
