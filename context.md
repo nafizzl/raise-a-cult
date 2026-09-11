@@ -119,7 +119,7 @@
 ### 8. Authoritative Developer Console & Command System
 * **Server Script:** `ServerScriptService.AdminServer.legacy.luau`
   * Strict permission verification: `player.UserId == game.CreatorId` (`51437187`), `ALLOWED_USER_IDS` whitelist, or `RunService:IsStudio()`.
-  * Command syntax: `:give <amount>`, `:set <amount>`, `:reset`, `:unlockall`, `:unlockmanager <id>`, `:help`.
+  * Command syntax: `:give <amount>`, `:set <amount>`, `:reset`, `:unlockmanager <id>`, `:help`.
   * Suffix parsing: handles `k`, `M`, `B`, `T`, `Qa`, `Qi`, `Sx`, `Sp`, `Oc`, `No`, `Dc`, `Ud`, `Dd`, `Td`, `Qad`, `Qid`, `Sxd`, `Spd`, `Ocd`, `Nod`, `Vg`, `Cen`.
 * **Client UI:** `StarterPlayer.StarterPlayerScripts.AdminClient.local.luau`
   * Floating `⚙ DEV` top-right button with `F4`, `;` (Semicolon), and `]` toggle hotkeys.

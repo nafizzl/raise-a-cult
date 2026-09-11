@@ -16,14 +16,81 @@ local localPlayer = Players.LocalPlayer
 local playerGui = localPlayer:WaitForChild("PlayerGui")
 
 -- Distance Hysteresis thresholds to eliminate boundary jitter/collapsing
-local COLLECT_IN_DIST = 7   -- Studs to pop in (Halved for collect stand)
-local COLLECT_OUT_DIST = 9  -- Studs to pop out
+local COLLECT_IN_DIST = 5.5   -- Studs to pop in (Slightly reduced for tighter proximity)
+local COLLECT_OUT_DIST = 7.5  -- Studs to pop out (Slightly reduced from 9)
 local BUTTON_IN_DIST = 16   -- Studs to pop in (Reverted for floor buttons)
 local BUTTON_OUT_DIST = 20  -- Studs to pop out
 
 local RemoteEvents = ReplicatedStorage:WaitForChild("RemoteEvents")
 local CollectEvent = RemoteEvents:WaitForChild("CollectEvent") :: RemoteEvent
 local UpgradeEvent = RemoteEvents:WaitForChild("UpgradeEvent") :: RemoteEvent
+
+-- Fast-Bar Tile Animation Parameters (Seamless Barber-Pole Tiled ImageLabel)
+local FAST_BAR_IMAGE_ID = "rbxassetid://17150049935" -- Seamless 45-degree diagonal stripe image (AssetTypeId 1)
+local FAST_BAR_TILE_WIDTH = 40 -- Pixel width of one repeating stripe cycle
+local FAST_BAR_CYCLE_DURATION = 0.35 -- Seconds to move one tile width (2x faster, seamless loop)
+local FAST_BAR_BASE_COLOR = Color3.fromRGB(245, 45, 60) -- Bright red full bar base
+local FAST_BAR_STRIPE_COLOR = Color3.fromRGB(120, 12, 22) -- Deep wine-red diagonal stripe
+
+local function getOrCreateFastBarOverlay(track: Instance): CanvasGroup?
+	if not track or not track:IsA("GuiObject") then return nil end
+	local existing = track:FindFirstChild("FastBarOverlay")
+	if existing and existing:IsA("CanvasGroup") then
+		local stripes = existing:FindFirstChild("Stripes")
+		if stripes and stripes:IsA("ImageLabel") and stripes.ScaleType == Enum.ScaleType.Tile and stripes.Image == FAST_BAR_IMAGE_ID then
+			return existing
+		else
+			existing:Destroy()
+		end
+	end
+
+	local overlay = Instance.new("CanvasGroup")
+	overlay.Name = "FastBarOverlay"
+	-- Inset by 1px so the red background sits strictly within the 3px black UIStroke border
+	overlay.Position = UDim2.new(0, 1, 0, 1)
+	overlay.Size = UDim2.new(1, -2, 1, -2)
+	overlay.BackgroundColor3 = FAST_BAR_BASE_COLOR
+	overlay.BorderSizePixel = 0
+	overlay.ZIndex = 2
+	overlay.Visible = false
+
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 13)
+	corner.Parent = overlay
+
+	-- Barber-Pole / Diagonal Stripe Tiled ImageLabel
+	-- Width is 100% + 1 tile width; starting position is offset left by 1 tile width.
+	local stripes = Instance.new("ImageLabel")
+	stripes.Name = "Stripes"
+	stripes.BackgroundTransparency = 1
+	stripes.Image = FAST_BAR_IMAGE_ID
+	stripes.ImageColor3 = FAST_BAR_STRIPE_COLOR
+	stripes.ScaleType = Enum.ScaleType.Tile
+	stripes.TileSize = UDim2.new(0, FAST_BAR_TILE_WIDTH, 1, 0)
+	stripes.Size = UDim2.new(1, FAST_BAR_TILE_WIDTH, 1, 0)
+	stripes.Position = UDim2.new(0, -FAST_BAR_TILE_WIDTH, 0, 0)
+	stripes.BorderSizePixel = 0
+	stripes.ZIndex = 3
+	stripes.Parent = overlay
+
+	-- Infinite seamless translation tween: shifts right by exactly 1 tile width (+40px)
+	local tweenInfo = TweenInfo.new(
+		FAST_BAR_CYCLE_DURATION,
+		Enum.EasingStyle.Linear,
+		Enum.EasingDirection.InOut,
+		-1,     -- Infinite loop count
+		false   -- Do not reverse
+	)
+	local tween = TweenService:Create(stripes, tweenInfo, {
+		Position = UDim2.new(0, 0, 0, 0) -- Move right by 1 tile width
+	})
+	tween:Play()
+
+	overlay.Parent = track
+	return overlay
+end
+
+
 
 local activePlayerGuis: { [BasePart]: BillboardGui } = {}
 local guiBuildingIds: { [BillboardGui]: number } = {}
@@ -136,19 +203,24 @@ local function setGuiState(pGui: BillboardGui, shouldBeVisible: boolean)
         activeTweens[pGui] = nil
     end
 
+    local targetScale = 1.0
+    if pGui.Name:find("CollectUpgradeGui") then
+        targetScale = 1.25 -- Roughly 25% larger for Collect & Upgrade stands
+    end
+
     if shouldBeVisible then
         pGui.Enabled = true
         local currentScale = math.max(0, uiScale.Scale)
         uiScale.Scale = (currentScale < 0.1) and 0.1 or currentScale
 
         local tween = TweenService:Create(uiScale, TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-            Scale = 1
+            Scale = targetScale
         })
         activeTweens[pGui] = tween
         tween:Play()
         tween.Completed:Connect(function()
             if activeTweens[pGui] == tween then
-                uiScale.Scale = 1
+                uiScale.Scale = targetScale
                 activeTweens[pGui] = nil
             end
         end)
@@ -224,7 +296,15 @@ local function setupPlayerGuiForPart(workspacePart: BasePart): BillboardGui?
             local bDef = EconomyConfig.Buildings[bId] or EconomyConfig.Buildings[1]
             local nextUpgradeCost = EconomyMath.GetSingleCost(bDef.BaseCost, bDef.GrowthRate, 2)
             if timerLabel then timerLabel.Text = "READY" end
-            if fill then fill.Size = UDim2.new(1, 0, 1, 0) end
+            if fill then
+                fill.Size = UDim2.new(1, 0, 1, 0)
+                fill.BackgroundColor3 = FAST_BAR_BASE_COLOR
+                local oldGrad = fill:FindFirstChild("BarberGradient")
+                if oldGrad then oldGrad:Destroy() end
+            end
+            if track then
+                getOrCreateFastBarOverlay(track)
+            end
             if moneyLabel then moneyLabel.Text = EconomyMath.FormatCurrency(bDef.BaseProd) end
             if priceLabel then priceLabel.Text = EconomyMath.FormatCurrency(nextUpgradeCost) end
             if levelLabel then levelLabel.Text = "x1" end
@@ -375,12 +455,9 @@ RunService.Heartbeat:Connect(function(dt: number)
     end
 end)
 
--- Continuous Per-Building Progress Bar & Fast-Bar Animation
-local fastBarPulseTime = 0
+-- Continuous Per-Building Progress Bar & Fast-Bar Conveyor Animation
 RunService.RenderStepped:Connect(function(stepDt: number)
     local now = os.clock()
-    fastBarPulseTime = fastBarPulseTime + (stepDt * 4)
-    local pulse = 0.85 + (math.sin(fastBarPulseTime) * 0.15)
 
     for part, pGui in pairs(activePlayerGuis) do
         if part.Name == "CollectUpgradeGui" and pGui.Enabled then
@@ -390,101 +467,131 @@ RunService.RenderStepped:Connect(function(stepDt: number)
             local track = container and container:FindFirstChild("ProgressBarTrack")
             local fill = track and track:FindFirstChild("ProgressFill") :: Frame?
             local timerLabel = track and track:FindFirstChild("TimerLabel") :: TextLabel?
+            local fastBarOverlay = track and (track:FindFirstChild("FastBarOverlay") or getOrCreateFastBarOverlay(track)) :: CanvasGroup?
 
-            if animState.IsFastBar then
-                if fill then
-                    fill.Size = UDim2.new(1, 0, 1, 0)
-                    fill.BackgroundColor3 = Color3.fromRGB(math.floor(255 * pulse), math.floor(45 * pulse), math.floor(60 * pulse))
-                end
-                if timerLabel then
-                    timerLabel.Text = EconomyMath.FormatTime(animState.Duration)
-                end
-            elseif animState.IsCycling then
-                local elapsed = now - animState.StartTime
-                local remaining = math.max(0, animState.Duration - elapsed)
-                if timerLabel then
-                    timerLabel.Text = string.format("%.1fs", remaining)
-                end
-            else
-                if not animState.IsAutoManager then
-                    if timerLabel and timerLabel.Text ~= "READY" then
-                        timerLabel.Text = "READY"
-                    end
-                    if fill and fill.Size.X.Scale < 1 then
-                        fill.Size = UDim2.new(1, 0, 1, 0)
-                    end
-                end
-            end
-        end
-    end
+			if animState.IsFastBar then
+				if fastBarOverlay and not fastBarOverlay.Visible then
+					fastBarOverlay.Visible = true
+				end
+				if fill and fill.Visible then
+					-- Hide standard fill during fast bar mode so only FastBarOverlay renders within border
+					fill.Visible = false
+				end
+				if timerLabel then
+					timerLabel.Text = EconomyMath.FormatTime(animState.Duration)
+				end
+			elseif animState.IsCycling then
+				if fastBarOverlay and fastBarOverlay.Visible then
+					fastBarOverlay.Visible = false
+				end
+				if fill then
+					fill.Visible = true
+					fill.BackgroundColor3 = FAST_BAR_BASE_COLOR
+				end
+				local elapsed = now - animState.StartTime
+				local remaining = math.max(0, animState.Duration - elapsed)
+				if timerLabel then
+					timerLabel.Text = string.format("%.1fs", remaining)
+				end
+			else
+				if fastBarOverlay and fastBarOverlay.Visible then
+					fastBarOverlay.Visible = false
+				end
+				if fill then
+					fill.Visible = true
+					fill.BackgroundColor3 = FAST_BAR_BASE_COLOR
+				end
+				if not animState.IsAutoManager then
+					if timerLabel and timerLabel.Text ~= "READY" then
+						timerLabel.Text = "READY"
+					end
+					if fill and fill.Size.X.Scale < 1 then
+						fill.Size = UDim2.new(1, 0, 1, 0)
+					end
+				end
+			end
+		end
+	end
 end)
 
 local function startBuildingCycle(buildingId: number, cycleDuration: number, isAutoManager: boolean?)
-    local animState = getBuildingAnimState(buildingId)
-    animState.Duration = cycleDuration
-    animState.IsAutoManager = (isAutoManager == true)
+	local animState = getBuildingAnimState(buildingId)
+	animState.Duration = cycleDuration
+	animState.IsAutoManager = (isAutoManager == true)
 
-    if cycleDuration <= 0.1 then
-        animState.IsFastBar = true
-        animState.IsCycling = false
-        return
-    else
-        animState.IsFastBar = false
-    end
+	if cycleDuration <= 0.1 then
+		animState.IsFastBar = true
+		animState.IsCycling = false
+		return
+	else
+		animState.IsFastBar = false
+	end
 
-    animState.IsCycling = true
-    animState.StartTime = os.clock()
+	animState.IsCycling = true
+	animState.StartTime = os.clock()
 
-    if animState.ActiveTween then
-        animState.ActiveTween:Cancel()
-        animState.ActiveTween = nil
-    end
+	if animState.ActiveTween then
+		animState.ActiveTween:Cancel()
+		animState.ActiveTween = nil
+	end
 
-    for pGui, bId in pairs(guiBuildingIds) do
-        if bId == buildingId then
-            local container = pGui:FindFirstChild("Container")
-            local track = container and container:FindFirstChild("ProgressBarTrack")
-            local fill = track and track:FindFirstChild("ProgressFill") :: Frame?
+	for pGui, bId in pairs(guiBuildingIds) do
+		if bId == buildingId then
+			local container = pGui:FindFirstChild("Container")
+			local track = container and container:FindFirstChild("ProgressBarTrack")
+			local fill = track and track:FindFirstChild("ProgressFill") :: Frame?
 
-            if fill then
-                fill.Size = UDim2.new(0, 0, 1, 0)
-                fill.BackgroundColor3 = Color3.fromRGB(245, 45, 60)
-                local fillTween = TweenService:Create(fill, TweenInfo.new(cycleDuration, Enum.EasingStyle.Linear), {
-                    Size = UDim2.new(1, 0, 1, 0)
-                })
-                animState.ActiveTween = fillTween
-                fillTween:Play()
-            end
-        end
-    end
+			local fastBarOverlay = track and track:FindFirstChild("FastBarOverlay") :: CanvasGroup?
+			if fastBarOverlay then fastBarOverlay.Visible = false end
+
+			if fill then
+				fill.Visible = true
+				fill.Size = UDim2.new(0, 0, 1, 0)
+				fill.BackgroundColor3 = FAST_BAR_BASE_COLOR
+				local fillTween = TweenService:Create(fill, TweenInfo.new(cycleDuration, Enum.EasingStyle.Linear), {
+					Size = UDim2.new(1, 0, 1, 0)
+				})
+				animState.ActiveTween = fillTween
+				fillTween:Play()
+			end
+		end
+	end
 end
 
 local function completeBuildingCycle(buildingId: number, isAutoManager: boolean?)
-    local animState = getBuildingAnimState(buildingId)
-    animState.IsAutoManager = (isAutoManager == true)
+	local animState = getBuildingAnimState(buildingId)
+	animState.IsAutoManager = (isAutoManager == true)
 
-    if not animState.IsFastBar then
-        animState.IsCycling = false
-        if animState.ActiveTween then
-            animState.ActiveTween:Cancel()
-            animState.ActiveTween = nil
-        end
+	if not animState.IsFastBar then
+		animState.IsCycling = false
+		if animState.ActiveTween then
+			animState.ActiveTween:Cancel()
+			animState.ActiveTween = nil
+		end
 
-        for pGui, bId in pairs(guiBuildingIds) do
-            if bId == buildingId then
-                local container = pGui:FindFirstChild("Container")
-                local track = container and container:FindFirstChild("ProgressBarTrack")
-                local fill = track and track:FindFirstChild("ProgressFill") :: Frame?
-                local timerLabel = track and track:FindFirstChild("TimerLabel") :: TextLabel?
+		for pGui, bId in pairs(guiBuildingIds) do
+			if bId == buildingId then
+				local container = pGui:FindFirstChild("Container")
+				local track = container and container:FindFirstChild("ProgressBarTrack")
+				local fill = track and track:FindFirstChild("ProgressFill") :: Frame?
+				local timerLabel = track and track:FindFirstChild("TimerLabel") :: TextLabel?
 
-                if not animState.IsAutoManager then
-                    if timerLabel then timerLabel.Text = "READY" end
-                    if fill then fill.Size = UDim2.new(1, 0, 1, 0) end
-                end
-            end
-        end
-    end
+				local fastBarOverlay = track and track:FindFirstChild("FastBarOverlay") :: CanvasGroup?
+				if fastBarOverlay then fastBarOverlay.Visible = false end
+
+				if not animState.IsAutoManager then
+					if fill then
+						fill.Visible = true
+						fill.BackgroundColor3 = FAST_BAR_BASE_COLOR
+						fill.Size = UDim2.new(1, 0, 1, 0)
+					end
+					if timerLabel then timerLabel.Text = "READY" end
+				end
+			end
+		end
+	end
 end
+
 
 CollectEvent.OnClientEvent:Connect(function(action: string, buildingIdArg: any, cycleTimeArg: any, isAutoManagerArg: any)
     local bId = tonumber(buildingIdArg) or 1

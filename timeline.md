@@ -127,3 +127,47 @@
   * Preserved full visibility and editing workflow by keeping all physical `BillboardGui`s permanently `Enabled = true` in Roblox Studio Edit Mode and on the server.
   * Implemented instant event-driven client suppression in `CollectUpgradeClient.local.luau` using `workspace.DescendantAdded` to set physical `BillboardGui.Enabled = false` locally as soon as buttons replicate to the client.
   * Cloned `PlayerGui` adornees are initialized with `Enabled = false` and `UIScale.Scale = 0`, immediately testing proximity against the player character to eliminate the split-second faraway GUI flash when new buttons are revealed.
+
+## September 11, 2026
+
+* **Collect & Upgrade GUI Clean-Up (Robux Speed Button Removal & Centered Title):**
+  * Removed the yellow Robux speed boost button (`RobuxBoostButton`) from the top right of `CollectUpgradeGui` across the workspace template, Building 1 (`StreetPreacherBuilding`), and Building 2 (`StorageUnitTempleBuilding`).
+  * Expanded `BuildingTitle` to span the full 360px container width (`Size = UDim2.new(1, 0, 0, 36)`, `Position = UDim2.new(0, 0, 0, 0)`), centered its alignment (`TextXAlignment = Center`), and increased font size from `20` to `24` with its black `UIStroke` intact.
+
+* **Fast-Bar Seamless Barber-Pole Animation (Industry-Standard Tiled ImageLabel Architecture):**
+  * Transitioned from procedural rotated frame containers to an industry-standard barber-pole implementation using an inner `ImageLabel` (`rbxassetid://17150049935`, AssetTypeId 1 Image) with `ScaleType = Enum.ScaleType.Tile` (`TileSize = UDim2.new(0, 40, 1, 0)`) nested inside the clipped `FastBarOverlay` (`CanvasGroup`, `CornerRadius = 13`).
+  * Set the `ImageLabel` dimensions to $100\% + 1\text{ tile width}$ (`Size = UDim2.new(1, 40, 1, 0)`) and initial position offset left by 1 tile width (`Position = UDim2.new(0, -40, 0, 0)`).
+  * Implemented an infinite linear looping tween via `TweenService` translating from `UDim2.new(0, -40, 0, 0)` to `UDim2.new(0, 0, 0, 0)` over $0.35\text{s}$ (`Speed = ~114px/s`).
+  * Because the image is continuously rendered across the entire width $+40\text{px}$ and shifts right by exactly one tile width, the looping cut point is mathematically identical to the starting frame, completely eliminating any right-side gaps, early stripe cutoffs, or stutter.
+  * Maintained strict $1\text{px}$ container inset (`Position = UDim2.new(0, 1, 0, 1)`, `Size = UDim2.new(1, -2, 1, -2)`) within the 3px black `UIStroke` border, with `ProgressFill` hidden during fast-bar mode.
+* **Simulator Lighting Architecture Applied:**
+  * Configured studio lighting to the industry-standard simulator recipe: `GlobalShadows = false`, `Ambient = Color3.fromRGB(150, 150, 150)`, `OutdoorAmbient = Color3.fromRGB(150, 150, 150)`, `Brightness = 2.2`, and `ClockTime = 14.0`.
+  * Added `ColorCorrectionEffect` with `Saturation = 0.2` and `Contrast = 0.08` for vibrant arcade colors without washed-out highlights.
+  * Disabled `DepthOfFieldEffect` and reduced `Atmosphere.Density = 0.15` to ensure all tycoon plots, buttons, and buildings stay razor-sharp at any camera distance.
+
+* **Collect & Upgrade GUI 25% Scale Enlargement & Tighter Render Distance:**
+  * Scaled all `CollectUpgradeGui` instances up by 25% (`UIScale.Scale = 1.25`) across the workspace template, Building 1, and Building 2, and raised `StudsOffset` from `3.5` to `4.2` studs for clean clearance above stands/podiums.
+  * In `CollectUpgradeClient.local.luau`, configured `setGuiState` to tween `UIScale.Scale` to `1.25` on proximity for `CollectUpgradeGui`.
+  * Slightly reduced the render distance thresholds (`COLLECT_IN_DIST = 5.5`, `COLLECT_OUT_DIST = 7.5`, down from 7 and 9) to keep the screen uncluttered when players walk around the plot.
+
+* **Building 2 Upgrade Pipeline, Button GUI Displays & Pop-In Animations:**
+  * Configured all 6 button 3D Billboard GUIs under `StorageUnitTempleBuilding` based on the design sequence catalog:
+    * Step 1: `Carpeting` (Cosmetic) -> Title: `"CARPETING"`, Price: `"$350K"`, Benefit: `""` ($350,000)
+    * Step 2: `Folding Chairs` (Speed 1) -> Title: `"FOLDING CHAIRS"`, Price: `"$500K"`, Benefit: `"2x Speed"` ($500,000, 1.5s cycle)
+    * Step 3: `Microphone` (Cosmetic) -> Title: `"MICROPHONE"`, Price: `"$1.0M"`, Benefit: `""` ($1,000,000)
+    * Step 4: `Boombox` (Speed 2) -> Title: `"BOOMBOX"`, Price: `"$1.75M"`, Benefit: `"2x Speed"` ($1,750,000, 0.75s cycle)
+    * Step 5: `Manager` (Caretaker) -> Title: `"CARETAKER"`, Price: `"$2.5M"`, Benefit: `"Auto Collect"` ($2,500,000, automated collection)
+    * Step 6: `Altar` (Cosmetic) -> Title: `"CINDERBLOCK ALTAR"`, Price: `"$5.0M"`, Benefit: `""` ($5,000,000)
+  * Integrated full progression pipeline in `BuildingProgressionServer.legacy.luau`:
+    * Configured the **Caretaker (Manager)** button ($2.5M) to be available immediately from the start upon unlocking Building 2, alongside Step 1 (`Carpeting`), matching Building 1's manager structure.
+    * Defined `B2_CHAIN` (5 sequential steps: Carpeting $350K -> Folding Chairs $500K -> Microphone $1.0M -> Boombox $1.75M -> Cinderblock Altar $5.0M).
+    * Server stashes unpurchased Building 2 assets and buttons in `ReplicatedStorage.BuildingTemplates.Building2` at startup, keeping Studio Edit mode fully intact.
+    * Wired touch pads for all 6 buttons, triggering stage reveals, speed upgrades, manager auto-collection, and data persistence via `MoneyManager`.
+    * Implemented player join restoration for Building 2 upgrades, Caretaker state, and active step button.
+  * Enhanced `BuildingAnimatorClient.local.luau`:
+    * Added Building 2 stages (`CarpetingStage`, `FoldingChairsStage`, `MicrophoneStage`, `BoomboxStage`, `Building2_ManagerStage`, `AltarStage`) to `STAGE_FOLDER_MAP`.
+    * Added universal upwards pop-in animation (`animateModelSlideIn`, $1.2\text{s}$, `EasingStyle.Back`) supporting `Model`, `BasePart` (MeshParts, Unions), and `Tool` (PVInstance).
+* **Developer Console `:unlockall` Command Removal:**
+  * Removed `:unlockall` command from `AdminServer.legacy.luau` and its reference in `:help`.
+  * Updated `AdminClient.local.luau` placeholder text to `Type command (e.g. :give 1M, :set 50B, :help)...`.
+  * Updated system documentation in `context.md`.

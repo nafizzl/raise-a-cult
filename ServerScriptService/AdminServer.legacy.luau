@@ -118,15 +118,8 @@ local function processAdminCommand(player: Player, rawCommand: string): (boolean
         MoneyManager.SetManagerOwned(player, bId, true)
         return true, string.format("Manager unlocked for Building %d.", bId)
 
-    elseif cmd == "unlockall" then
-        MoneyManager.AddMoney(player, 1e12)
-        MoneyManager.UnlockFloorUpgrade(player, 1, 1)
-        MoneyManager.UnlockFloorUpgrade(player, 1, 2)
-        MoneyManager.SetManagerOwned(player, 1, true)
-        return true, "Unlocked all early upgrades and granted $1 Trillion."
-
     elseif cmd == "help" or cmd == "cmds" then
-        return true, "Commands: :give <amount>, :set <amount>, :reset, :unlockmanager <id>, :unlockall"
+        return true, "Commands: :give <amount>, :set <amount>, :reset, :unlockmanager <id>"
 
     else
         return false, string.format("Unknown command '%s'. Type :help for commands list.", cmd)
