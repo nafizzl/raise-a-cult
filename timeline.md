@@ -68,7 +68,7 @@
 * **3-Tier Button Billboard UI & Starting Level Cost Alignment:**
   * **3-Tier Layout Standard:** Standardized vertical layout across all button `PricingTag` billboards (`BenefitLabel` in White FredokaOne Bold, item `Title` in colored FredokaOne Bold, and `Pricing` in colored FredokaOne Bold).
   * **Next-Level Cost Initialization:** Fixed `PriceText` to compute the next upgrade cost ($16 for starting Level `x1`) using `EconomyMath.GetSingleCost(bDef.BaseCost, bDef.GrowthRate, 2)` instead of unowned base cost.
-  * **Catalog Specification:** Published [`building_upgrades_catalog.md`](file:///c:/Users/Nafiz%20Labib/raise-a-cult/building_upgrades_catalog.md) detailing 8 functional speed upgrades and intermediary cosmetic builds for all 10 tycoon buildings.
+  * **Catalog Specification:** Published [`building_upgrades_catalog.md`]detailing 8 functional speed upgrades and intermediary cosmetic builds for all 10 tycoon buildings.
 
 * **Manager Hierarchy Reorganization & Dynamic Prop Hiding:**
   * **Dynamic Manager Stashing:** Updated `BuildingProgressionServer.legacy.luau` to dynamically move all manager props (`Table`, `Cult Member`, `MoneyonTable`) into `ReplicatedStorage.BuildingTemplates.Building1.Manager` on server start, preventing premature rendering.
@@ -171,3 +171,57 @@
   * Removed `:unlockall` command from `AdminServer.legacy.luau` and its reference in `:help`.
   * Updated `AdminClient.local.luau` placeholder text to `Type command (e.g. :give 1M, :set 50B, :help)...`.
   * Updated system documentation in `context.md`.
+
+## September 12, 2026
+
+* **Building 2 Full Progression Pipeline & Button Configurations:**
+  * Configured 3D BillboardGuis for all 6 new Building 2 upgrades matching `building_upgrades_catalog.md`:
+    * Step 6: `Donation Machine` -> Title: `"DONATION MACHINE"`, Price: `"$15.0M"`, Benefit: `"2x Speed"` ($15M, 0.375s cycle)
+    * Step 7: `PosePosters` -> Title: `"WORSHIP POSTERS"`, Price: `"$1.225B"`, Benefit: `"2x Speed"` ($1.225B, 0.1875s cycle)
+    * Step 8: `Shutter Door` -> Title: `"SHUTTER DOOR"`, Price: `"$14.0B"`, Benefit: `"2x Speed"` ($14.0B, 0.09375s cycle)
+    * Step 9: `HVAC` -> Title: `"HVAC SYSTEM"`, Price: `"$875B"`, Benefit: `"2x Speed"` ($875B, 0.046875s cycle)
+    * Step 10: `Cameras` -> Title: `"SECURITY CAMERAS"`, Price: `"$262.5T"`, Benefit: `"2x Speed"` ($262.5T, 0.0234375s cycle)
+    * Step 11: `Money Safes` -> Title: `"MONEY SAFES"`, Price: `"$5.25Sx"`, Benefit: `"3x Speed"` ($5.25Sx, 0.0078125s cycle, triggers fast progress bar)
+  * Extended `B2_CHAIN` in `BuildingProgressionServer.legacy.luau` across all 11 sequential steps with dynamic template stashing, touch unlocking, speed multiplier application via `MoneyManager`, and full join restoration.
+  * Added all 6 stage mappings (`DonationMachineStage`, `PosePostersStage`, `ShutterDoorStage`, `HVACStage`, `CamerasStage`, `MoneySafesStage`) to `STAGE_FOLDER_MAP` in `BuildingAnimatorClient.local.luau` with smooth upwards slide-in pop animations.
+
+* **Shutter Door Automatic Proximity Sensing:**
+  * Automated `ElevatorDoor.Script` to open and close smoothly based on player proximity within $18\text{ studs}$ of the doorway.
+  * Checks for ANY player character near the entrance; when any player is within range, raises slats upward and holds open. When all players leave range, automatically closes slats.
+  * Disabled manual `ClickDetector` activations on `ElevatorButton` parts for a completely hands-free automatic entrance.
+
+* **Dynamic 3D Full-Model R15 Pose Posters:**
+  * Replaced 2D headshot flyers with high-definition 3D `ViewportFrame` poster displays across all 6 wall posters in the storage unit temple.
+  * Dynamically spawns the player's full R15 avatar (`Players:CreateHumanoidModelFromUserId`) with full scaling, clothing, and accessories.
+  * Programmed 6 distinct classic Roblox R15 poses across the posters:
+    * Poster 1: Hero / Hands on Hips (`"THE LEADER"`)
+    * Poster 2: Worship / Arms Raised Exaltation (`"WORSHIP"`)
+    * Poster 3: The Thinker / Hand to Chin (`"VISION"`)
+    * Poster 4: Crossed Arms Authoritative (`"AUTHORITY"`)
+    * Poster 5: Pointing Forward Propaganda (`"OBEY"`)
+    * Poster 6: Welcoming Greeting Wave (`"DEVOTION"`)
+
+* **Storage Unit Addon Models Integrated into Base Stage:**
+  * Added dynamic template stashing, purchase spawning, and join restoration in `BuildingProgressionServer.legacy.luau` for the 2 flanking `Storage Unit (addon)` models.
+  * In `BuildingAnimatorClient.local.luau`, configured the addon models to pop in upwards from $Y - 6\text{ studs}$ ($1.2\text{s}$, `EasingStyle.Back`) alongside the main storage unit's directional shell assembly.
+
+* **Shutter Door Full Clearance & 2x Additional Speedup:**
+  * Diagnosed elevator door travel cutoff: original loop only traversed $7.45\text{ studs}$ out of the required $18.75\text{ studs}$ opening height, stopping the door halfway up at player head level.
+  * Recalculated dynamic travel distance to $\approx 19.05\text{ studs}$ so all 19 slats travel completely above the doorway frame and turn transparent (`Transparency = 1`) and non-collidable (`CanCollide = false`), completely opening the passage.
+  * Doubled opening and closing speed again (`ANIM_STEPS = 45`), completing the entire roll-up and roll-down sequence in $\approx 0.75\text{ seconds}$ ($\approx 25.4\text{ studs/s}$) for a snappy, responsive door feel.
+  * Implemented initial CFrame caching to eliminate any floating-point positional drift over infinite open/close cycles.
+
+* **Pose Posters Clean Avatar Display & PlayerGui Adornee Architecture:**
+  * Diagnosed twin root causes of blank/white ViewportFrames during gameplay:
+    1. `player.Character:Clone()` in Roblox broke accessory attachment welds on runtime characters with layered clothing, displacing the oversized Kanye West head and clothing handles $\approx 85\text{ studs}$ away in world space outside the camera view frustum.
+    2. In Roblox, `SurfaceGui`s parented directly to a Part in `Workspace` cannot properly render secondary 3D render-to-texture targets (`ViewportFrame`), and server `Camera` objects do not replicate to clients, leaving `CurrentCamera` as `nil`.
+  * Resolved by generating pristine, fully welded avatar models directly from the player's UserId (`Players:CreateHumanoidModelFromUserId(51437187)`), bringing all 326 parts (including the Kanye head, sweater, cargo pants, and sneakers) into exact alignment centered at $(0.0, 0.4, 0.0)$.
+  * Implemented the proven **PlayerGui Adornee Architecture** in [`PosePosterClient.local.luau`](file:///c:/Users/Nafiz%20Labib/raise-a-cult/StarterPlayerScripts/PosePosterClient.local.luau) in `StarterPlayerScripts` (identical to the architecture in `CollectUpgradeClient`). The client creates each `SurfaceGui` inside `player.PlayerGui` with `Adornee = posterPart`, creates a local `CameraType = Scriptable` camera, and renders the 3D models natively on the client GPU.
+  * **Upright Camera Roll (+90°):** Diagnosed that `SurfaceGui` on `NormalId.Top` mapped the camera's vertical axis horizontally (displaying the character lying sideways). Applied a $+90^\circ$ camera roll (`CFrame.Angles(0, 0, math.rad(90))`), orienting the avatar completely upright with the head at the top and feet at the bottom.
+  * **Side & Border Padding:** Added $24\text{px}$ inset padding to `PoseViewport` (`Size = UDim2.new(1, -48, 1, -48)`, `Position = UDim2.new(0, 24, 0, 24)`) and adjusted camera framing distance to $10.5\text{ studs}$ ($FOV = 46^\circ$), providing generous, elegant side margins around the character.
+  * All 6 wall posters now cleanly render the 3D player model in the 6 distinct standard R15 poses upright against the dark whitish background (`Color3.fromRGB(222, 224, 228)`) with zero text/words.
+
+
+
+
+

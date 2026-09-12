@@ -79,11 +79,17 @@ local B1_CHAIN: { ChainStep } = {
 }
 
 local B2_CHAIN: { ChainStep } = {
-	{ Step = 1, FolderName = "Carpeting",      ButtonName = "CosmeticButton", Cost = 350000,  SpeedTier = nil, UnlockId = "CarpetingStage" },
-	{ Step = 2, FolderName = "Folding Chairs", ButtonName = "UpgradeButton",  Cost = 500000,  SpeedTier = 1,   UnlockId = "FoldingChairsStage" },
-	{ Step = 3, FolderName = "Microphone",     ButtonName = "CosmeticButton", Cost = 1000000, SpeedTier = nil, UnlockId = "MicrophoneStage" },
-	{ Step = 4, FolderName = "Boombox",        ButtonName = "UpgradeButton",  Cost = 1750000, SpeedTier = 2,   UnlockId = "BoomboxStage" },
-	{ Step = 5, FolderName = "Altar",          ButtonName = "CosmeticButton", Cost = 5000000, SpeedTier = nil, UnlockId = "AltarStage" },
+	{ Step = 1,  FolderName = "Carpeting",        ButtonName = "CosmeticButton", Cost = 350000,          SpeedTier = nil, UnlockId = "CarpetingStage" },
+	{ Step = 2,  FolderName = "Folding Chairs",   ButtonName = "UpgradeButton",  Cost = 500000,          SpeedTier = 1,   UnlockId = "FoldingChairsStage" },
+	{ Step = 3,  FolderName = "Microphone",       ButtonName = "CosmeticButton", Cost = 1000000,         SpeedTier = nil, UnlockId = "MicrophoneStage" },
+	{ Step = 4,  FolderName = "Boombox",          ButtonName = "UpgradeButton",  Cost = 1750000,         SpeedTier = 2,   UnlockId = "BoomboxStage" },
+	{ Step = 5,  FolderName = "Altar",            ButtonName = "CosmeticButton", Cost = 5000000,         SpeedTier = nil, UnlockId = "AltarStage" },
+	{ Step = 6,  FolderName = "Donation Machine", ButtonName = "UpgradeButton",  Cost = 15000000,        SpeedTier = 3,   UnlockId = "DonationMachineStage" },
+	{ Step = 7,  FolderName = "PosePosters",      ButtonName = "UpgradeButton",  Cost = 1225000000,      SpeedTier = 4,   UnlockId = "PosePostersStage" },
+	{ Step = 8,  FolderName = "Shutter Door",     ButtonName = "UpgradeButton",  Cost = 14000000000,     SpeedTier = 5,   UnlockId = "ShutterDoorStage" },
+	{ Step = 9,  FolderName = "HVAC",             ButtonName = "UpgradeButton",  Cost = 875000000000,    SpeedTier = 6,   UnlockId = "HVACStage" },
+	{ Step = 10, FolderName = "Cameras",          ButtonName = "UpgradeButton",  Cost = 262500000000000, SpeedTier = 7,   UnlockId = "CamerasStage" },
+	{ Step = 11, FolderName = "Money Safes",      ButtonName = "UpgradeButton",  Cost = 5.25e21,         SpeedTier = 8,   UnlockId = "MoneySafesStage" },
 }
 
 -- Stash starter props on server start
@@ -91,8 +97,25 @@ if starterTable and starterTable.Parent ~= b1Templates then starterTable.Parent 
 if starterMember and starterMember.Parent ~= b1Templates then starterMember.Parent = b1Templates end
 if collectGuiPart and collectGuiPart.Parent ~= b1Templates then collectGuiPart.Parent = b1Templates end
 
+local function getB2Addons(): { Model }
+	local result: { Model } = {}
+	for _, parent in ipairs({templeFolder, b2Templates}) do
+		if parent then
+			for _, c in ipairs(parent:GetChildren()) do
+				if c.Name:find("addon") and c:IsA("Model") and not table.find(result, c) then
+					table.insert(result, c :: Model)
+				end
+			end
+		end
+	end
+	return result
+end
+
 -- Stash Building 2 base props on server start
 if b2StorageUnit and b2StorageUnit.Parent ~= b2Templates then b2StorageUnit.Parent = b2Templates end
+for _, addon in ipairs(getB2Addons()) do
+	if addon.Parent ~= b2Templates then addon.Parent = b2Templates end
+end
 if b2Podium and b2Podium.Parent ~= b2Templates then b2Podium.Parent = b2Templates end
 if b2Member and b2Member.Parent ~= b2Templates then b2Member.Parent = b2Templates end
 if b2CollectGui and b2CollectGui.Parent ~= b2Templates then b2CollectGui.Parent = b2Templates end
@@ -494,6 +517,9 @@ setupTouchButton(b2NewBuildingBtn, B2_UNLOCK_COST, "Building2_BaseStage", functi
 
 	if templeFolder then
 		if b2StorageUnit then b2StorageUnit.Parent = templeFolder end
+		for _, addon in ipairs(getB2Addons()) do
+			addon.Parent = templeFolder
+		end
 		if b2Podium then b2Podium.Parent = templeFolder end
 		if b2Member then b2Member.Parent = templeFolder end
 		if b2CollectGui then b2CollectGui.Parent = templeFolder end
@@ -598,6 +624,9 @@ local function restorePlayerProgression(player: Player)
 			if b2NewBuildingBtn then b2NewBuildingBtn.Parent = b2Templates end
 		end
 		if b2StorageUnit then b2StorageUnit.Parent = b2Templates end
+		for _, addon in ipairs(getB2Addons()) do
+			addon.Parent = b2Templates
+		end
 		if b2Podium then b2Podium.Parent = b2Templates end
 		if b2Member then b2Member.Parent = b2Templates end
 		if b2CollectGui then b2CollectGui.Parent = b2Templates end
@@ -620,6 +649,9 @@ local function restorePlayerProgression(player: Player)
 		if b2NewBuildingBtn then b2NewBuildingBtn.Parent = b2Templates end
 		if templeFolder then
 			if b2StorageUnit then b2StorageUnit.Parent = templeFolder end
+			for _, addon in ipairs(getB2Addons()) do
+				addon.Parent = templeFolder
+			end
 			if b2Podium then b2Podium.Parent = templeFolder end
 			if b2Member then b2Member.Parent = templeFolder end
 			if b2CollectGui then b2CollectGui.Parent = templeFolder end

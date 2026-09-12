@@ -32,6 +32,12 @@ local STAGE_FOLDER_MAP: { [string]: string } = {
 	["BoomboxStage"]           = "Boombox",
 	["Building2_ManagerStage"] = "Manager",
 	["AltarStage"]             = "Altar",
+	["DonationMachineStage"]   = "Donation Machine",
+	["PosePostersStage"]       = "PosePosters",
+	["ShutterDoorStage"]       = "Shutter Door",
+	["HVACStage"]              = "HVAC",
+	["CamerasStage"]           = "Cameras",
+	["MoneySafesStage"]        = "Money Safes",
 }
 
 local function animateInstanceSlide(instanceObj: Instance?, worldOffset: Vector3, duration: number?, easingStyle: Enum.EasingStyle?)
@@ -99,19 +105,18 @@ UnlockStageEvent.OnClientEvent:Connect(function(unlockName: string)
 	-- Universal Button Pop-In Animation for Building 1 & Building 2
 	local btnTarget = unlockName:match("^ButtonReveal_(.+)")
 	if btnTarget then
+		local b1 = cultTycoon:FindFirstChild("Building1") or cultTycoon:WaitForChild("Building1", 2)
+		local preacherFolder = b1 and (b1:FindFirstChild("StreetPreacherBuilding") or b1:WaitForChild("StreetPreacherBuilding", 2))
+		local b2 = cultTycoon:FindFirstChild("Building2") or cultTycoon:WaitForChild("Building2", 2)
+		local temple = b2 and (b2:FindFirstChild("StorageUnitTempleBuilding") or b2:WaitForChild("StorageUnitTempleBuilding", 2))
+
 		local targetFolder: Instance? = nil
 		if btnTarget == "B2_Manager" then
-			local b2 = cultTycoon:FindFirstChild("Building2") or cultTycoon:WaitForChild("Building2", 2)
-			local temple = b2 and (b2:FindFirstChild("StorageUnitTempleBuilding") or b2:WaitForChild("StorageUnitTempleBuilding", 2))
 			targetFolder = temple and temple:FindFirstChild("Manager")
-		elseif btnTarget == "Carpeting" or btnTarget == "Folding Chairs" or btnTarget == "Microphone" or btnTarget == "Boombox" or btnTarget == "Altar" then
-			local b2 = cultTycoon:FindFirstChild("Building2") or cultTycoon:WaitForChild("Building2", 2)
-			local temple = b2 and (b2:FindFirstChild("StorageUnitTempleBuilding") or b2:WaitForChild("StorageUnitTempleBuilding", 2))
-			targetFolder = temple and temple:FindFirstChild(btnTarget)
-		else
-			local b1 = cultTycoon:FindFirstChild("Building1") or cultTycoon:WaitForChild("Building1", 2)
-			local preacherFolder = b1 and (b1:FindFirstChild("StreetPreacherBuilding") or b1:WaitForChild("StreetPreacherBuilding", 2))
-			targetFolder = preacherFolder and preacherFolder:FindFirstChild(btnTarget)
+		elseif temple and temple:FindFirstChild(btnTarget) then
+			targetFolder = temple:FindFirstChild(btnTarget)
+		elseif preacherFolder and preacherFolder:FindFirstChild(btnTarget) then
+			targetFolder = preacherFolder:FindFirstChild(btnTarget)
 		end
 
 		if targetFolder then
@@ -143,6 +148,13 @@ UnlockStageEvent.OnClientEvent:Connect(function(unlockName: string)
 			animateInstanceSlide(storageUnit:FindFirstChild("RightWall"), Vector3.new(8, 0, 0), 1.1)
 			animateInstanceSlide(storageUnit:FindFirstChild("FrontWall"), Vector3.new(0, 0, 8), 1.1)
 			animateInstanceSlide(storageUnit:FindFirstChild("BackWall"), Vector3.new(0, 0, -8), 1.1)
+		end
+
+		-- Side Addon Storage Units (pop-up from Y - 6 studs over 1.2s)
+		for _, child in ipairs(temple:GetChildren()) do
+			if child.Name:find("addon") and child:IsA("Model") then
+				animateInstanceSlide(child, Vector3.new(0, -6, 0), 1.2)
+			end
 		end
 
 		-- Staggered interior props pop-up after the structure lands (0.70s delay, 1.2s duration)
