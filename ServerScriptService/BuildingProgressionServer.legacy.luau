@@ -524,17 +524,13 @@ setupTouchButton(b2NewBuildingBtn, B2_UNLOCK_COST, "Building2_BaseStage", functi
 		if b2Member then b2Member.Parent = templeFolder end
 		if b2CollectGui then b2CollectGui.Parent = templeFolder end
 
-		-- Show Caretaker (Manager) button from the beginning of Building 2
+		-- Show Caretaker (Manager) button from the beginning of Building 2 immediately
 		if not b2State.HasManager then
-			task.delay(1.2, function()
-				showB2ManagerButton(player)
-			end)
+			showB2ManagerButton(player)
 		end
 
-		-- Stagger reveal of Step 1 (Carpeting) after base structure slides in
-		task.delay(1.2, function()
-			showButtonForB2Step(B2_CHAIN[1].FolderName, player)
-		end)
+		-- Reveal Step 1 (Carpeting) button immediately alongside the base structure
+		showButtonForB2Step(B2_CHAIN[1].FolderName, player)
 	end
 end)
 

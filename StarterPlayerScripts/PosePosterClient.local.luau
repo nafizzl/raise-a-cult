@@ -71,12 +71,12 @@ local function setupPoster(posterPart: BasePart)
 	vpCorner.CornerRadius = UDim.new(0, 10)
 	vpCorner.Parent = vpFrame
 
-	-- Local Camera rotated +90 deg so avatar stands upright with elegant side padding
+	-- Local Camera rotated +90 deg so avatar stands upright with elegant side padding and full view
 	local camera = Instance.new("Camera")
 	camera.Name = "Camera"
 	camera.CameraType = Enum.CameraType.Scriptable
-	camera.FieldOfView = 46
-	local baseCF = CFrame.lookAt(Vector3.new(0, 0.2, 10.5), Vector3.new(0, 0.2, 0))
+	camera.FieldOfView = 48
+	local baseCF = CFrame.lookAt(Vector3.new(0, 0.2, 13.0), Vector3.new(0, 0.2, 0))
 	camera.CFrame = baseCF * CFrame.Angles(0, 0, math.rad(90))
 	camera.Parent = vpFrame
 	vpFrame.CurrentCamera = camera

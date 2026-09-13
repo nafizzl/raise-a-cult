@@ -157,16 +157,14 @@ UnlockStageEvent.OnClientEvent:Connect(function(unlockName: string)
 			end
 		end
 
-		-- Staggered interior props pop-up after the structure lands (0.70s delay, 1.2s duration)
-		task.delay(0.70, function()
-			local podium = temple:FindFirstChild("Podium") or temple:WaitForChild("Podium", 2)
-			local cultMember = temple:FindFirstChild("Cult Member") or temple:WaitForChild("Cult Member", 2)
-			local collectGui = temple:FindFirstChild("CollectUpgradeGui") or temple:WaitForChild("CollectUpgradeGui", 2)
+		-- Interior props pop-up (starts simultaneously with the building structure, 1.2s duration)
+		local podium = temple:FindFirstChild("Podium") or temple:WaitForChild("Podium", 2)
+		local cultMember = temple:FindFirstChild("Cult Member") or temple:WaitForChild("Cult Member", 2)
+		local collectGui = temple:FindFirstChild("CollectUpgradeGui") or temple:WaitForChild("CollectUpgradeGui", 2)
 
-			animateInstanceSlide(podium, Vector3.new(0, -4, 0), 1.2)
-			animateInstanceSlide(cultMember, Vector3.new(0, -4, 0), 1.2)
-			animateInstanceSlide(collectGui, Vector3.new(0, -4, 0), 1.2)
-		end)
+		animateInstanceSlide(podium, Vector3.new(0, -4, 0), 1.2)
+		animateInstanceSlide(cultMember, Vector3.new(0, -4, 0), 1.2)
+		animateInstanceSlide(collectGui, Vector3.new(0, -4, 0), 1.2)
 		return
 	end
 
@@ -202,18 +200,31 @@ UnlockStageEvent.OnClientEvent:Connect(function(unlockName: string)
 			or unlockName == "MicrophoneStage"
 			or unlockName == "BoomboxStage"
 			or unlockName == "AltarStage"
+			or unlockName == "DonationMachineStage"
+			or unlockName == "PosePostersStage"
+			or unlockName == "ShutterDoorStage"
+			or unlockName == "HVACStage"
+			or unlockName == "CamerasStage"
+			or unlockName == "MoneySafesStage"
 
-		if isB2 then
-			local b2 = cultTycoon:FindFirstChild("Building2") or cultTycoon:WaitForChild("Building2", 2)
-			local temple = b2 and (b2:FindFirstChild("StorageUnitTempleBuilding") or b2:WaitForChild("StorageUnitTempleBuilding", 2))
-			if temple then
-				stageFolder = temple:FindFirstChild(targetFolderName) or temple:WaitForChild(targetFolderName, 2)
-			end
-		else
-			local b1 = cultTycoon:FindFirstChild("Building1") or cultTycoon:WaitForChild("Building1", 2)
-			local preacherFolder = b1 and (b1:FindFirstChild("StreetPreacherBuilding") or b1:WaitForChild("StreetPreacherBuilding", 2))
-			if preacherFolder then
-				stageFolder = preacherFolder:FindFirstChild(targetFolderName) or preacherFolder:WaitForChild(targetFolderName, 2)
+		local b2 = cultTycoon:FindFirstChild("Building2") or cultTycoon:WaitForChild("Building2", 2)
+		local temple = b2 and (b2:FindFirstChild("StorageUnitTempleBuilding") or b2:WaitForChild("StorageUnitTempleBuilding", 2))
+
+		local b1 = cultTycoon:FindFirstChild("Building1") or cultTycoon:WaitForChild("Building1", 2)
+		local preacherFolder = b1 and (b1:FindFirstChild("StreetPreacherBuilding") or b1:WaitForChild("StreetPreacherBuilding", 2))
+
+		if isB2 and temple then
+			stageFolder = temple:FindFirstChild(targetFolderName) or temple:WaitForChild(targetFolderName, 2)
+		elseif preacherFolder then
+			stageFolder = preacherFolder:FindFirstChild(targetFolderName) or preacherFolder:WaitForChild(targetFolderName, 2)
+		end
+
+		-- Fallback check: if stageFolder is not in the expected building, check the other building
+		if not stageFolder then
+			if isB2 and preacherFolder then
+				stageFolder = preacherFolder:FindFirstChild(targetFolderName)
+			elseif temple then
+				stageFolder = temple:FindFirstChild(targetFolderName)
 			end
 		end
 

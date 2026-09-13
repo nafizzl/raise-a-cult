@@ -221,7 +221,42 @@
   * **Side & Border Padding:** Added $24\text{px}$ inset padding to `PoseViewport` (`Size = UDim2.new(1, -48, 1, -48)`, `Position = UDim2.new(0, 24, 0, 24)`) and adjusted camera framing distance to $10.5\text{ studs}$ ($FOV = 46^\circ$), providing generous, elegant side margins around the character.
   * All 6 wall posters now cleanly render the 3D player model in the 6 distinct standard R15 poses upright against the dark whitish background (`Color3.fromRGB(222, 224, 228)`) with zero text/words.
 
+## September 13, 2026
 
+* **Pose Posters Camera Zoom-Out (Full Avatar View Without Cutoff):**
+  * Adjusted camera framing in [`PosePosterClient.local.luau`] and all 6 poster ViewportFrames in Roblox Studio.
+  * Increased camera distance from $10.5\text{ studs}$ to $13.0\text{ studs}$ and widened Field of View to $48^\circ$ (`baseCF = CFrame.lookAt(Vector3.new(0, 0.2, 13.0), Vector3.new(0, 0.2, 0)) * CFrame.Angles(0, 0, math.rad(90))`).
+  * At $13.0\text{ studs}$, vertical visible height is $\approx 11.6\text{ studs}$, giving generous headroom and footroom so tall accessories (such as the oversized Kanye West head), outstretched arms (Worship pose), and shoes are displayed without any clipping.
 
+* **Building 2 Purchase Simultaneous Animation Synchronization:**
+  * Diagnosed visual artifact where the `Podium` and `Cult Member` were briefly visible hovering in empty space before the storage unit assembled, followed by buttons popping in seconds later.
+  * In [`BuildingAnimatorClient.local.luau`], eliminated the `0.70s` interior props delay. Interior props (`Podium`, `Cult Member`, `CollectUpgradeGui`) now offset immediately to $Y - 4\text{ studs}$ on frame 0 and animate upwards ($1.2\text{s}$, `EasingStyle.Back`).
+  * In [`BuildingProgressionServer.legacy.luau`], removed the `1.2s` delayed button reveal for the Caretaker (`ManagerButton`) and Step 1 (`Carpeting`).
+  * As a result, the Building 2 outer shell, addon units, interior podium/member, and starting buttons all initiate their distinct animation cycles at the exact same moment ($t=0$) with zero lag between components.
 
+* **Building 2 Stages Pop-In Animation Routing Fix:**
+  * Diagnosed why `HVAC` and `Cameras` (along with `Donation Machine`, `PosePosters`, `Shutter Door`, and `Money Safes`) appeared instantly without pop-in animations.
+  * In [`BuildingAnimatorClient.local.luau`], the `isB2` stage condition only explicitly listed the first 5 steps (`CarpetingStage` through `AltarStage`), causing all later steps to default to looking in Building 1's `StreetPreacherBuilding` where the folders didn't exist.
+  * Added `DonationMachineStage`, `PosePostersStage`, `ShutterDoorStage`, `HVACStage`, `CamerasStage`, and `MoneySafesStage` to the `isB2` mapping, and added cross-building fallback discovery.
+  * Synced updated script to Roblox Studio; all models (`HVAC`, `AC Vent`, 3x `Camera`, etc.) now properly slide and pop in from $Y - 4\text{ studs}$ ($1.2\text{s}$, `EasingStyle.Back`).
 
+* **Boombox Tool Converted to Static World Model:**
+  * Converted the `Boombox` object under `StorageUnitTempleBuilding.Boombox` from a player-equippable `Tool` into a standard, anchored `Model`.
+  * Stripped legacy gear scripts (`Server`, `Client`), `RemoteEvent`, and `TouchTransmitter` that caused players to pick up the boombox into their inventory upon walking into it.
+  * Configured `BoomboxPart` as the anchored primary part (`Anchored = true`, `CanCollide = true`), preserving its visual mesh and sound while allowing smooth slide-in animations.
+
+* **Default Looped Background Music Active:**
+  * Configured global ambient background music in `SoundService` using audio asset `rbxassetid://1840684529` (~2m06s ambient loop).
+  * Set `Looped = true`, `Playing = true`, and default volume `0.35` for balanced background levels.
+  * Added client controller [`MusicController.local.luau`] in `StarterPlayerScripts` to handle asset preloading via `ContentProvider:PreloadAsync`, smooth volume fade-in, and loop restart protection across joins.
+
+* **Custom ReplicatedFirst Dynamic Loading Screen:**
+  * Implemented [`LoadingScreenController.client.luau`] in `ReplicatedFirst`.
+  * **Eliminated Sky Flash:** Parented `LoadingScreen` into `PlayerGui` on frame 0 *before* calling `ReplicatedFirst:RemoveDefaultLoadingScreen()`, ensuring zero gap where the raw 3D world sky is exposed.
+  * **Eliminated Default Value & Font Flash:** Cleared default static `"0 / 0"` text and set `AssetsLoaded.TextTransparency = 1` initially; the script preloads the `FredokaOne` font glyphs via `ContentProvider:PreloadAsync({ assetsLabel })` and only reveals the counter once the real total count (759) and fonts are fully buffered into memory, preventing any raw text or fallback font flashes.
+  * **Delayed Music Playback:** Set `SoundService.BackgroundMusic.Playing = false` by default; playback now begins with a smooth 1.5s fade-in precisely when the custom loading screen displays.
+  * **Progress Bar:** Formatted `LoadingBar` with a dark crimson track (`Color3.fromRGB(80, 15, 22)`) and inner `ProgressFill` matching `CollectUpgradeGui`'s pre-fast bright red (`Color3.fromRGB(245, 45, 60)`).
+  * **Replication-Aware Dynamic Asset Discovery:** Replaced premature `FindFirstChild` calls in `ReplicatedFirst` with replication-waiting for `CultTycoon` and `BuildingTemplates`, collecting all **983 downloadable asset IDs** (meshes, textures, decals, sounds, animations) across workspace and templates, ensuring the counter tracks the full game (`0/983` $\rightarrow$ `983/983`) instead of finishing early.
+  * **Delayed Skip Button:** `SkipButton` starts invisible and smoothly fades in after 3.0 seconds, allowing players to skip at will.
+  * **Logo Rocking Animation:** Continuous subtle oscillation ($-4.5^\circ$ to $+4.5^\circ$, `EasingStyle.Sine`) on the logo throughout loading.
+  * **Slide-Up Exit Transition:** Upon completion or Skip click, smoothly slides the entire screen upwards past the top of the viewport (`Position = {0.5, 0}, {-0.65, 0}`) over 0.65s (`EasingStyle.Quart`) before destroying the GUI.
