@@ -38,6 +38,28 @@ local STAGE_FOLDER_MAP: { [string]: string } = {
 	["HVACStage"]              = "HVAC",
 	["CamerasStage"]           = "Cameras",
 	["MoneySafesStage"]        = "Money Safes",
+
+	-- Building 3 (Suburban Compound)
+	["FoundationFramingStage"]        = "01_Foundation_and_Framing",
+	["ExteriorWallsStage"]            = "02_Exterior_Walls_and_Windows",
+	["RoofChimneyStage"]              = "03_Roof_and_Chimney",
+	["CommunalKitchenStage"]          = "Communal Kitchen",
+	["FrontPorchStage"]               = "04_Front_Porch",
+	["DrivewayGardenStage"]           = "05_Driveway_and_Garden",
+	["StaircaseHallwaysStage"]        = "06_Staircase_and_Hallways",
+	["LivingRoomLoungeStage"]         = "07_LivingRoom_Lounge",
+	["BunkBedroomStage"]              = "Bunk Bedroom",
+	["LivingRoomEntertainmentStage"]  = "08_LivingRoom_Entertainment",
+	["Building3_ManagerStage"]        = "Manager",
+	["DiningRoomStage"]               = "09_Dining_Room",
+	["AntennaTowerStage"]             = "Antenna Tower",
+	["BathroomStage"]                 = "13_Bathroom",
+	["GuestBedroomsStage"]            = "12_Guest_Bedrooms",
+	["GarageCarStage"]                = "14_Garage_and_Car",
+	["VegetableFarmsStage"]           = "Vegetable Farms",
+	["SolarPanelsStage"]              = "Solar Panels",
+	["WatchtowerStage"]               = "Watchtower",
+	["GatesStage"]                    = "Gates",
 }
 
 local function animateInstanceSlide(instanceObj: Instance?, worldOffset: Vector3, duration: number?, easingStyle: Enum.EasingStyle?)
@@ -102,17 +124,23 @@ UnlockStageEvent.OnClientEvent:Connect(function(unlockName: string)
 	end
 	if not cultTycoon then return end
 
-	-- Universal Button Pop-In Animation for Building 1 & Building 2
+	-- Universal Button Pop-In Animation for Buildings 1, 2 & 3
 	local btnTarget = unlockName:match("^ButtonReveal_(.+)")
 	if btnTarget then
 		local b1 = cultTycoon:FindFirstChild("Building1") or cultTycoon:WaitForChild("Building1", 2)
 		local preacherFolder = b1 and (b1:FindFirstChild("StreetPreacherBuilding") or b1:WaitForChild("StreetPreacherBuilding", 2))
 		local b2 = cultTycoon:FindFirstChild("Building2") or cultTycoon:WaitForChild("Building2", 2)
 		local temple = b2 and (b2:FindFirstChild("StorageUnitTempleBuilding") or b2:WaitForChild("StorageUnitTempleBuilding", 2))
+		local b3 = cultTycoon:FindFirstChild("Building3") or cultTycoon:WaitForChild("Building3", 2)
+		local compound = b3 and (b3:FindFirstChild("Suburban Compound Building") or b3:WaitForChild("Suburban Compound Building", 2))
 
 		local targetFolder: Instance? = nil
 		if btnTarget == "B2_Manager" then
 			targetFolder = temple and temple:FindFirstChild("Manager")
+		elseif btnTarget == "B3_Manager" then
+			targetFolder = compound and compound:FindFirstChild("Manager")
+		elseif compound and compound:FindFirstChild(btnTarget) then
+			targetFolder = compound:FindFirstChild(btnTarget)
 		elseif temple and temple:FindFirstChild(btnTarget) then
 			targetFolder = temple:FindFirstChild(btnTarget)
 		elseif preacherFolder and preacherFolder:FindFirstChild(btnTarget) then
@@ -129,6 +157,29 @@ UnlockStageEvent.OnClientEvent:Connect(function(unlockName: string)
 			else
 				animateButtonPopIn(targetFolder)
 			end
+		end
+		return
+	end
+
+	-- Building 3: Suburban Compound Base Stage
+	if unlockName == "Building3_BaseStage" then
+		local b3 = cultTycoon:FindFirstChild("Building3") or cultTycoon:WaitForChild("Building3", 3)
+		local compound = b3 and (b3:FindFirstChild("Suburban Compound Building") or b3:WaitForChild("Suburban Compound Building", 3))
+		if not compound then return end
+
+		local collectGui = compound:FindFirstChild("CollectUpgradeGui") or compound:WaitForChild("CollectUpgradeGui", 2)
+		if collectGui then
+			animateInstanceSlide(collectGui, Vector3.new(0, -4, 0), 1.2)
+		end
+		return
+	end
+
+	-- Building 3: Button Reveal when Donation Machine is purchased in Building 2
+	if unlockName == "Building3_ButtonReveal" then
+		local b3 = cultTycoon:FindFirstChild("Building3") or cultTycoon:WaitForChild("Building3", 2)
+		local btnFolder = b3 and (b3:FindFirstChild("NewBuildingButton") or b3:WaitForChild("NewBuildingButton", 2))
+		if btnFolder then
+			animateButtonPopIn(btnFolder)
 		end
 		return
 	end
@@ -190,7 +241,7 @@ UnlockStageEvent.OnClientEvent:Connect(function(unlockName: string)
 		return
 	end
 
-	-- Universal Sequential Stage Handling (Building 1 & Building 2)
+	-- Universal Sequential Stage Handling (Buildings 1, 2 & 3)
 	local targetFolderName = STAGE_FOLDER_MAP[unlockName]
 	if targetFolderName then
 		local stageFolder: Instance? = nil
@@ -207,21 +258,28 @@ UnlockStageEvent.OnClientEvent:Connect(function(unlockName: string)
 			or unlockName == "CamerasStage"
 			or unlockName == "MoneySafesStage"
 
+		local b3 = cultTycoon:FindFirstChild("Building3") or cultTycoon:WaitForChild("Building3", 2)
+		local compound = b3 and (b3:FindFirstChild("Suburban Compound Building") or b3:WaitForChild("Suburban Compound Building", 2))
+
 		local b2 = cultTycoon:FindFirstChild("Building2") or cultTycoon:WaitForChild("Building2", 2)
 		local temple = b2 and (b2:FindFirstChild("StorageUnitTempleBuilding") or b2:WaitForChild("StorageUnitTempleBuilding", 2))
 
 		local b1 = cultTycoon:FindFirstChild("Building1") or cultTycoon:WaitForChild("Building1", 2)
 		local preacherFolder = b1 and (b1:FindFirstChild("StreetPreacherBuilding") or b1:WaitForChild("StreetPreacherBuilding", 2))
 
-		if isB2 and temple then
+		if compound and compound:FindFirstChild(targetFolderName) then
+			stageFolder = compound:FindFirstChild(targetFolderName)
+		elseif isB2 and temple then
 			stageFolder = temple:FindFirstChild(targetFolderName) or temple:WaitForChild(targetFolderName, 2)
 		elseif preacherFolder then
 			stageFolder = preacherFolder:FindFirstChild(targetFolderName) or preacherFolder:WaitForChild(targetFolderName, 2)
 		end
 
-		-- Fallback check: if stageFolder is not in the expected building, check the other building
+		-- Fallback check: if stageFolder is not in the expected building, check other buildings
 		if not stageFolder then
-			if isB2 and preacherFolder then
+			if compound and compound:FindFirstChild(targetFolderName) then
+				stageFolder = compound:FindFirstChild(targetFolderName)
+			elseif isB2 and preacherFolder then
 				stageFolder = preacherFolder:FindFirstChild(targetFolderName)
 			elseif temple then
 				stageFolder = temple:FindFirstChild(targetFolderName)
@@ -238,4 +296,4 @@ UnlockStageEvent.OnClientEvent:Connect(function(unlockName: string)
 	end
 end)
 
-print("[BuildingAnimatorClient] Universal Building 1 & Building 2 slide-in pop animations initialized.")
+print("[BuildingAnimatorClient] Universal Buildings 1, 2 & 3 slide-in pop animations initialized.")
