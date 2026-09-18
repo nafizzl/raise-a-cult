@@ -260,3 +260,35 @@
   * **Delayed Skip Button:** `SkipButton` starts invisible and smoothly fades in after 3.0 seconds, allowing players to skip at will.
   * **Logo Rocking Animation:** Continuous subtle oscillation ($-4.5^\circ$ to $+4.5^\circ$, `EasingStyle.Sine`) on the logo throughout loading.
   * **Slide-Up Exit Transition:** Upon completion or Skip click, smoothly slides the entire screen upwards past the top of the viewport (`Position = {0.5, 0}, {-0.65, 0}`) over 0.65s (`EasingStyle.Quart`) before destroying the GUI.
+
+## September 17, 2026
+
+* **Building 3 (Suburban House) Categorization & Ground-Up Construction Pipeline:**
+  * **Systematic Spatial Sorting:** Categorized all 2,829 children of the imported flat `Suburban House` model into 14 distinct construction and room section folders following the *Sell Lemons* pacing standard:
+    * `01_Foundation_and_Framing` (105 parts)
+    * `02_Exterior_Walls_and_Windows` (687 parts)
+    * `03_Roof_and_Chimney` (187 parts: main roof, garage roof gables/shingles, and porch roof overhangs consolidated)
+    * `04_Front_Porch` (203 parts)
+    * `05_Driveway_and_Garden` (100 parts/models)
+    * `06_Staircase_and_Hallways` (120 parts: all 71 parts of the main floating wooden staircase relocated here)
+    * `07_LivingRoom_Lounge` (50 parts: couch, cushions, coffee table, rug, fireplace & mantel)
+    * `08_LivingRoom_Entertainment` (9 parts: TV media console, flat screen TV, audio)
+    * `09_Dining_Room` (52 parts: table, 6 chairs, plates, fruit bowl)
+    * `10_Kitchen_Suite` (253 parts: marble island, counters, fridge, stove/oven, sink, cabinets)
+    * `11_Master_Bedroom` (343 parts: master bed, nightstands, dressers, artwork)
+    * `12_Guest_Bedrooms` (324 parts: bedrooms 2 & 3 beds, desks, wardrobes)
+    * `13_Bathroom` (182 parts: bathtub/shower, vanity sink, toilet, shampoo accessories)
+    * `14_Garage_and_Car` (213 parts: garage structure, roll-up door, parked car & tools)
+  * **Unified Roof & Chimney Architecture:** Re-routed all 50 garage roof parts (gables, wedges, shingle planks) and 23 front porch roof overhang/gable parts from the wall, garage, and porch folders into `03_Roof_and_Chimney`, unifying all roof structures across the building.
+  * **Starter Overseer Station (`00_Starter_Overseer_Station`):** Created the initial purchase asset for `NewBuildingButton` positioned out front on the entrance walkway lawn (`{118, 7.5, -105}`) containing a clean wooden `WelcomeDesk`, `Cult Member` NPC, and `CollectUpgradeGui` (`BuildingId = "Building3"`), allowing income generation to start immediately from the ground up without player navigation friction.
+  * **Toolbox Legacy Cleanup:** Purged 34 leftover free-model scripts (including sit/jump scripts and an unanchored infinite `while true do wait()` loop) and removed the leftover `ThumbnailCamera`, eliminating security capability issues and lag.
+  * **Semantic Part-Level Labeling:** Analyzed all 2,828 parts and models using multi-dimensional heuristics (geometric aspect ratio, WedgeParts, physical dimensions, material types, decal IDs, and functional room context), transforming generic `"Part"`, `"Circle"`, and `"Triangle"` instances into descriptive names (e.g., `DiningTable_WoodTop`, `DiningTable_DinnerPlate`, `Entertainment_TVScreen`, `KitchenIsland_MarbleTop`, `Fireplace_HearthBase`, `MasterBed_Mattress`, `Bathtub_EnclosurePiece`, `Car_ChassisPlate`, `GarageDoor_RollUpSlat`).
+
+* **Room Boundary Overhaul & Building 3 Catalog Integration:**
+  * **Kitchen Suite Overhaul (`10_Kitchen_Suite`):** Stripped out 80 exterior back wall parts (brick walls, exterior red-framed windows, blinds, and shutters); recovered 28 checkered marble floor tiles, kitchen island (wood base & marble top), refrigerator, sink counter/faucet, east & south counters, cooktop range, microwave/oven station, upper cabinets, pantry, and ceiling lights (177 parts total, 0 brick walls).
+  * **Dining Room Overhaul (`09_Dining_Room`):** Recovered the light-green oval floor rug (3 fabric parts), dining table & pedestals, 6 complete chairs (including 27 legs previously in exterior walls), 6 dinner plates, fruit bowl, pendant chandelier, and wall artwork (93 parts total).
+  * **Staircase & Hallways Overhaul (`06_Staircase_and_Hallways`):** Reclaimed the red circular rug at the base of the stairs and 17 upper staircase components (top landing platform, upper support pillars, upper handrails, and landing balusters) previously clipped into the Master Bedroom, unifying all 92 staircase parts into a single continuous progression folder.
+  * **2nd Floor & Building Shell Separation:** Cleaned `11_Master_Bedroom`, `12_Guest_Bedrooms`, and `13_Bathroom` of 210 exterior window, blind, shutter, and wall parts, routing all exterior elements cleanly into `02_Exterior_Walls_and_Windows` (1,225 parts total) and ensuring 0 exterior brick walls in any interior room folder.
+  * **Building Upgrades Catalog Expansion (`building_upgrades_catalog.md`):** Replaced the 3-cosmetic placeholder with the full 24-step progression sequence for Building 3 (Suburban Compound) spanning from the $250M initial plot purchase, through 14 Ground-Up Construction cosmetic stages, 8 functional speed tiers ($384\times$ multiplier), the $5.0B Compound Overseer manager, and the $500B Gate to Building 4 (Community Hall).
+
+

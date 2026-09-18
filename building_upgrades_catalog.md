@@ -73,26 +73,38 @@ graph LR
 ---
 
 ## 🏛️ Building 3: Suburban Compound
-* **Theme:** Gated two-story house with perimeter fence and underground bunker hatch.
+* **Theme:** Gated two-story suburban house with manicured grounds and compound fortifications.
 * **Unlock Cost:** **$250,000,000** ($250M) | **Base Prod:** **$250,000** | **Manager:** **$5.0B**
 
 ### 1. Construction & Upgrade Sequence
-| Step | Type | Name | Cost | 3D Visual Asset (Easy Build) | Gameplay Effect |
+| Step | Type | Folder / Upgrade Name | Cost | 3D Visual Asset (Option B: Ground-Up) | Gameplay Effect |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **0** | **Base** | House Frame & Foundation | **$250\text{M}$** | Wooden stud frame & concrete slab foundation | Spawns Building 3 base |
-| **1** | **Cosmetic** | Vinyl Siding & Windows | **$350\text{M}$** | White/tan house exterior walls with glass windows | House exterior visual |
-| **2** | **Speed 1** | Communal Kitchen | **$500\text{M}$** | Stainless steel prep table with pots & soup bowls | **$2\times$ Speed** ($3.0\text{s}$) |
-| **3** | **Cosmetic** | Perimeter Chainlink Fence | **$1.0\text{B}$** | Chainlink wire fence surrounding the yard | Perimeter visual |
-| **4** | **Speed 2** | Bunk Bed Barracks | **$2.5\text{B}$** | 2 wooden bunk beds with sleeping cult members | **$2\times$ Speed** ($1.5\text{s}$) |
-| **5** | **Manager** | Compound Overseer | **$5.0\text{B}$** | Robed elder NPC holding a ledger book | Automated Collection |
-| **6** | **Cosmetic** | Guard Dog Kennel | **$8.0\text{B}$** | Wooden dog house with an alert German Shepherd | Dog kennel visual |
-| **7** | **Speed 3** | Ham Radio Antenna | **$20.0\text{B}$** | Tall radio antenna tower on the roof with wire leads | **$2\times$ Speed** ($0.75\text{s}$) |
-| **8** | **Gate** | *Unlocks Building 4 Button ($500B)* | — | Floor button to Community Hall | Progression Unlocked |
-| **9** | **Speed 4** | Garden Crop Plots | **$1.75\text{T}$** | 3 dirt farm beds with growing vegetables | **$2\times$ Speed** ($0.375\text{s}$) |
-| **10**| **Speed 5** | Solar Panel Array | **$20.0\text{T}$** | 6 angled blue solar panels mounted on roof | **$2\times$ Speed** ($0.187\text{s}$) |
-| **11**| **Speed 6** | Watchtower Lookout | **$1.25\text{Qa}$** | Elevated wooden guard tower with floodlight | **$2\times$ Speed** ($0.093\text{s}$) |
-| **12**| **Speed 7** | Secret Bunker Hatch | **$375\text{Qi}$** | Heavy metal blast door flush with the backyard lawn | **$2\times$ Speed** ($0.046\text{s}$) |
-| **13**| **Speed 8** | Blessed Compound Gates | **$7.5\text{Vg}$** | Tall wrought-iron gates with gilded cult insignia | **$3\times$ Speed** ($0.0156\text{s}$) |
+| **0** | **Base** | `00_Starter_Overseer_Station` | **$250\text{M}$** | Welcome desk, Cultist NPC, and `CollectUpgradeGui` on front lawn | Spawns Building 3; active click/collect hub |
+| **1** | **Cosmetic** | `01_Foundation_and_Framing` | **$280\text{M}$** | Concrete foundation slabs, footings, and crawlspace framing | Foundation footprint appears |
+| **2** | **Cosmetic** | `02_Exterior_Walls_and_Windows` | **$350\text{M}$** | Red brick perimeter walls, siding, exterior doors, windows with shutters & blinds | House envelope is fully standing |
+| **3** | **Cosmetic** | `03_Roof_and_Chimney` | **$425\text{M}$** | Main roof gables, shingles, porch overhangs, garage roof, and brick chimney stack | House is fully sheltered & roofed |
+| **4** | **Speed 1** | Communal Kitchen Setup | **$500\text{M}$** | First cooking station & food pantry in the house | **$2\times$ Speed** ($3.0\text{s}$) |
+| **5** | **Cosmetic** | `04_Front_Porch` | **$650\text{M}$** | Wooden porch deck, front steps, white railings/balusters, and support pillars | Welcoming entrance visual |
+| **6** | **Cosmetic** | `05_Driveway_and_Garden` | **$900\text{M}$** | Concrete driveway, cobblestone paths, green lawn, garden trees, flower beds | Complete exterior landscaping |
+| **7** | **Cosmetic** | `06_Staircase_and_Hallways` | **$1.4\text{B}$** | 18 floating wooden steps, landing platform, 2 support pillars, balusters, red circular rug | Connects 1st and 2nd floors |
+| **8** | **Cosmetic** | `07_LivingRoom_Lounge` | **$2.0\text{B}$** | White sectional sofa, pillows, wood coffee table, end table, white lamp, ceiling fan | Ground floor lounge visual |
+| **9** | **Speed 2** | Bunk Bed Barracks | **$2.5\text{B}$** | 2 wooden bunk beds with resting recruits | **$2\times$ Speed** ($1.5\text{s}$) |
+| **10** | **Cosmetic** | `08_LivingRoom_Entertainment` | **$3.2\text{B}$** | Freestanding slate room divider, glass flame hearth, wall-mounted flat-screen TV | Modern living centerpiece visual |
+| **—** | **Manager** | Compound Overseer | **$5.0\text{B}$** | Robed elder NPC holding ledger book standing at welcome desk | Automated Collection |
+| **11** | **Cosmetic** | `09_Dining_Room` | **$8.5\text{B}$** | Light-green oval rug, oval dining table, 6 chairs, 6 dinner plates, fruit bowl, chandelier | Communal dining area visual |
+| **12** | **Cosmetic** | `10_Kitchen_Suite` | **$15.0\text{B}$** | Checkered marble floor, island, double-door white fridge, counters, sink, microwave/oven | Complete culinary kitchen visual |
+| **13** | **Speed 3** | Ham Radio Antenna | **$20.0\text{B}$** | Roof-mounted shortwave broadcast antenna tower | **$2\times$ Speed** ($0.75\text{s}$) |
+| **14** | **Cosmetic** | `13_Bathroom` | **$35.0\text{B}$** | Marble tile flooring, bathtub enclosure, porcelain toilet, vanity counter, sink, mirror | Restroom visual |
+| **15** | **Cosmetic** | `12_Guest_Bedrooms` | **$80.0\text{B}$** | Guest beds, study desks, chairs, wardrobe closets, bedroom carpets | Member quarters visual |
+| **16** | **Cosmetic** | `11_Master_Bedroom` | **$175.0\text{B}$** | Master bed (headboard, duvet, pillows), plush carpet, nightstands, table lamps, dresser | Cult Leader suite visual |
+| **17** | **Cosmetic** | `14_Garage_and_Car` | **$350.0\text{B}$** | Garage concrete floor, roll-up door slats, tool workbenches, shelves, and Cult Car | Full garage & getaway car visual |
+| **18** | **Gate** | *Unlocks Building 4 Button ($500B)* | — | Floor button to Community Hall plot | Progression Unlocked |
+| **19** | **Speed 4** | Garden Crop Plots | **$1.75\text{T}$** | 3 raised vegetable farm beds behind the house | **$2\times$ Speed** ($0.375\text{s}$) |
+| **20** | **Speed 5** | Solar Panel Array | **$20.0\text{T}$** | 6 angled photovoltaic solar panels on the roof | **$2\times$ Speed** ($0.187\text{s}$) |
+| **21** | **Speed 6** | Watchtower Lookout | **$1.25\text{Qa}$** | Elevated wooden guard tower with functional spotlight | **$2\times$ Speed** ($0.093\text{s}$) |
+| **22** | **Speed 7** | Secret Bunker Hatch | **$375\text{Qi}$** | Heavy steel blast door hatch embedded into lawn | **$2\times$ Speed** ($0.046\text{s}$) |
+| **23** | **Speed 8** | Blessed Compound Gates | **$7.5\text{Vg}$** | Heavy wrought-iron compound security gates | **$3\times$ Speed** ($0.0156\text{s}$) |
+
 
 ---
 
