@@ -60,12 +60,8 @@ Rather than locking milestone rewards to flat $2\times$ boosts indefinitely, hig
 
 | Tier | Sacred Dogma Name | Cost (Followers) | Global Profit Multiplier | Progression Target / Pacing Role |
 | --- | --- | --- | --- | --- |
-| **I** | **Sidewalk Pamphleteering** | $\$10,000$ | **$\times 5$ Global** | Bridges Building 1 to Building 2
-
- |
-| **II** | **Esoteric Wellness Alignment** | $\$500\text{M}$ | **$\times 10$ Global** | Powers through Building 3 (Suburban Compound)
-
- |
+| **I** | **Sidewalk Pamphleteering** | $\$4,000$ | **$\times 5$ Global** | Bridges Building 1 to Building 2 ($30\text{K}$) |
+| **II** | **Esoteric Wellness Alignment** | $\$2,500,000$ | **$\times 10$ Global** | Powers through Building 2 into Building 3 ($15\text{M}$) |
 | **III** | **Televangelical Mind-Lock** | $\$10\text{T}$ | **$\times 25$ Global** | Bridges the wall leading to Building 5 ($\$100\text{T}$)
 
  |

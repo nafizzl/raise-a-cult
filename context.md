@@ -9,11 +9,11 @@
 
 ### 1. Centralized Economy Engine (`ReplicatedStorage.Economy`)
 * **`EconomyConfig.luau`**:
-  * **Elevated 10-Tier Building Definitions:** Calibrated base costs, yields, cycle times, and growth rates ($r = 1.12 \to 1.21$) to compensate for dual milestone and floor upgrade scaling:
-    * **Building 1 (Street Preacher):** Base Unit $15 | Manager $250 | Base Yield $1 | Cycle 1.0s | $r = 1.12$
-    * **Building 2 (Storage Temple):** Unlock $35,000 | Manager $2.5M | Base Yield $500 | Cycle 3.0s | $r = 1.13$
-    * **Building 3 (Suburban Compound):** Unlock $50M | Manager $5B | Base Yield $250,000 | Cycle 6.0s | $r = 1.14$
-    * **Building 4 (Community Hall):** Unlock $50B | Manager $50T | Base Yield $200M | Cycle 12.0s | $r = 1.15$
+  * **Elevated 10-Tier Building Definitions:** Calibrated base costs, yields, cycle times, and growth rates ($r = 1.10 \to 1.21$) to compensate for dual milestone and floor upgrade scaling:
+    * **Building 1 (Street Preacher):** Base Unit $15 | Manager $250 | Base Yield $2 ($2.0/s) | Cycle 1.0s | $r = 1.10$
+    * **Building 2 (Storage Temple):** Unlock $30,000 | Manager $500,000 ($500K) | Base Yield $3,600 ($1,200/s) | Cycle 3.0s | $r = 1.12$
+    * **Building 3 (Suburban Compound):** Unlock $15M | Manager $150,000,000 ($150M) | Base Yield $1,500,000 ($250K/s) | Cycle 6.0s | $r = 1.13$
+    * **Building 4 (Community Hall):** Unlock $10B | Manager $100,000,000,000 ($100B) | Base Yield $800M ($80M/s) | Cycle 10.0s | $r = 1.14$
     * **Building 5 (Wellness Ranch):** Unlock $100T | Manager $250Qa | Base Yield $350B | Cycle 24.0s | $r = 1.16$
     * ... scaling to **$500 Sexagintillion ($10^{185}$)** for Building 10 with endgame capstones at **$50 Novemsexagintillion ($10^{211}$)**.
   * **Strict Role Separation:** 
@@ -58,10 +58,10 @@
   * **Full Building 1 Sequential Unlock Chain:**
     0. **`NewBuildingButton` ($0):** Unparents itself; spawns Table, Cult Member, `CollectUpgradeGui`, `ManagerButton` ($250), and `Flyers` button ($50).
     1. **`Worship Flyers` ($50, $2\times$ Speed):** Spawns table flyers $\rightarrow$ unlocks `More Preachers` button.
-    2. **`More Preachers` ($600, $2\times$ Speed):** Spawns 2 chanting cultists $\rightarrow$ unlocks `Canopy Tents` button.
-    3. **`Canopy Tents` (Cosmetic, $2,500):** Spawns 3 popup shelter tents $\rightarrow$ unlocks `Megaphones` button.
-    4. **`Street Megaphones` ($10,000, $2\times$ Speed):** Spawns megaphones & preacher $\rightarrow$ unlocks `FloorChalk` button.
-    5. **`FloorChalk` (Cosmetic, $50,000):** Spawns chalk circle & chalk cartons $\rightarrow$ unlocks `Outreach Booth` button.
+    2. **`More Preachers` ($500, $2\times$ Speed):** Spawns 2 chanting cultists $\rightarrow$ unlocks `Canopy Tents` button.
+    3. **`Canopy Tents` (Cosmetic, $1,500):** Spawns 3 popup shelter tents $\rightarrow$ unlocks `Megaphones` button.
+    4. **`Street Megaphones` ($8,500, $2\times$ Speed):** Spawns megaphones & preacher $\rightarrow$ unlocks `FloorChalk` button.
+    5. **`FloorChalk` (Cosmetic, $15,000):** Spawns chalk circle & chalk cartons $\rightarrow$ unlocks `Outreach Booth` button and reveals Building 2 button.
     6. **`Outreach Booth` ($525K, $2\times$ Speed):** Spawns booth, pamphlets & phone $\rightarrow$ unlocks `Booklets` button.
     7. **`Printed Booklets` ($6.0M, $2\times$ Speed):** Spawns book stacks, boxes & member $\rightarrow$ unlocks `Speakers` button.
     8. **`Speaker Towers` ($375M, $2\times$ Speed):** Spawns dual PA speaker towers $\rightarrow$ unlocks `Street Sign` button.
@@ -69,7 +69,7 @@
     10. **`Holy Podium` ($2.25Qa, $3\times$ Speed):** Spawns elevated podium & golden player statue *(Building 1 Capstone)*.
     * **`ManagerButton` ($250):** Spawns at Stage 0; upon purchase, restores all manager props (`Table`, `Cult Member`, `MoneyonTable`) and triggers the slide-up animation and automated collection loop.
   * **Building 2 (Storage Unit Temple) Pipeline:**
-    * **`NewBuildingButton` ($250,000):** Gated behind Building 1's `FloorChalk` (Sidewalk Chalk Circle, $50K). Stays hidden in templates until `FloorChalk` is purchased, which reveals both `OutreachBooth` in Building 1 and pops up this button in Building 2. Spawns the entire temple structure upon stepping on the floor button.
+    * **`NewBuildingButton` ($30,000):** Gated behind Building 1's `FloorChalk` (Sidewalk Chalk Circle, $15K). Stays hidden in templates until `FloorChalk` is purchased. Spawns the entire temple structure upon stepping on the floor button.
     * **Multi-Directional Assembly Animation (`BuildingAnimatorClient.local.luau`):**
       * `Ceiling`: pops down from $+Y$ ($+10\text{ studs}$).
       * `Floor`: pops up from $-Y$ ($-6\text{ studs}$).
@@ -79,6 +79,9 @@
       * `Light`: drops from ceiling with a slight bounce.
       * After a $0.35\text{s}$ delay, `Podium`, `Cult Member`, and `CollectUpgradeGui` pop up inside with standard upward easing.
     * **Dynamic Stashing:** Moves unowned Building 2 base assets (`Storage Unit`, `Podium`, `Cult Member`, `CollectUpgradeGui`) into `ReplicatedStorage.BuildingTemplates.Building2` until unlocked.
+  * **Building 3 (Suburban Compound) Pipeline:**
+    * **`NewBuildingButton` ($15,000,000):** Unlocked after Building 2's Donation Machine is purchased ($5.0M). Spawns Starter Overseer Station with Welcome Desk, Cult Member, and `CollectUpgradeGui`.
+    * **22-Step Sequential Pipeline:** Spans 14 ground-up cosmetic room builds ($20M $\to$ $40B), 8 functional speed tiers (including Communal Kitchen $70M, Watchtower $1.5T, Bunker Hatch $10T, Gates $100T), and the $150M Compound Overseer manager.
 
 ---
 
@@ -86,6 +89,8 @@
 * **Location:** `StarterPlayer.StarterPlayerScripts.CollectUpgradeClient.local.luau` (LocalScript)
 * **Architecture:** **PlayerGui Adornee Architecture** with Proximity Hysteresis
   * Clones 3D `BillboardGui`s into `Players.LocalPlayer.PlayerGui` and sets `Adornee = workspacePart`.
+  * **Expanded 480 × 290 px Canvas:** Standardized `CollectUpgradeGui` to `{0, 480}, {0, 290}` with centered `AnchorPoint = Vector2.new(0.5, 0.5)` and `StudsOffset = Vector3.new(0, 4.5, 0)`. Symmetrically accommodates 1.25x `UIScale` without clipping lower elements.
+  * **Permanent Upgrade Cost Visibility (`PriceText`):** Enforces `Font = FredokaOne`, `ZIndex = 5`, and `Visible = true` right below the `UPGRADE [E]` button, initializing to next-level cost ($16 for starter building) and updating upon `UpgradeSuccess`.
   * **Hysteresis Distance Checks:**
     * `CollectUpgradeGui`: Pop-in at $\le 7$ studs, pop-out at $\ge 9$ studs.
     * Floor Button `PricingTag`s: Pop-in at $\le 16$ studs, pop-out at $\ge 20$ studs.
@@ -93,11 +98,32 @@
   * **Live Countdown & Seamless Animation:** Progress bar fills and resets continuously during manager automation without flashing `"READY"` between cycles.
   * **Anti-Ballooning Bounce Safety:** Fixed `BASE_SIZES` table (`280 × 44 px` for UpgradeButton, `360 × 34 px` for ProgressBarTrack) with active tween cancellation, preventing button growth during rapid clicking.
   * **`LevelLabel` Badge:** Displays unit level (`x1`, `x10`, etc.) with FredokaOne Bold and black `UIStroke`.
-  * **Next-Level Price Calculation:** Default label initializes to Level 2 cost ($16) for `x1` owned buildings.
 
 ---
 
-### 6. 3-Tier Button Billboard UI Standard
+### 6. Player Onboarding & Guidance System (`TutorialController.local.luau` & `TutorialServer.legacy.luau`)
+* **Server Authority (`TutorialServer.legacy.luau`):**
+  * Asynchronously awards Welcome Badge (`1830127030429571`) on player join.
+  * `TutorialInit` RemoteFunction verifies player progression state to resume tutorial or standby.
+* **Client Tutorial Engine (`TutorialController.local.luau`):**
+  * **6-Step Progression:**
+    1. *"Buy your first building for your cult!"* $\rightarrow$ Free $0 starter `NewBuildingButton`.
+    2. *"Get closer and start clicking to earn money!"* $\rightarrow$ Street Preacher stand / `CollectUpgradeGui`.
+    3. *"Upgrade your cash flow!"* $\rightarrow$ Triggered at $16 cash balance; guides player to level up Building 1.
+    4. *"Keep getting money and buy your first speed upgrade!"* $\rightarrow$ Triggered at Level 2+; points to `Flyers` button ($50).
+    5. *"Earn money and buy your first manager!"* $\rightarrow$ Triggered after buying Flyers; points to `Manager` button ($250).
+    6. *"Well done, keep earning more money and grow your cult!"* $\rightarrow$ Completion celebration, fades out after 5s.
+  * **Floating Center-Bottom Banner UI:** Transparent container positioned at `UDim2.new(0.5, 0, 1, -145)` with 25% larger FredokaOne text (`MaxTextSize = 68`) and 4.5px black `UIStroke`.
+  * **Work at a Pizza Place Style Guidance Beam:**
+    * Continuous Roblox `Beam` with repeating chevrons (`rbxassetid://705372919`, Road Chevron White).
+    * `FaceCamera = false` with dynamic horizontal alignment (`Axis = Vector3.new(0, 1, 0)`, `SecondaryAxis = dir:Cross(up).Unit`) ensuring the beam lies 100% flat on the ground plane like road markings without camera-tilt distortion or thinning.
+    * Reverse attachment mapping (`Attachment0 = targetAttachment`, `Attachment1 = playerAttachment`) and `TextureSpeed = -3.0` so chevrons point toward the objective (`>>>>>>`) and animate outward from the player to the goal.
+    * Emerald/cyan green gradient fading to pure white at destination.
+    * Persistent across character respawns via `localPlayer.CharacterAdded`.
+
+---
+
+### 7. 3-Tier Button Billboard UI Standard
 * **Billboard Size:** Standardized to `{0, 240}, {0, 120}` across all floor buttons.
 * **Layout Hierarchy:**
   1. **`BenefitLabel` (Top):** `FredokaOne Bold`, 18px, White (`"2x Speed"`, `"Auto Collect"`, `"New Building"`, or Blank for Cosmetics).
@@ -106,17 +132,17 @@
 
 ---
 
-### 7. Custom Props, Shaders & Lighting
+### 8. Custom Props, Shaders & Lighting
 * **`WorshipFlyers` SurfaceGui:**
   * Configured with `LightInfluence = 0` and `Brightness = 1` to prevent dynamic NPC/character shadows from washing out paper flyers.
   * `HeadshotImage.BackgroundTransparency = 1` to eliminate grey square haze.
   * Rotated 90° with FredokaOne Bold `"WORSHIP"` header and player avatar thumbnail.
-* **`BuildingAnimatorClient.local.luau`:** Standardized `PivotTo()` slide-up pop-in animation for newly purchased parts, including all `Manager` models (`Table`, `Cult Member`, `MoneyonTable`).
+* **`BuildingAnimatorClient.local.luau`:** Standardized `PivotTo()` slide-up pop-in animation for newly purchased parts, including all `Manager` models (`Table`, `Cult Member`, `MoneyonTable`) and Building 3 Bunker Hatch.
 * **`PlayAnimation.server.luau`:** Attached to Manager's R15 `Cult Member` model to loop `Getting Money Animation` (`rbxassetid://9069088593`).
 
 ---
 
-### 8. Authoritative Developer Console & Command System
+### 9. Authoritative Developer Console & Command System
 * **Server Script:** `ServerScriptService.AdminServer.legacy.luau`
   * Strict permission verification: `player.UserId == game.CreatorId` (`51437187`), `ALLOWED_USER_IDS` whitelist, or `RunService:IsStudio()`.
   * Command syntax: `:give <amount>`, `:set <amount>`, `:reset`, `:unlockmanager <id>`, `:help`.
@@ -127,7 +153,7 @@
 
 ---
 
-### 9. Dynamic Visual & Time Formatting Systems
+### 10. Dynamic Visual & Time Formatting Systems
 * **Interactive READY Progress Bar (`CollectUpgradeClient.local.luau`):**
   * When in manual mode and idle/ready, the progress bar remains 100% full bright red (`fill.Size = UDim2.new(1, 0, 1, 0)`) with `"READY"` displayed.
   * Upon clicking, `ProgressFill` resets to `0%` revealing the dark red background and plays a linear fill sweep to `100%`.

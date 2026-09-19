@@ -47,10 +47,10 @@ To ensure progress requires multiple prestiges and prevents reaching endgame bui
 
 | \# | Building Name | Base Cost ($B_k$) | Growth Rate ($r$) | Base Prod / Cycle | Base Cycle Time | Manager Cost | Progression Barrier |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
-| **1** | **Street Corner Preacher** | **$0** (Unit 1: **$15**) | **1.12** | **$1** | $1.0\text{s}$ | **$250** | 0–3 min (Active tapping) |
-| **2** | **Storage Unit Temple** | **$35,000** | **1.13** | **$500** | $3.0\text{s}$ | **$2.5\text{M}$** | 3–8 min |
-| **3** | **Suburban Compound** | **$50\text{M}$** ($5 \times 10^7$) | **1.14** | **$250,000** | $6.0\text{s}$ | **$5\text{B}$** | 10–25 min |
-| **4** | **Community Hall** | **$50\text{B}$** ($5 \times 10^{10}$) | **1.15** | **$200\text{M}$** | $12.0\text{s}$ | **$50\text{T}$** | 30–60 min (**Pre-Schism Wall**) |
+| **1** | **Street Corner Preacher** | **$0** (Unit 1: **$15**) | **1.10** | **$2** | $1.0\text{s}$ | **$250** | 0–1.5 min (Active tapping) |
+| **2** | **Storage Unit Temple** | **$30,000** | **1.12** | **$3,600** ($1,200/s) | $3.0\text{s}$ | **$500,000** | 1.5–3 min |
+| **3** | **Suburban Compound** | **$15\text{M}$** ($1.5 \times 10^7$) | **1.13** | **$1,500,000** ($250K/s) | $6.0\text{s}$ | **$150\text{M}$** | 3–8 min |
+| **4** | **Community Hall** | **$10\text{B}$** ($10^{10}$) | **1.14** | **$800\text{M}$** ($80M/s) | $10.0\text{s}$ | **$100\text{B}$** | 8–20 min (**Pre-Schism Launchpad**) |
 | **5** | **Wellness Retreat Ranch** | **$100\text{T}$** ($10^{14}$) | **1.16** | **$350\text{B}$** | $24.0\text{s}$ | **$250\text{Qa}$** | Requires **Schism 1** (Zealots) |
 | **6** | **Merch & Media Wing** | **$500\text{Qi}$** ($5 \times 10^{20}$) | **1.17** | **$2\text{Qa}$** | $45.0\text{s}$ | **$1\text{Sx}$** | Requires **Schism 2–3** |
 | **7** | **Pirate Radio/TV Broadcast** | **$50\text{Sp}$** ($5 \times 10^{25}$) | **1.18** | **$150\text{Qi}$** | $90.0\text{s}$ | **$250\text{Oc}$** | Requires **Reformation 1** (Souls) |
@@ -93,16 +93,16 @@ Inspired by the cross-tier progression curve in *Sell Lemons*, floor upgrades **
 
 Each building has **8 physical floor upgrades** applied **strictly to cycle speed** ($2\times$ faster for Tiers 1–7, $3\times$ faster for Tier 8 $\implies \mathbf{384\times}$ total speed divisor):
 
-| Tier | Pricing Multiple ($B_k$) | Building 1 Cost ($B_1 = \$15$) | Building 2 Cost ($B_2 = \$35\text{K}$) | Effect on Cycle Time | Cumulative Speed Divisor | Target Unlock Phase |
+| Tier | Pricing Multiple ($B_k$) | Building 1 Cost ($B_1 = \$15$) | Building 2 Cost ($B_2 = \$30\text{K}$) | Effect on Cycle Time | Cumulative Speed Divisor | Target Unlock Phase |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Upgrade 1** | $2.0 \times B_k$ | **$30** | **$70,000** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $2\times$ ($0.5\text{s}$) | Early Building 1 |
-| **Upgrade 2** | $25 \times B_k$ | **$375** | **$875,000** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $4\times$ ($0.25\text{s}$) | Pre-Building 2 Unlock |
-| **Upgrade 3** | $300 \times B_k$ | **$4,500** | **$10.5\text{M}$** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $8\times$ ($0.125\text{s}$) | Approaching Building 2 |
-| **Upgrade 4** | $35,000 \times B_k$ | **$525,000** | **$1.225\text{B}$** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $16\times$ ($0.0625\text{s}$) | Mid Building 2 |
-| **Upgrade 5** | $400,000 \times B_k$ | **$6.0\text{M}$** | **$14.0\text{B}$** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $32\times$ ($0.03125\text{s}$) | Approaching Building 3 ($50\text{M}) |
-| **Upgrade 6** | $25\text{M} \times B_k$ | **$375\text{M}$** | **$875\text{B}$** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $64\times$ ($0.0156\text{s}$) | Mid Building 3 |
-| **Upgrade 7** | $7.5\text{B} \times B_k$ | **$112.5\text{B}$** | **$262.5\text{T}$** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $128\times$ ($0.0078\text{s}$) | Approaching Building 4 ($50\text{B}) |
-| **Upgrade 8 (Final)**| **$150\text{T} \times B_k$** | **$2.25\text{Qa}$** | **$5.25\text{Sx}$** | $\mathbf{3\times\text{ Speed}}$ (Time / 3) | **$384\times$** ($0.0026\text{s}$) | Late-Game Overdrive ($50\text{Ns}$ on B10) |
+| **Upgrade 1** | $2.0 \times B_k$ | **$30** | **$60,000** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $2\times$ ($0.5\text{s}$) | Early Building 1 |
+| **Upgrade 2** | $25 \times B_k$ | **$375** | **$250,000** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $4\times$ ($0.25\text{s}$) | Pre-Building 2 Unlock |
+| **Upgrade 3** | $300 \times B_k$ | **$4,500** | **$5.0\text{M}$** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $8\times$ ($0.125\text{s}$) | Approaching Building 2 |
+| **Upgrade 4** | $35,000 \times B_k$ | **$525,000** | **$75.0\text{M}$** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $16\times$ ($0.0625\text{s}$) | Mid Building 2 |
+| **Upgrade 5** | $400,000 \times B_k$ | **$6.0\text{M}$** | **$500.0\text{M}$** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $32\times$ ($0.03125\text{s}$) | Approaching Building 3 ($15\text{M}) |
+| **Upgrade 6** | $25\text{M} \times B_k$ | **$375\text{M}$** | **$2.5\text{B}$** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $64\times$ ($0.0156\text{s}$) | Mid Building 3 |
+| **Upgrade 7** | $7.5\text{B} \times B_k$ | **$112.5\text{B}$** | **$7.5\text{B}$** | $\mathbf{2\times\text{ Speed}}$ (Time / 2) | $128\times$ ($0.0078\text{s}$) | Approaching Building 4 ($10\text{B}) |
+| **Upgrade 8 (Final)**| **$150\text{T} \times B_k$** | **$2.25\text{Qa}$** | **$250.0\text{B}$** | $\mathbf{3\times\text{ Speed}}$ (Time / 3) | **$384\times$** ($0.0026\text{s}$) | Late-Game Overdrive ($50\text{Ns}$ on B10) |
 
 *Total combined speed boost from all 8 purchased floor upgrades: $2^7 \times 3 = \mathbf{384\times \text{ Speed Divisor}}$ (Base Cycle Time divided by 384).*
 
@@ -110,9 +110,9 @@ Each building has **8 physical floor upgrades** applied **strictly to cycle spee
 
 | Progression Milestone | Building 1 (Street Preachers) | Building 2 (Storage Unit Temple) | Building 3 (Suburban Compound) | Synergistic Optimal Decision |
 | :--- | :--- | :--- | :--- | :--- |
-| **Early Game ($0–$1,000)** | Level 1–10 ($1 $\to$ $20/cycle) | Locked | Locked | Buy **Flyers ($30)**, Manager ($250), Preachers ($375) |
-| **Early-Mid ($1,000–$50,000)** | Level 25 ($100/cycle @ 0.25s) | Locked | Locked | Buy **Megaphones ($4,500)**, unlock **Building 2 ($35,000)** |
-| **Mid Game ($50K–$100M)** | Level 50 ($400/cycle @ 0.125s) | Level 25 ($2,000/cycle @ 1.5s) | Locked | Level Building 2, unlock **Suburban Compound ($50\text{M})** |
+| **Early Game ($0–$1,000)** | Level 1–10 ($2 $\to$ $40/cycle) | Locked | Locked | Buy **Flyers ($50)**, Manager ($250), Preachers ($500) |
+| **Early-Mid ($1,000–$50,000)** | Level 25 ($200/cycle @ 0.25s) | Locked | Locked | Buy **Dogma I ($4K)**, **Megaphones ($8.5K)**, unlock **Building 2 ($30,000)** |
+| **Mid Game ($50K–$100M)** | Level 50 ($800/cycle @ 0.125s) | Level 25 ($14.4K/cycle @ 1.5s) | Locked | Level Building 2, buy **Dogma II ($2.5M)**, unlock **Suburban Compound ($15\text{M})** |
 
 ### **3.4 Global Speed Upgrades (Followers)**
 

@@ -20,37 +20,37 @@ EconomyConfig.Buildings = {
         Id = 1,
         Name = "Street Corner Preacher",
         BaseCost = 15,
-        GrowthRate = 1.12,
-        BaseProd = 1,
+        GrowthRate = 1.10,
+        BaseProd = 2,
         BaseCycleTime = 1.0,
         ManagerCost = 250,
     },
     [2] = {
         Id = 2,
         Name = "Storage Unit Temple",
-        BaseCost = 250000, -- $250K
-        GrowthRate = 1.13,
-        BaseProd = 500,
+        BaseCost = 30000, -- $30K
+        GrowthRate = 1.12,
+        BaseProd = 3600,
         BaseCycleTime = 3.0,
-        ManagerCost = 2500000, -- $2.5M
+        ManagerCost = 500000, -- $500K
     },
     [3] = {
         Id = 3,
         Name = "Suburban Compound",
-        BaseCost = 250000000, -- $250M
-        GrowthRate = 1.14,
-        BaseProd = 250000,
+        BaseCost = 15000000, -- $15M
+        GrowthRate = 1.13,
+        BaseProd = 1500000, -- 1.5M
         BaseCycleTime = 6.0,
-        ManagerCost = 5000000000, -- $5B
+        ManagerCost = 150000000, -- $150M
     },
     [4] = {
         Id = 4,
         Name = "Community Hall",
-        BaseCost = 500000000000, -- $500B
-        GrowthRate = 1.15,
-        BaseProd = 200000000, -- 200M
-        BaseCycleTime = 12.0,
-        ManagerCost = 50000000000000, -- $50T
+        BaseCost = 10000000000, -- $10B
+        GrowthRate = 1.14,
+        BaseProd = 800000000, -- 800M
+        BaseCycleTime = 10.0,
+        ManagerCost = 100000000000, -- $100B
     },
     [5] = {
         Id = 5,
@@ -152,6 +152,17 @@ EconomyConfig.Milestones = {
     { Threshold = 250000,   OutputMult = 2048, SpeedMult = 1 },
     { Threshold = 500000,   OutputMult = 4096, SpeedMult = 1 },
     { Threshold = 1000000,  OutputMult = 8192, SpeedMult = 1 },
+}
+
+-- 7-Tier Sacred Dogma Progression ("Upgrade Fruit" Global Boosters)
+EconomyConfig.Dogmas = {
+    [1] = { Tier = 1, Name = "Sidewalk Pamphleteering",        Cost = 4000,       Multiplier = 5 },       -- x5 Global
+    [2] = { Tier = 2, Name = "Esoteric Wellness Alignment",     Cost = 2500000,    Multiplier = 10 },      -- x10 Global
+    [3] = { Tier = 3, Name = "Televangelical Mind-Lock",         Cost = 10000000000000, Multiplier = 25 }, -- x25 Global ($10T)
+    [4] = { Tier = 4, Name = "Deep-State Shell Network",        Cost = 5e19,       Multiplier = 100 },     -- x100 Global ($50Qi)
+    [5] = { Tier = 5, Name = "Sub-Crust Doomsday Prophecy",     Cost = 5e29,       Multiplier = 1000 },    -- x1,000 Global ($500Oc)
+    [6] = { Tier = 6, Name = "Cosmic Anti-Gravity Transcendence", Cost = 1e94,     Multiplier = 100000 },  -- x100,000 Global ($10Tg)
+    [7] = { Tier = 7, Name = "The Omniscient Hive-Mind",        Cost = 1e186,      Multiplier = 1e8 },     -- x100,000,000 Global ($1Og)
 }
 
 return EconomyConfig

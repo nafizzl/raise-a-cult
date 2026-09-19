@@ -254,8 +254,17 @@ local function setupPlayerGuiForPart(workspacePart: BasePart): BillboardGui?
         local clonedBb = sourceBb:Clone()
         clonedBb.Name = "PlayerGui_" .. workspacePart.Name
         clonedBb.Adornee = workspacePart
-        clonedBb.Size = sourceBb.Size
-        clonedBb.StudsOffset = sourceBb.StudsOffset
+
+        local isCollect = (workspacePart.Name == "CollectUpgradeGui")
+        if isCollect then
+            -- Expanded canvas to fit 1.25x UIScale without clipping PriceText ($16) at the bottom
+            clonedBb.Size = UDim2.new(0, 480, 0, 290)
+            clonedBb.StudsOffset = Vector3.new(0, 4.5, 0)
+        else
+            clonedBb.Size = sourceBb.Size
+            clonedBb.StudsOffset = sourceBb.StudsOffset
+        end
+
         clonedBb.AlwaysOnTop = true
         clonedBb.Active = true
         clonedBb.Enabled = false
@@ -265,8 +274,20 @@ local function setupPlayerGuiForPart(workspacePart: BasePart): BillboardGui?
         guiBuildingIds[clonedBb] = bId
 
         local container = clonedBb:FindFirstChild("Container") or clonedBb:FindFirstChild("Frame")
-        if container then
+        if container and container:IsA("GuiObject") then
             container.Active = true
+            if isCollect then
+                container.AnchorPoint = Vector2.new(0.5, 0.5)
+                container.Position = UDim2.new(0.5, 0, 0.5, 0)
+                container.Size = UDim2.new(0, 360, 0, 220) -- Fixed 360x220 base so all elements center at X=180
+                local title = container:FindFirstChild("BuildingTitle")
+                if title and title:IsA("TextLabel") then
+                    title.Size = UDim2.new(1, 0, 0, 36)
+                    title.Position = UDim2.new(0, 0, 0, 0)
+                    title.TextXAlignment = Enum.TextXAlignment.Center
+                end
+            end
+
             local uiScale = container:FindFirstChildWhichIsA("UIScale")
             if not uiScale then
                 uiScale = Instance.new("UIScale")
@@ -306,7 +327,12 @@ local function setupPlayerGuiForPart(workspacePart: BasePart): BillboardGui?
                 getOrCreateFastBarOverlay(track)
             end
             if moneyLabel then moneyLabel.Text = EconomyMath.FormatCurrency(bDef.BaseProd) end
-            if priceLabel then priceLabel.Text = EconomyMath.FormatCurrency(nextUpgradeCost) end
+            if priceLabel then
+                priceLabel.Text = EconomyMath.FormatCurrency(nextUpgradeCost)
+                priceLabel.Visible = true
+                priceLabel.ZIndex = 5
+                priceLabel.Font = Enum.Font.FredokaOne
+            end
             if levelLabel then levelLabel.Text = "x1" end
 
             if track then
@@ -641,6 +667,8 @@ UpgradeEvent.OnClientEvent:Connect(function(action: string, buildingIdArg: any, 
                     end
                     if priceLabel and newCost ~= nil then
                         priceLabel.Text = EconomyMath.FormatCurrency(tonumber(newCost) or 0)
+                        priceLabel.Visible = true
+                        priceLabel.Font = Enum.Font.FredokaOne
                     end
                 end
             end

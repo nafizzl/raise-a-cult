@@ -292,3 +292,65 @@
   * **Building Upgrades Catalog Expansion (`building_upgrades_catalog.md`):** Replaced the 3-cosmetic placeholder with the full 24-step progression sequence for Building 3 (Suburban Compound) spanning from the $250M initial plot purchase, through 14 Ground-Up Construction cosmetic stages, 8 functional speed tiers ($384\times$ multiplier), the $5.0B Compound Overseer manager, and the $500B Gate to Building 4 (Community Hall).
 
 
+## September 19, 2026
+
+* **Server-Side Tutorial Progression & Welcome Badge (`TutorialServer.legacy.luau`):**
+  * Configured `TutorialServer` to award Welcome Badge (`1830127030429571`) asynchronously upon player join via `BadgeService:AwardBadge`.
+  * Implemented `TutorialInit` RemoteFunction querying `MoneyManager.GetBuildingState` and player balance to determine whether onboarding tutorial is active and which step to resume.
+
+* **Client Onboarding Tutorial & Floating Banner UI (`TutorialController.local.luau`):**
+  * Designed a 6-step player onboarding flow:
+    1. Step 1: *"Buy your first building for your cult!"* (Targets free $0 starter `NewBuildingButton`)
+    2. Step 2: *"Get closer and start clicking to earn money!"* (Targets `CollectUpgradeGui` stand)
+    3. Step 3: *"Upgrade your cash flow!"* (Triggered at $16 cash balance; guides player to level up Building 1)
+    4. Step 4: *"Keep getting money and buy your first speed upgrade!"* (Triggered at Level 2+; targets `Flyers` floor upgrade button)
+    5. Step 5: *"Earn money and buy your first manager!"* (Triggered after buying Flyers; targets `Manager` button)
+    6. Step 6: *"Well done, keep earning more money and grow your cult!"* (Displays completion congratulation, then cleanly fades out after 5s).
+  * **Floating Center-Bottom Banner UI:** Positioned at `UDim2.new(0.5, 0, 1, -145)` in pure transparent container with FredokaOne font, black `UIStroke` (thickness 4.5), and scaled 25% larger (`UITextSizeConstraint.MaxTextSize = 68`, container height 110px).
+  * **Step 1 Targeting Bug Resolution:** Fixed race condition where `initArrowNodes()` inadvertently called internal cleanup that wiped `activeTargetPart` to `nil` before the first frame rendered, restoring reliable Step 1 guidance.
+  * **Respawn Persistence:** Added `localPlayer.CharacterAdded` connection to ensure guidance arrows seamlessly re-link upon character spawn or respawn.
+
+* **Work at a Pizza Place Style Guidance Beam System (`TutorialController.local.luau`):**
+  * Replaced discrete floating billboard triangles and yellow floor pads with a continuous ground-level Roblox `Beam` with repeating chevrons (`rbxassetid://705372919`, Road Chevron White).
+  * **100% Flat Ground Alignment (`FaceCamera = false`):** Dynamically sets attachment surface normal straight up (`Axis = Vector3.new(0, 1, 0)`) and computes width vector as `SecondaryAxis = dir:Cross(up).Unit` every frame. This keeps the beam strictly flat on the ground plane like road paint markings, eliminating camera-tilt distortion while preventing the beam from collapsing into a thin line at side angles.
+  * **Forward Chevron Direction & Flow:** Reassigned `Attachment0 = targetAttachment` (destination) and `Attachment1 = playerAttachment` (player origin) with `TextureSpeed = -3.0`, ensuring the chevron vertices point forward toward the objective (`>>>>>>`) and the animation scrolls outward from the player to the destination.
+  * **Color & Transparency Gradient:** Vibrant cyan-green at the player's feet (`Color3.fromRGB(0, 235, 140)`), smoothly transitioning into bright mint and pure white at the destination, with subtle distance transparency fading.
+  * **Flush Floor Raycasting:** Start and target anchors are pinned +0.08 studs above the floor surface to prevent z-fighting with the baseplate.
+  * **Early Milestone Continuity:** Extended guidance beam continuously across Steps 1 through 5, seamlessly guiding the player from the free building button, to clicking the stand, to cash flow upgrade, to floor speed upgrade, to manager hire.
+
+* **Building 3 Bunker Hatch Integration (`BuildingProgressionServer.legacy.luau` & `BuildingAnimatorClient.local.luau`):**
+  * **Studio 3D PricingTag:** Updated `workspace.CultTycoon.Building3["Suburban Compound Building"]["Bunker Hatch"].UpgradeButton.PricingTag`:
+    * Title: `"Bunker Hatch"`
+    * Pricing: `"$375Qi"` ($375 Quintillion / `3.75e20`)
+    * Benefit: `"2x Speed"`
+  * **Server Progression Chain:** Inserted `Bunker Hatch` into `B3_CHAIN` at Step 19 (Speed Tier 7, Cost `$375Qi`, `UnlockId = "BunkerHatchStage"`), moving `Gates` to Step 20 (`$7.5Vg`, Speed Tier 8). The server dynamically stashes the hatch model and upgrade button, revealing them sequentially after `Watchtower` is purchased.
+  * **Pop-In Slide Animation:** Mapped `["BunkerHatchStage"] = "Bunker Hatch"` in `BuildingAnimatorClient.local.luau` for spring pop-in upon purchase.
+
+* **CollectUpgradeGui Canvas & Upgrade Cost Visibility Fix (`CollectUpgradeClient.local.luau`):**
+  * **Root Cause Diagnostics:** Identified that scaling `CollectUpgradeGui` by 25% (`UIScale.Scale = 1.25`) expanded the inner `Container` height from 220px to 275px. Because `BillboardGui.Size` was left at `{0, 360}, {0, 220}`, `PriceText` (at $Y = 184\text{px}$) was scaled down to $Y = 230\text{px}$, pushing it past the 220px boundary and clipping the `$16` upgrade cost completely off the billboard.
+  * **Expanded Billboard Canvas:** Resized `BillboardGui.Size` from `{0, 360}, {0, 220}` to `{0, 480}, {0, 290}` and `StudsOffset` to `Vector3.new(0, 4.5, 0)` across all buildings in Studio and enforced in `CollectUpgradeClient.local.luau`.
+  * **Symmetric Centered Scaling:** Updated `Container.AnchorPoint` to `Vector2.new(0.5, 0.5)` and `Position` to `UDim2.new(0.5, 0, 0.5, 0)` so UI scaling radiates evenly from the center without pushing lower elements off the bottom.
+  * **Guaranteed Text Rendering:** Enforced `Font = Enum.Font.FredokaOne`, `ZIndex = 5`, and `Visible = true` on `PriceText` during both initial setup and runtime `UpgradeSuccess` events, ensuring the upgrade cost is permanently visible right below the `UPGRADE [E]` button.
+
+* **Early-Game Progression & Pacing Rebalance (Buildings 1–4):**
+  * **Systematic Pacing Recalibration:** Eliminated progression stalls between Building 1 and Building 2, dropping maximum player downtime from >360 seconds down to <25 seconds.
+  * **Base Parameters Rebalanced (`EconomyConfig.luau`):**
+    * Building 1 (Street Preacher): $r = 1.10$, Base Prod = $2/cycle ($2.0/s), Manager = $250.
+    * Building 2 (Storage Temple): Base Cost $30,000, $r = 1.12$, Base Prod = $3,600 ($1,200/s), Manager = $500,000 ($500K).
+    * Building 3 (Suburban Compound): Base Cost $15,000,000 ($15M), $r = 1.13$, Base Prod = $1,500,000 ($250K/s), Manager = $150,000,000 ($150M).
+    * Building 4 (Community Hall): Base Cost $10,000,000,000 ($10B), $r = 1.14$, Base Prod = $800,000,000 ($80M/s), Base Cycle Time = 10.0s, Manager = $100,000,000,000 ($100B).
+  * **Sacred Dogma Bridges Configured:** Canonical 7-tier Dogma table added to `EconomyConfig.luau` with Tier I (*Sidewalk Pamphleteering*) at $4,000 (x5 Global) and Tier II (*Esoteric Wellness Alignment*) at $2,500,000 (x10 Global).
+  * **Server Chains & Unlock Handlers Synchronized (`BuildingProgressionServer.legacy.luau`):**
+    * Building 1: More Preachers ($500), Canopy Tents ($1,500), Megaphones ($8,500), Floor Chalk ($15,000).
+    * Building 2: Unlock ($30,000), Carpeting ($45,000), Folding Chairs ($60,000), Microphone ($125,000), Boombox ($250,000), Caretaker Manager ($500,000), Altar ($750,000), Donation Machine ($5.0M), PosePosters ($75M), Shutter Door ($500M), HVAC ($2.5B), Cameras ($7.5B), Money Safes ($250B).
+    * Building 3: Unlock ($15M), 20-step construction & speed chain smoothly scaled from $20M (Foundation) through Compound Overseer Manager ($150M) up to $100T (Gates Capstone) directly launching into Building 5 ($100T First Rebirth Gate).
+  * **Roblox Studio 3D PricingTags Synchronized:** Updated all 39 physical billboard text labels across Buildings 1, 2, and 3 in the live Studio Edit session.
+
+* **Manager Progression & Active Play Pacing Recalibration (Option B Selected):**
+  * **Pacing Problem Solved:** Addressed feedback that managers were too cheap relative to building unlock costs (e.g. Building 2 manager at $75,000 allowed instant automated purchase within 2 taps after building purchase, bypassing manual operation).
+  * **Strict Manager Cost Ratios Enforced:**
+    * **Building 2 Caretaker:** Raised from $75,000 to **$500,000** (~$16.7\times$ base cost ratio, matching Building 1's $250 / $15 = 16.7x ratio). Requires ~45s of active manual clicking (~15–25 manual collections depending on upgrade level), creating a genuine active play phase that incentivizes purchasing earlier speed upgrades (Carpeting, Chairs, Microphone, Boombox) first.
+    * **Building 3 Compound Overseer:** Raised from $45,000,000 to **$150,000,000 ($150M)** ($10\times$ base cost ratio).
+    * **Building 4 Grand Reverend Director:** Raised from $35,000,000,000 to **$100,000,000,000 ($100B)** ($10\times$ base cost ratio).
+  * **Code & Studio Sync:** Updated `EconomyConfig.luau`, `BuildingProgressionServer.legacy.luau`, documentation, and Studio 3D PricingTags (`$500K` for Caretaker, `$150M` for Compound Overseer).
+

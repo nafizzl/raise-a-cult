@@ -80,10 +80,10 @@ type ChainStep = {
 
 local B1_CHAIN: { ChainStep } = {
 	{ Step = 1,  FolderName = "Flyers",        ButtonName = "UpgradeButton",  Cost = 50,                  SpeedTier = 1,   UnlockId = "FlyersStage" },
-	{ Step = 2,  FolderName = "MorePreachers", ButtonName = "UpgradeButton",  Cost = 600,                 SpeedTier = 2,   UnlockId = "MorePreachersStage" },
-	{ Step = 3,  FolderName = "CanopyTents",   ButtonName = "CosmeticButton", Cost = 2500,                SpeedTier = nil, UnlockId = "CanopyTentsStage" },
-	{ Step = 4,  FolderName = "Megaphones",    ButtonName = "UpgradeButton",  Cost = 10000,               SpeedTier = 3,   UnlockId = "MegaphonesStage" },
-	{ Step = 5,  FolderName = "FloorChalk",    ButtonName = "CosmeticButton", Cost = 50000,               SpeedTier = nil, UnlockId = "FloorChalkStage" },
+	{ Step = 2,  FolderName = "MorePreachers", ButtonName = "UpgradeButton",  Cost = 500,                 SpeedTier = 2,   UnlockId = "MorePreachersStage" },
+	{ Step = 3,  FolderName = "CanopyTents",   ButtonName = "CosmeticButton", Cost = 1500,                SpeedTier = nil, UnlockId = "CanopyTentsStage" },
+	{ Step = 4,  FolderName = "Megaphones",    ButtonName = "UpgradeButton",  Cost = 8500,                SpeedTier = 3,   UnlockId = "MegaphonesStage" },
+	{ Step = 5,  FolderName = "FloorChalk",    ButtonName = "CosmeticButton", Cost = 15000,               SpeedTier = nil, UnlockId = "FloorChalkStage" },
 	{ Step = 6,  FolderName = "OutreachBooth", ButtonName = "UpgradeButton",  Cost = 525000,              SpeedTier = 4,   UnlockId = "OutreachBoothStage" },
 	{ Step = 7,  FolderName = "Booklets",      ButtonName = "UpgradeButton",  Cost = 6000000,             SpeedTier = 5,   UnlockId = "BookletsStage" },
 	{ Step = 8,  FolderName = "Speakers",      ButtonName = "UpgradeButton",  Cost = 375000000,           SpeedTier = 6,   UnlockId = "SpeakersStage" },
@@ -92,39 +92,40 @@ local B1_CHAIN: { ChainStep } = {
 }
 
 local B2_CHAIN: { ChainStep } = {
-	{ Step = 1,  FolderName = "Carpeting",        ButtonName = "CosmeticButton", Cost = 350000,          SpeedTier = nil, UnlockId = "CarpetingStage" },
-	{ Step = 2,  FolderName = "Folding Chairs",   ButtonName = "UpgradeButton",  Cost = 500000,          SpeedTier = 1,   UnlockId = "FoldingChairsStage" },
-	{ Step = 3,  FolderName = "Microphone",       ButtonName = "CosmeticButton", Cost = 1000000,         SpeedTier = nil, UnlockId = "MicrophoneStage" },
-	{ Step = 4,  FolderName = "Boombox",          ButtonName = "UpgradeButton",  Cost = 1750000,         SpeedTier = 2,   UnlockId = "BoomboxStage" },
-	{ Step = 5,  FolderName = "Altar",            ButtonName = "CosmeticButton", Cost = 5000000,         SpeedTier = nil, UnlockId = "AltarStage" },
-	{ Step = 6,  FolderName = "Donation Machine", ButtonName = "UpgradeButton",  Cost = 15000000,        SpeedTier = 3,   UnlockId = "DonationMachineStage" },
-	{ Step = 7,  FolderName = "PosePosters",      ButtonName = "UpgradeButton",  Cost = 1225000000,      SpeedTier = 4,   UnlockId = "PosePostersStage" },
-	{ Step = 8,  FolderName = "Shutter Door",     ButtonName = "UpgradeButton",  Cost = 14000000000,     SpeedTier = 5,   UnlockId = "ShutterDoorStage" },
-	{ Step = 9,  FolderName = "HVAC",             ButtonName = "UpgradeButton",  Cost = 875000000000,    SpeedTier = 6,   UnlockId = "HVACStage" },
-	{ Step = 10, FolderName = "Cameras",          ButtonName = "UpgradeButton",  Cost = 262500000000000, SpeedTier = 7,   UnlockId = "CamerasStage" },
-	{ Step = 11, FolderName = "Money Safes",      ButtonName = "UpgradeButton",  Cost = 5.25e21,         SpeedTier = 8,   UnlockId = "MoneySafesStage" },
+	{ Step = 1,  FolderName = "Carpeting",        ButtonName = "CosmeticButton", Cost = 45000,           SpeedTier = nil, UnlockId = "CarpetingStage" },
+	{ Step = 2,  FolderName = "Folding Chairs",   ButtonName = "UpgradeButton",  Cost = 60000,           SpeedTier = 1,   UnlockId = "FoldingChairsStage" },
+	{ Step = 3,  FolderName = "Microphone",       ButtonName = "CosmeticButton", Cost = 125000,          SpeedTier = nil, UnlockId = "MicrophoneStage" },
+	{ Step = 4,  FolderName = "Boombox",          ButtonName = "UpgradeButton",  Cost = 250000,          SpeedTier = 2,   UnlockId = "BoomboxStage" },
+	{ Step = 5,  FolderName = "Altar",            ButtonName = "CosmeticButton", Cost = 750000,          SpeedTier = nil, UnlockId = "AltarStage" },
+	{ Step = 6,  FolderName = "Donation Machine", ButtonName = "UpgradeButton",  Cost = 5000000,         SpeedTier = 3,   UnlockId = "DonationMachineStage" },
+	{ Step = 7,  FolderName = "PosePosters",      ButtonName = "UpgradeButton",  Cost = 75000000,        SpeedTier = 4,   UnlockId = "PosePostersStage" },
+	{ Step = 8,  FolderName = "Shutter Door",     ButtonName = "UpgradeButton",  Cost = 500000000,       SpeedTier = 5,   UnlockId = "ShutterDoorStage" },
+	{ Step = 9,  FolderName = "HVAC",             ButtonName = "UpgradeButton",  Cost = 2500000000,      SpeedTier = 6,   UnlockId = "HVACStage" },
+	{ Step = 10, FolderName = "Cameras",          ButtonName = "UpgradeButton",  Cost = 7500000000,      SpeedTier = 7,   UnlockId = "CamerasStage" },
+	{ Step = 11, FolderName = "Money Safes",      ButtonName = "UpgradeButton",  Cost = 250000000000,    SpeedTier = 8,   UnlockId = "MoneySafesStage" },
 }
 
 local B3_CHAIN: { ChainStep } = {
-	{ Step = 1,  FolderName = "01_Foundation_and_Framing",    ButtonName = "CosmeticButton", Cost = 280000000,        SpeedTier = nil, UnlockId = "FoundationFramingStage" },
-	{ Step = 2,  FolderName = "02_Exterior_Walls_and_Windows", ButtonName = "CosmeticButton", Cost = 350000000,        SpeedTier = nil, UnlockId = "ExteriorWallsStage" },
-	{ Step = 3,  FolderName = "03_Roof_and_Chimney",           ButtonName = "CosmeticButton", Cost = 425000000,        SpeedTier = nil, UnlockId = "RoofChimneyStage" },
-	{ Step = 4,  FolderName = "Communal Kitchen",              ButtonName = "UpgradeButton",  Cost = 500000000,        SpeedTier = 1,   UnlockId = "CommunalKitchenStage" },
-	{ Step = 5,  FolderName = "04_Front_Porch",                ButtonName = "CosmeticButton", Cost = 650000000,        SpeedTier = nil, UnlockId = "FrontPorchStage" },
-	{ Step = 6,  FolderName = "05_Driveway_and_Garden",        ButtonName = "CosmeticButton", Cost = 900000000,        SpeedTier = nil, UnlockId = "DrivewayGardenStage" },
-	{ Step = 7,  FolderName = "06_Staircase_and_Hallways",     ButtonName = "CosmeticButton", Cost = 1400000000,       SpeedTier = nil, UnlockId = "StaircaseHallwaysStage" },
-	{ Step = 8,  FolderName = "07_LivingRoom_Lounge",          ButtonName = "CosmeticButton", Cost = 2000000000,       SpeedTier = nil, UnlockId = "LivingRoomLoungeStage" },
-	{ Step = 9,  FolderName = "Bunk Bedroom",                  ButtonName = "UpgradeButton",  Cost = 2500000000,       SpeedTier = 2,   UnlockId = "BunkBedroomStage" },
-	{ Step = 10, FolderName = "08_LivingRoom_Entertainment",   ButtonName = "CosmeticButton", Cost = 3200000000,       SpeedTier = nil, UnlockId = "LivingRoomEntertainmentStage" },
-	{ Step = 11, FolderName = "09_Dining_Room",                ButtonName = "CosmeticButton", Cost = 8500000000,       SpeedTier = nil, UnlockId = "DiningRoomStage" },
-	{ Step = 12, FolderName = "Antenna Tower",                 ButtonName = "UpgradeButton",  Cost = 20000000000,      SpeedTier = 3,   UnlockId = "AntennaTowerStage" },
-	{ Step = 13, FolderName = "13_Bathroom",                   ButtonName = "CosmeticButton", Cost = 35000000000,      SpeedTier = nil, UnlockId = "BathroomStage" },
-	{ Step = 14, FolderName = "12_Guest_Bedrooms",             ButtonName = "CosmeticButton", Cost = 80000000000,      SpeedTier = nil, UnlockId = "GuestBedroomsStage" },
-	{ Step = 15, FolderName = "14_Garage_and_Car",             ButtonName = "CosmeticButton", Cost = 350000000000,     SpeedTier = nil, UnlockId = "GarageCarStage" },
-	{ Step = 16, FolderName = "Vegetable Farms",               ButtonName = "UpgradeButton",  Cost = 1750000000000,    SpeedTier = 4,   UnlockId = "VegetableFarmsStage" },
-	{ Step = 17, FolderName = "Solar Panels",                  ButtonName = "UpgradeButton",  Cost = 20000000000000,   SpeedTier = 5,   UnlockId = "SolarPanelsStage" },
-	{ Step = 18, FolderName = "Watchtower",                    ButtonName = "UpgradeButton",  Cost = 1250000000000000, SpeedTier = 6,  UnlockId = "WatchtowerStage" },
-	{ Step = 19, FolderName = "Gates",                         ButtonName = "UpgradeButton",  Cost = 7.5e27,           SpeedTier = 7,   UnlockId = "GatesStage" },
+	{ Step = 1,  FolderName = "01_Foundation_and_Framing",    ButtonName = "CosmeticButton", Cost = 20000000,        SpeedTier = nil, UnlockId = "FoundationFramingStage" },
+	{ Step = 2,  FolderName = "02_Exterior_Walls_and_Windows", ButtonName = "CosmeticButton", Cost = 30000000,        SpeedTier = nil, UnlockId = "ExteriorWallsStage" },
+	{ Step = 3,  FolderName = "03_Roof_and_Chimney",           ButtonName = "CosmeticButton", Cost = 45000000,        SpeedTier = nil, UnlockId = "RoofChimneyStage" },
+	{ Step = 4,  FolderName = "Communal Kitchen",              ButtonName = "UpgradeButton",  Cost = 70000000,        SpeedTier = 1,   UnlockId = "CommunalKitchenStage" },
+	{ Step = 5,  FolderName = "04_Front_Porch",                ButtonName = "CosmeticButton", Cost = 120000000,       SpeedTier = nil, UnlockId = "FrontPorchStage" },
+	{ Step = 6,  FolderName = "05_Driveway_and_Garden",        ButtonName = "CosmeticButton", Cost = 200000000,       SpeedTier = nil, UnlockId = "DrivewayGardenStage" },
+	{ Step = 7,  FolderName = "06_Staircase_and_Hallways",     ButtonName = "CosmeticButton", Cost = 350000000,       SpeedTier = nil, UnlockId = "StaircaseHallwaysStage" },
+	{ Step = 8,  FolderName = "07_LivingRoom_Lounge",          ButtonName = "CosmeticButton", Cost = 600000000,       SpeedTier = nil, UnlockId = "LivingRoomLoungeStage" },
+	{ Step = 9,  FolderName = "Bunk Bedroom",                  ButtonName = "UpgradeButton",  Cost = 1000000000,      SpeedTier = 2,   UnlockId = "BunkBedroomStage" },
+	{ Step = 10, FolderName = "08_LivingRoom_Entertainment",   ButtonName = "CosmeticButton", Cost = 1800000000,      SpeedTier = nil, UnlockId = "LivingRoomEntertainmentStage" },
+	{ Step = 11, FolderName = "09_Dining_Room",                ButtonName = "CosmeticButton", Cost = 3000000000,      SpeedTier = nil, UnlockId = "DiningRoomStage" },
+	{ Step = 12, FolderName = "Antenna Tower",                 ButtonName = "UpgradeButton",  Cost = 5000000000,      SpeedTier = 3,   UnlockId = "AntennaTowerStage" },
+	{ Step = 13, FolderName = "13_Bathroom",                   ButtonName = "CosmeticButton", Cost = 8000000000,      SpeedTier = nil, UnlockId = "BathroomStage" },
+	{ Step = 14, FolderName = "12_Guest_Bedrooms",             ButtonName = "CosmeticButton", Cost = 15000000000,     SpeedTier = nil, UnlockId = "GuestBedroomsStage" },
+	{ Step = 15, FolderName = "14_Garage_and_Car",             ButtonName = "CosmeticButton", Cost = 40000000000,     SpeedTier = nil, UnlockId = "GarageCarStage" },
+	{ Step = 16, FolderName = "Vegetable Farms",               ButtonName = "UpgradeButton",  Cost = 75000000000,     SpeedTier = 4,   UnlockId = "VegetableFarmsStage" },
+	{ Step = 17, FolderName = "Solar Panels",                  ButtonName = "UpgradeButton",  Cost = 250000000000,    SpeedTier = 5,   UnlockId = "SolarPanelsStage" },
+	{ Step = 18, FolderName = "Watchtower",                    ButtonName = "UpgradeButton",  Cost = 1500000000000,   SpeedTier = 6,   UnlockId = "WatchtowerStage" },
+	{ Step = 19, FolderName = "Bunker Hatch",                 ButtonName = "UpgradeButton",  Cost = 10000000000000,  SpeedTier = 7,   UnlockId = "BunkerHatchStage" },
+	{ Step = 20, FolderName = "Gates",                         ButtonName = "UpgradeButton",  Cost = 100000000000000, SpeedTier = 8,   UnlockId = "GatesStage" },
 }
 
 -- Stash starter props on server start
@@ -600,15 +601,15 @@ setupTouchButton(managerBtnFolder, 250, "ManagerStage", function(player: Player)
 	print("[BuildingProgression] Manager hired for " .. player.Name .. "! Auto-collection active.")
 end)
 
--- Wire Building 2 Manager (Caretaker) Touch Handler ($2,500,000 - Available from the beginning)
-setupTouchButton(b2ManagerBtnFolder, 2500000, "Building2_ManagerStage", function(player: Player)
+-- Wire Building 2 Manager (Caretaker) Touch Handler ($500,000 - Available from the beginning)
+setupTouchButton(b2ManagerBtnFolder, 500000, "Building2_ManagerStage", function(player: Player)
 	MoneyManager.SetManagerOwned(player, 2, true)
 	spawnB2ManagerModels()
 	print("[BuildingProgression] Caretaker hired for " .. player.Name .. "! Auto-collection active.")
 end)
 
--- Wire Building 3 Manager (Compound Overseer) Touch Handler ($5,000,000,000 - Available from the beginning)
-setupTouchButton(b3ManagerBtnFolder, 5000000000, "Building3_ManagerStage", function(player: Player)
+-- Wire Building 3 Manager (Compound Overseer) Touch Handler ($150,000,000 - Available from the beginning)
+setupTouchButton(b3ManagerBtnFolder, 150000000, "Building3_ManagerStage", function(player: Player)
 	MoneyManager.SetManagerOwned(player, 3, true)
 	spawnB3ManagerModels()
 	print("[BuildingProgression] Compound Overseer hired for " .. player.Name .. "! Auto-collection active.")
@@ -718,8 +719,8 @@ setupTouchButton(newBuildingBtnFolder, 0, "BaseStage", function(player: Player)
 	end
 end)
 
--- Building 2: Initial Building Spawn ($250,000)
-local B2_UNLOCK_COST = 250000
+-- Building 2: Initial Building Spawn ($30,000)
+local B2_UNLOCK_COST = 30000
 setupTouchButton(b2NewBuildingBtn, B2_UNLOCK_COST, "Building2_BaseStage", function(player: Player)
 	local b2State = MoneyManager.GetBuildingState(player, 2)
 	if b2State.OwnedCount <= 0 then
@@ -745,8 +746,8 @@ setupTouchButton(b2NewBuildingBtn, B2_UNLOCK_COST, "Building2_BaseStage", functi
 	end
 end)
 
--- Building 3: Initial Building Spawn ($250,000,000)
-local B3_UNLOCK_COST = 250000000
+-- Building 3: Initial Building Spawn ($15,000,000)
+local B3_UNLOCK_COST = 15000000
 setupTouchButton(b3NewBuildingBtn, B3_UNLOCK_COST, "Building3_BaseStage", function(player: Player)
 	local b3State = MoneyManager.GetBuildingState(player, 3)
 	if b3State.OwnedCount <= 0 then

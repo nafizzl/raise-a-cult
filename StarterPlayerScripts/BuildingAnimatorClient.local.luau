@@ -59,6 +59,7 @@ local STAGE_FOLDER_MAP: { [string]: string } = {
 	["VegetableFarmsStage"]           = "Vegetable Farms",
 	["SolarPanelsStage"]              = "Solar Panels",
 	["WatchtowerStage"]               = "Watchtower",
+	["BunkerHatchStage"]              = "Bunker Hatch",
 	["GatesStage"]                    = "Gates",
 }
 
